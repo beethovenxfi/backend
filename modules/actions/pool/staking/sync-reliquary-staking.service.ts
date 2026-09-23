@@ -12,7 +12,7 @@ export const syncReliquaryStakingForPools = async (
     reliquaryAddress: string,
     excludedFarmIds: string[],
 ): Promise<void> => {
-    if (chain !== 'FANTOM' && chain !== 'SONIC') {
+    if (chain !== 'SONIC') {
         return;
     }
 
@@ -24,7 +24,7 @@ export const syncReliquaryStakingForPools = async (
     const filteredFarms = farms.filter((farm) => !excludedFarmIds.includes(farm.pid.toString()));
     const pools = await prisma.prismaPool.findMany({
         where: { chain: chain },
-        include: { staking: { include: { farm: { include: { rewarders: true } } } } },
+        include: { staking: { include: { reliquary: true } } },
     });
     const operations: any[] = [];
 
@@ -119,7 +119,7 @@ export const syncReliquaryStakingForPools = async (
 };
 
 export const deleteReliquaryStakingForAllPools = async (reloadStakingTypes: PrismaPoolStakingType[], chain: Chain) => {
-    if (chain !== 'FANTOM') {
+    if (chain !== 'SONIC') {
         return;
     }
     if (reloadStakingTypes.includes('RELIQUARY')) {

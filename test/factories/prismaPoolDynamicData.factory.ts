@@ -35,7 +35,7 @@ export const prismaPoolDynamicDataFactory = PrismaPoolDynamicDataFactory.define(
         lifetimeSwapFees: 1000,
         lifetimeVolume: 100000,
         swapsCount: 1000,
-        chain: Chain.MAINNET,
+        chain: Chain.SONIC,
         yieldCapture24h: 0,
         yieldCapture48h: 0,
         protocolYieldCapture24h: 0,

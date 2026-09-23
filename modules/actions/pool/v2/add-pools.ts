@@ -1,4 +1,4 @@
-import { Chain, PrismaLastBlockSyncedCategory, PrismaPool } from '@prisma/client';
+import { Chain, PrismaPool } from '@prisma/client';
 import { prisma } from '../../../../prisma/prisma-client';
 import { nestedPoolWithSingleLayerNesting } from '../../../../prisma/prisma-types';
 import { V2SubgraphClient } from '../../../subgraphs/balancer-subgraph';
@@ -6,7 +6,6 @@ import { BalancerPoolFragment } from '../../../subgraphs/balancer-subgraph/gener
 import { subgraphToPrismaCreate } from '../../../pool/subgraph-mapper';
 import { syncBptBalancesFromSubgraph } from '../../../user/lib/bpt-balances/helpers/sync-bpt-balances-from-subgraph';
 import _ from 'lodash';
-import { syncPoolTypeOnchainData } from './sync-pool-type-onchain-data';
 
 export const addPools = async (subgraphService: V2SubgraphClient, chain: Chain): Promise<string[]> => {
     const blockNumber = await subgraphService.legacyService.lastSyncedBlock();
@@ -29,10 +28,6 @@ export const addPools = async (subgraphService: V2SubgraphClient, chain: Chain):
         const dbPool = await createPoolRecord(subgraphPool, chain, blockNumber, allNestedTypePools);
         if (dbPool) {
             createdPools.push(subgraphPool.id);
-            // When new FX pool is added, we need to get the quote token
-            if (subgraphPool.poolType === 'FX') {
-                await syncPoolTypeOnchainData([dbPool], chain);
-            }
         }
     }
 

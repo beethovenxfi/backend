@@ -1,4 +1,3 @@
-import { AaveV3Sonic } from '@aave-dao/aave-address-book';
 import { env } from '../apps/env';
 import { NetworkData } from './types';
 import {
@@ -9,6 +8,7 @@ import {
     stsWorkerJobs,
     loopsWorkerJobs,
     reliquaryWorkerJobs,
+    activeChainWorkerJobsGlobal,
 } from './worker-jobs';
 
 export default <NetworkData>{
@@ -99,58 +99,58 @@ export default <NetworkData>{
             loops: {
                 token: '0xc76995054ce51dfbbc954840d699b2f33d2538ee',
             },
-            aave: {
-                markets: [AaveV3Sonic],
-            },
+            // aave: {
+            //     markets: [AaveV3Sonic],
+            // },
             sts: {
                 token: '0xe5da20f15420ad15de0fa650600afc998bbe3955',
             },
-            euler: {
-                url: 'https://raw.githubusercontent.com/euler-xyz/euler-labels/refs/heads/master/146/products.json',
-                lens: '0xc3a705ea6e339a53a7d301d3c5d7e6f499a9366a',
-                chain: 'SONIC',
-            },
-            contract: {
-                calls: [
-                    '0x11ba70c0ebab7946ac84f0e6d79162b0cbb2693f', // usdc 36
-                ].map((market) => ({
-                    chain: 'SONIC',
-                    contract: '0xb6adbb29f2d8ae731c7c72036a7fd5a7e970b198',
-                    abi: 'function getDepositAPR(address) view returns (uint256)',
-                    functionName: 'getDepositAPR',
-                    parser: (getDepositAPR: bigint) => Number(getDepositAPR) * 10 ** -18,
-                    token: market,
-                    args: [market],
-                })),
-            },
+            // euler: {
+            //     url: 'https://raw.githubusercontent.com/euler-xyz/euler-labels/refs/heads/master/146/products.json',
+            //     lens: '0xc3a705ea6e339a53a7d301d3c5d7e6f499a9366a',
+            //     chain: 'SONIC',
+            // },
+            // contract: {
+            //     calls: [
+            //         '0x11ba70c0ebab7946ac84f0e6d79162b0cbb2693f', // usdc 36
+            //     ].map((market) => ({
+            //         chain: 'SONIC',
+            //         contract: '0xb6adbb29f2d8ae731c7c72036a7fd5a7e970b198',
+            //         abi: 'function getDepositAPR(address) view returns (uint256)',
+            //         functionName: 'getDepositAPR',
+            //         parser: (getDepositAPR: bigint) => Number(getDepositAPR) * 10 ** -18,
+            //         token: market,
+            //         args: [market],
+            //     })),
+            // },
             http: [
-                {
-                    url: 'https://api.beefy.finance/apy/',
-                    extractors: [
-                        {
-                            type: 'path',
-                            token: '0x7870ddfd5aca4e977b2287e9a212bcbe8fc4135a',
-                            path: '$.silov2-sonic-usdce-ws',
-                        },
-                        { type: 'path', token: '0x871a101dcf22fe4fe37be7b654098c801cba1c88', path: '$.beefy-besonic' },
-                    ],
-                },
-                {
-                    url: 'https://yields.llama.fi/chart/104b3467-bba3-4923-851d-aa9e6ff47611',
-                    scale: 100,
-                    extractors: [
-                        {
-                            type: 'path',
-                            token: '0x67a298e5b65db2b4616e05c3b455e017275f53cb',
-                            path: '$.data[-1:].apyBase',
-                        },
-                    ],
-                },
-                {
-                    url: 'https://api.originprotocol.com/api/v2/os/apr/trailing/7',
-                    scale: 100,
-                    extractors: [{ type: 'path', token: '0x9f0df7799f6fdad409300080cff680f5a23df4b1', path: '$.apr' }],
-                },
+                // {
+                //     url: 'https://api.beefy.finance/apy/',
+                //     extractors: [
+                //         {
+                //             type: 'path',
+                //             token: '0x7870ddfd5aca4e977b2287e9a212bcbe8fc4135a',
+                //             path: '$.silov2-sonic-usdce-ws',
+                //         },
+                //         { type: 'path', token: '0x871a101dcf22fe4fe37be7b654098c801cba1c88', path: '$.beefy-besonic' },
+                //     ],
+                // },
+                // {
+                //     url: 'https://yields.llama.fi/chart/104b3467-bba3-4923-851d-aa9e6ff47611',
+                //     scale: 100,
+                //     extractors: [
+                //         {
+                //             type: 'path',
+                //             token: '0x67a298e5b65db2b4616e05c3b455e017275f53cb',
+                //             path: '$.data[-1:].apyBase',
+                //         },
+                //     ],
+                // },
+                // {
+                //     url: 'https://api.originprotocol.com/api/v2/os/apr/trailing/7',
+                //     scale: 100,
+                //     extractors: [{ type: 'path', token: '0x9f0df7799f6fdad409300080cff680f5a23df4b1', path: '$.apr' }],
+                // },
                 // {
                 //     url: 'https://be.angles.fi/api/v2/angles/apr/trailing/7',
                 //     scale: 100,
@@ -164,51 +164,35 @@ export default <NetworkData>{
                 //     url: 'https://locks-eth-api-sonic-earn.trevee.xyz/wrapper/apy',
                 //     extractors: [{ type: 'path', token: '0xe8a41c62bb4d5863c6eadc96792cfe90a1f37c47', path: '$.apy' }],
                 // },
-                {
-                    url: 'https://v2.silo.finance/api/detailed-vault/sonic-0xded4ac8645619334186f28b8798e07ca354cfa0e',
-                    scale: 1e18,
-                    extractors: [
-                        { type: 'path', token: '0xded4ac8645619334186f28b8798e07ca354cfa0e', path: '$.supplyApr' },
-                    ],
-                },
-                {
-                    url: 'https://v2.silo.finance/api/detailed-vault/sonic-0x592d1e187729c76efacc6dffb9355bd7bf47b2a7',
-                    scale: 1e18,
-                    extractors: [
-                        { type: 'path', token: '0x592d1e187729c76efacc6dffb9355bd7bf47b2a7', path: '$.supplyApr' },
-                    ],
-                },
-                {
-                    url: 'https://v2.silo.finance/api/detailed-vault/sonic-0x92ebf5a1fb4061b45222a6d76accf4698bde4b95',
-                    scale: 1e18,
-                    extractors: [
-                        { type: 'path', token: '0x92ebf5a1fb4061b45222a6d76accf4698bde4b95', path: '$.supplyApr' },
-                    ],
-                },
-                {
-                    url: 'https://v2.silo.finance/api/detailed-vault/sonic-0x423a7a5709213dea0f0c2368e5fb16338c87bba7',
-                    scale: 1e18,
-                    extractors: [
-                        { type: 'path', token: '0x423a7a5709213dea0f0c2368e5fb16338c87bba7', path: '$.supplyApr' },
-                    ],
-                },
+                // {
+                //     url: 'https://v2.silo.finance/api/detailed-vault/sonic-0xded4ac8645619334186f28b8798e07ca354cfa0e',
+                //     scale: 1e18,
+                //     extractors: [
+                //         { type: 'path', token: '0xded4ac8645619334186f28b8798e07ca354cfa0e', path: '$.supplyApr' },
+                //     ],
+                // },
+                // {
+                //     url: 'https://v2.silo.finance/api/detailed-vault/sonic-0x592d1e187729c76efacc6dffb9355bd7bf47b2a7',
+                //     scale: 1e18,
+                //     extractors: [
+                //         { type: 'path', token: '0x592d1e187729c76efacc6dffb9355bd7bf47b2a7', path: '$.supplyApr' },
+                //     ],
+                // },
+                // {
+                //     url: 'https://v2.silo.finance/api/detailed-vault/sonic-0x92ebf5a1fb4061b45222a6d76accf4698bde4b95',
+                //     scale: 1e18,
+                //     extractors: [
+                //         { type: 'path', token: '0x92ebf5a1fb4061b45222a6d76accf4698bde4b95', path: '$.supplyApr' },
+                //     ],
+                // },
+                // {
+                //     url: 'https://v2.silo.finance/api/detailed-vault/sonic-0x423a7a5709213dea0f0c2368e5fb16338c87bba7',
+                //     scale: 1e18,
+                //     extractors: [
+                //         { type: 'path', token: '0x423a7a5709213dea0f0c2368e5fb16338c87bba7', path: '$.supplyApr' },
+                //     ],
+                // },
             ],
-        },
-    },
-    datastudio: {
-        main: {
-            user: 'datafeed-service@datastudio-366113.iam.gserviceaccount.com',
-            sheetId: '1Ifbfh8njyssWKuLlUvlfXt-r3rnd4gAIP5sSM-lEuBU',
-            databaseTabName: 'Database v2',
-            compositionTabName: 'Pool Composition v2',
-            emissionDataTabName: 'EmissionData',
-        },
-        canary: {
-            user: 'datafeed-service@datastudio-366113.iam.gserviceaccount.com',
-            sheetId: '17bYDbQAdMwGevfJ7thiwI8mjYeZppVRi8gD8ER6CtSs',
-            databaseTabName: 'Database v2',
-            compositionTabName: 'Pool Composition v2',
-            emissionDataTabName: 'EmissionData',
         },
     },
     monitoring: {
@@ -228,5 +212,6 @@ export default <NetworkData>{
         ...stsWorkerJobs,
         ...loopsWorkerJobs,
         ...reliquaryWorkerJobs,
+        ...activeChainWorkerJobsGlobal,
     ],
 };

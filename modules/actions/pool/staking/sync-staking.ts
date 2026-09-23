@@ -7,7 +7,6 @@ import {
     loadReliquarySnapshotsForAllFarms,
 } from './sync-reliquary-staking.service';
 import { deleteGaugeStakingForAllPools, syncGaugeStakingForPools } from './sync-gauge-staking.service';
-import { syncVebalStakingForPools } from './sync-vebal-staking';
 import config from '../../../../config';
 
 export const syncStaking = async (chains: Chain[]) => {
@@ -28,10 +27,6 @@ export const syncStaking = async (chains: Chain[]) => {
                 chain,
                 networkconfig.gaugeControllerHelperAddress,
             );
-        }
-
-        if (chain === 'MAINNET') {
-            await syncVebalStakingForPools();
         }
     }
 };

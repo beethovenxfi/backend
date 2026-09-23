@@ -80,11 +80,6 @@ export class SwapFeeAprHandler implements AprHandler {
                     parseFloat(protocolFee),
                 );
 
-                const surplusApr = surplusAprCalculation(
-                    pool.dynamicData.totalLiquidity,
-                    swapFeeDataMap[pool.id].surplus_24h,
-                );
-
                 return [
                     {
                         id: `${pool.id}-dynamic-swap-apr-24h`,
@@ -106,18 +101,6 @@ export class SwapFeeAprHandler implements AprHandler {
                         rewardTokenAddress: null,
                         rewardTokenSymbol: null,
                     },
-                    pool.type === 'COW_AMM'
-                        ? {
-                              id: `${pool.id}-surplus-24h`,
-                              chain,
-                              poolId: pool.id,
-                              title: `Surplus APR`,
-                              apr: surplusApr,
-                              type: PrismaPoolAprType.SURPLUS_24H,
-                              rewardTokenAddress: null,
-                              rewardTokenSymbol: null,
-                          }
-                        : null,
                 ];
             })
             .filter((entry): entry is NonNullable<typeof entry> => !!entry));
@@ -138,8 +121,4 @@ const swapFeeCalculation = (totalLiquidity: number, swapFees: number, protocolFe
     }
 
     return apr_24h;
-};
-
-const surplusAprCalculation = (totalLiquidity: number, surplus24h: number) => {
-    return surplus24h <= 0 || totalLiquidity === 0 ? 0 : (surplus24h * 365) / totalLiquidity;
 };

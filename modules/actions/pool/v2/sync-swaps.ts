@@ -21,19 +21,6 @@ export async function syncSwaps(
 ): Promise<string[]> {
     const lastSyncedBlock = await getLastSyncedBlock(chain, 'SWAPS_V2');
 
-    // Get list of FX pool addresses for the fee calculation
-    const fxPools = (await prisma.prismaPool.findMany({
-        where: {
-            chain: chain,
-            type: 'FX',
-        },
-        select: {
-            id: true,
-            typeData: true, // contains the quote token address'
-            tokens: true,
-        },
-    })) as { id: string; typeData: { quoteToken: string }; tokens: PrismaPoolToken[] }[];
-
     // Get events
     console.time('BalancerSwaps');
     const swaps = await subgraphClient.getSwapsFromBlock(lastSyncedBlock);
@@ -47,7 +34,7 @@ export async function syncSwaps(
 
     // Enrich with USD values
     console.time('swapsUsd');
-    const dbEntries = await swapsUsd(dbSwaps, chain, fxPools);
+    const dbEntries = await swapsUsd(dbSwaps, chain);
     console.timeEnd('swapsUsd');
 
     console.time('prismaPoolEvent.createMany');
@@ -68,19 +55,6 @@ export async function reloadSwapsForPool(
     chain: Chain,
     eventRepo: LatestEventRepository & EventStoreRepository = eventsRepository,
 ): Promise<void> {
-    // Get list of FX pool addresses for the fee calculation
-    const fxPools = (await prisma.prismaPool.findMany({
-        where: {
-            chain: chain,
-            type: 'FX',
-        },
-        select: {
-            id: true,
-            typeData: true, // contains the quote token address
-            tokens: true,
-        },
-    })) as { id: string; typeData: { quoteToken: string }; tokens: PrismaPoolToken[] }[];
-
     // Get events
     const swaps = await subgraphClient.getAllSwapsForPool(poolId);
 
@@ -88,7 +62,7 @@ export async function reloadSwapsForPool(
 
     // Enrich with USD values
     console.time('swapsUsd');
-    const dbEntries = await swapsUsd(dbSwaps, chain, fxPools);
+    const dbEntries = await swapsUsd(dbSwaps, chain);
     console.timeEnd('swapsUsd');
 
     await eventRepo.upsertEvents(dbEntries);

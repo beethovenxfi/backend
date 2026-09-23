@@ -2,10 +2,9 @@ import { Factory } from 'fishery';
 import { PrismaPoolAndHookWithDynamic } from '../../prisma/prisma-types';
 import { prismaPoolTokenFactory } from './prismaToken.factory';
 import { createRandomAddress } from '../utils';
-import { Chain, PrismaPoolType } from '@prisma/client';
+import { PrismaPoolType } from '@prisma/client';
 import { prismaPoolDynamicDataFactory } from './prismaPoolDynamicData.factory';
 import { GyroEParams } from '../../modules/sources/subgraphs/balancer-v3-pools/generated/types';
-import { LiquidityBootstrappingPool } from '../testData/read/readTestData';
 import { ReclammData } from '../../modules/pool/subgraph-mapper';
 import { LBPoolData } from '../../modules/pool/pool-data';
 import { formatEther } from 'viem';
@@ -57,7 +56,7 @@ export const prismaPoolFactory = PrismaPoolFactory.define(({ params }) => {
         enableDonation: false,
         enableRemoveLiquidityCustom: false,
     };
-    const chain = params?.chain || Chain.SEPOLIA;
+    const chain = params?.chain || 'SONIC';
 
     return {
         id: poolAddress,

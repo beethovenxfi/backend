@@ -3,7 +3,6 @@ import { Chain } from '@prisma/client';
 import { syncGaugeStakingForPools, syncReliquaryStakingForPools } from '../actions/pool/staking';
 import { ReliquarySubgraphService } from '../subgraphs/reliquary-subgraph/reliquary.service';
 import { GaugeSubgraphService } from '../subgraphs/gauge-subgraph/gauge-subgraph.service';
-import { syncVebalStakingForPools } from '../actions/pool/staking/sync-vebal-staking';
 
 export function StakingController() {
     return {
@@ -24,10 +23,6 @@ export function StakingController() {
                     chain,
                     networkconfig.gaugeControllerHelperAddress,
                 );
-            }
-
-            if (chain === 'MAINNET') {
-                await syncVebalStakingForPools();
             }
         },
     };

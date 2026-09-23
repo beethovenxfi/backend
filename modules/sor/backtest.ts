@@ -6,8 +6,7 @@ import { prisma } from '../../prisma/prisma-client';
 
 // Configuration
 const CONFIG = {
-    // chains: ['MAINNET', 'BASE', 'SONIC', 'GNOSIS'] as Chain[],
-    chains: ['GNOSIS'] as Chain[],
+    chains: ['SONIC'] as Chain[],
     swapsCount: 100_000,
     logIndividualSwaps: false,
 };
@@ -94,9 +93,12 @@ class SorBacktester {
 
                 if (CONFIG.logIndividualSwaps) {
                     console.log(
-                        `${swap.tokenInSymbol.padStart(16, '.')} > ${swap.tokenOutSymbol.padEnd(16, '.')} | hist=${historicOut.toFixed(
-                            4,
-                        )}, sor=${sorOut.toFixed(4)} | Δ=${improvement.toFixed(2)}% | ${durationMs.toFixed(1)}ms | ${sorResult.swaps.length} hops`,
+                        `${swap.tokenInSymbol.padStart(16, '.')} > ${swap.tokenOutSymbol.padEnd(
+                            16,
+                            '.',
+                        )} | hist=${historicOut.toFixed(4)}, sor=${sorOut.toFixed(4)} | Δ=${improvement.toFixed(
+                            2,
+                        )}% | ${durationMs.toFixed(1)}ms | ${sorResult.swaps.length} hops`,
                     );
                 }
             } catch (err) {

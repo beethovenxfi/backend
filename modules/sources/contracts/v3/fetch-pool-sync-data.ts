@@ -55,8 +55,7 @@ export const fetchPoolSyncData = async (
         calls = [...calls, ...poolCalls, ...typeCalls, ...hookCalls];
     }
 
-    // Gas limit gets triggered on HYPEREVM
-    const batchSize = client.chain.id === 999 ? 512 : 1024;
+    const batchSize = 1024;
 
     const data = await multicallViem<{ [address: string]: PoolSyncDataV3 }>(client, calls, blockNumber, batchSize);
 

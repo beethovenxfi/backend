@@ -20,7 +20,6 @@ import {
     syncReliquaryStakingForPools,
 } from '../actions/pool/staking';
 import { GaugeSubgraphService } from '../subgraphs/gauge-subgraph/gauge-subgraph.service';
-import { syncVebalStakingForPools } from '../actions/pool/staking/sync-vebal-staking';
 import config from '../../config';
 
 export class PoolService {
@@ -93,10 +92,6 @@ export class PoolService {
                     chain,
                     networkconfig.gaugeControllerHelperAddress,
                 );
-            }
-
-            if (chain === 'MAINNET') {
-                await syncVebalStakingForPools();
             }
         }
     }

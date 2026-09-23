@@ -18,12 +18,6 @@ export function createHandlers(chain: Chain): AprHandler[] {
     handlerList.push(new handlers.LiquidityGaugeAprHandler(tokenService));
     handlerList.push(new handlers.MerklAprHandler());
 
-    // Mainnet specific handlers
-    if (chain === Chain.MAINNET) {
-        handlerList.push(new handlers.VeBalProtocolAprHandler());
-        handlerList.push(new handlers.VeBalVotingAprHandler());
-    }
-
     if (config[chain].aprHandlers.maBeetsAprHandler) {
         handlerList.push(
             new handlers.MaBeetsAprHandler(config[chain].aprHandlers.maBeetsAprHandler.beetsAddress, tokenService),

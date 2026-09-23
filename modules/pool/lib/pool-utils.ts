@@ -11,7 +11,7 @@ type PoolWithTypeAndFactory = {
 };
 
 export function isStablePool(poolType: PrismaPoolType) {
-    return poolType === 'STABLE' || poolType === 'META_STABLE' || poolType === 'COMPOSABLE_STABLE';
+    return poolType === 'STABLE' || poolType === 'COMPOSABLE_STABLE';
 }
 
 export function isWeightedPoolV2(pool: PoolWithTypeAndFactory) {
@@ -31,13 +31,7 @@ export function tokenCollectsYieldFee(token: PrismaPoolToken) {
 }
 
 export function capturesYield(pool: PoolWithTypeAndFactory) {
-    return (
-        isWeightedPoolV2(pool) ||
-        isComposableStablePool(pool) ||
-        pool.type === 'META_STABLE' ||
-        isGyroEV2(pool) ||
-        pool.protocolVersion === 3
-    );
+    return isWeightedPoolV2(pool) || isComposableStablePool(pool) || isGyroEV2(pool) || pool.protocolVersion === 3;
 }
 
 export function isGyroPool(pool: PoolWithTypeAndFactory) {

@@ -13,15 +13,11 @@ import _ from 'lodash';
 export const SUPPORTED_POOL_TYPES: PrismaPoolType[] = [
     'WEIGHTED',
     'STABLE',
-    'META_STABLE',
-    'PHANTOM_STABLE',
     'COMPOSABLE_STABLE',
     'LIQUIDITY_BOOTSTRAPPING',
-    'ELEMENT',
     'GYRO',
     'GYRO3',
     'GYROE',
-    'FX',
 ];
 
 export interface PoolOnChainDataServiceOptions {
@@ -54,7 +50,9 @@ export class PoolOnChainDataService {
         };
 
         const query = Prisma.raw(
-            `SELECT d.id, d."isInRecoveryMode", d."isPaused" FROM "PrismaPoolDynamicData" d WHERE LENGTH(d.id) = 66 AND chain = '${chain}'::"Chain"${poolIds ? ` AND d.id = ANY('{${poolIds.join(',')}}')` : ''}`,
+            `SELECT d.id, d."isInRecoveryMode", d."isPaused" FROM "PrismaPoolDynamicData" d WHERE LENGTH(d.id) = 66 AND chain = '${chain}'::"Chain"${
+                poolIds ? ` AND d.id = ANY('{${poolIds.join(',')}}')` : ''
+            }`,
         );
 
         const [dbPools, dynamicData] = await Promise.all([

@@ -71,7 +71,6 @@ export class LiquidityGaugeAprHandler implements AprHandler {
             const gaugeTotalShares = parseFloat(gauge.totalSupply);
             const bptPrice = pool.dynamicData.totalLiquidity / totalShares;
             const gaugeTvl = gaugeTotalShares * bptPrice;
-            const workingSupply = parseFloat(gauge.workingSupply);
 
             for (const reward of rewards) {
                 if (reward.status === 'rejected') {
@@ -91,38 +90,14 @@ export class LiquidityGaugeAprHandler implements AprHandler {
                     apr: 0,
                     rewardTokenAddress: address,
                     rewardTokenSymbol: symbol,
-                    type: isVeBalemissions ? PrismaPoolAprType.VEBAL_EMISSIONS : PrismaPoolAprType.STAKING,
+                    type: PrismaPoolAprType.STAKING,
                 };
 
                 const adjustedGaugeTvl = !gaugeTvl || gaugeTvl === 0 ? 1 : gaugeTvl; // Avoid division by zero
 
-                // veBAL rewards have a min and max, we create two items for them
-                if (isVeBalemissions && (pool.chain === 'MAINNET' || gauge.version === 2)) {
-                    let minApr = 0;
-                    if (workingSupply > 0 && gaugeTotalShares > 0) {
-                        minApr = (((gaugeTotalShares * 0.4) / workingSupply) * rewardPerYear) / adjustedGaugeTvl;
-                    } else {
-                        minApr = rewardPerYear / adjustedGaugeTvl;
-                    }
+                itemData.apr = rewardPerYear / adjustedGaugeTvl;
 
-                    itemData.apr = minApr;
-                    aprItems.push(itemData);
-
-                    aprItems.push({
-                        id: `${itemData.id}-boost`,
-                        chain: pool.chain,
-                        poolId: pool.id,
-                        title: `${symbol} reward APR`,
-                        apr: minApr * this.MAX_VEBAL_BOOST,
-                        rewardTokenAddress: address,
-                        rewardTokenSymbol: symbol,
-                        type: PrismaPoolAprType.STAKING_BOOST,
-                    });
-                } else {
-                    itemData.apr = rewardPerYear / adjustedGaugeTvl;
-
-                    aprItems.push(itemData);
-                }
+                aprItems.push(itemData);
             }
         }
         return aprItems;

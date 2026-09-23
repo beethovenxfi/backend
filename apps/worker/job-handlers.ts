@@ -3,17 +3,12 @@ import { Express, NextFunction } from 'express';
 import { tokenService } from '../../modules/token/token.service';
 import { PricingService } from '../../modules/pricing/pricing-service';
 import { poolService } from '../../modules/pool/pool.service';
-import { datastudioService } from '../../modules/datastudio/datastudio.service';
-import { veBalService } from '../../modules/vebal/vebal.service';
-import { veBalVotingListService } from '../../modules/vebal/vebal-voting-list.service';
 import { cronsMetricPublisher } from '../../modules/metrics/metrics.client';
 import moment from 'moment';
-import { cronsDurationMetricPublisher } from '../../modules/metrics/cron-duration-metrics.client';
 import { syncLatestFXPrices } from '../../modules/token/latest-fx-price';
 import { chainIdToChain } from '../../config/chain-id-to-chain';
 import { Chain } from '@prisma/client';
 import {
-    CowAmmController,
     SnapshotsController,
     PoolController,
     EventController,
@@ -179,17 +174,6 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
         case 'sync-snapshots':
             await runIfNotAlreadyRunning(name, chainId, () => SnapshotsController().syncSnapshots(chain), res, next);
             break;
-        case 'feed-data-to-datastudio':
-            await runIfNotAlreadyRunning(
-                name,
-                chainId,
-                () => {
-                    return datastudioService.feedPoolData(chain);
-                },
-                res,
-                next,
-            );
-            break;
         case 'sync-latest-reliquary-snapshots':
             await runIfNotAlreadyRunning(
                 name,
@@ -210,18 +194,6 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
             break;
         case 'update-fee-volume-yield-all-pools':
             await runIfNotAlreadyRunning(name, chainId, () => updateVolumeAndFees(chain), res, next);
-            break;
-        case 'sync-vebal-balances':
-            await runIfNotAlreadyRunning(name, chainId, () => veBalService.syncVeBalBalances(chain), res, next);
-            break;
-        case 'sync-vebal-snapshots':
-            await runIfNotAlreadyRunning(name, chainId, () => veBalService.syncVeBalUserBalanceSnapshots(), res, next);
-            break;
-        case 'sync-vebal-totalSupply':
-            await runIfNotAlreadyRunning(name, chainId, () => veBalService.syncVeBalTotalSupply(chain), res, next);
-            break;
-        case 'sync-vebal-voting-gauges':
-            await runIfNotAlreadyRunning(name, chainId, () => veBalVotingListService.syncVotingGauges(), res, next);
             break;
         case 'sync-latest-fx-prices':
             await runIfNotAlreadyRunning(
@@ -314,16 +286,6 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                 res,
                 next,
             );
-            break;
-        // COW AMM
-        case 'sync-cow-amm-pools':
-            await runIfNotAlreadyRunning(name, chainId, () => CowAmmController().syncPools(chain), res, next);
-            break;
-        case 'sync-cow-amm-swaps':
-            await runIfNotAlreadyRunning(name, chainId, () => CowAmmController().syncSwaps(chain), res, next);
-            break;
-        case 'sync-cow-amm-join-exits':
-            await runIfNotAlreadyRunning(name, chainId, () => CowAmmController().syncJoinExits(chain), res, next);
             break;
         case 'sync-categories':
             await runIfNotAlreadyRunning(name, chainId, () => ContentController().syncCategories(), res, next);

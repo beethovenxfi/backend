@@ -69,12 +69,7 @@ export class BeetsPriceHandler implements PriceHandler {
     }
 
     private getAcceptedTokens(tokens: TokenPriceData[]): TokenPriceData[] {
-        return tokens.filter(
-            (token) =>
-                (token.chain === Chain.FANTOM && token.address === this.beetsFtmAddress) ||
-                (token.chain === Chain.OPTIMISM && token.address === this.beetsOptimismAddress) ||
-                (token.chain === Chain.SONIC && token.address === this.beetsSonicAddress),
-        );
+        return tokens.filter((token) => token.chain === Chain.SONIC && token.address === this.beetsSonicAddress);
     }
 
     private async getBeetsPriceFromSwap(stSPrice: number): Promise<number | null> {

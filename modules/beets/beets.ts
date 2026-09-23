@@ -26,26 +26,14 @@ export async function beetsGetCirculatingSupply(chain: Chain) {
 
     let totalSupply = parseEther(await beetsGetTotalSupply(chain));
 
-    if (chain === 'FANTOM') {
-        for (const address of NON_CIRCULATING_ADDRESSES) {
-            const balance = await viemClient.readContract({
-                address: config[chain].beets!.address as `0x${string}`,
-                abi: beetsAbi,
-                functionName: 'balanceOf',
-                args: [address as `0x${string}`],
-            });
-            totalSupply = totalSupply - balance;
-        }
-    } else {
-        for (const address of NON_CIRCULATING_ADDRESSES_SONIC) {
-            const balance = await viemClient.readContract({
-                address: config[chain].beets!.address as `0x${string}`,
-                abi: beetsAbi,
-                functionName: 'balanceOf',
-                args: [address as `0x${string}`],
-            });
-            totalSupply = totalSupply - balance;
-        }
+    for (const address of NON_CIRCULATING_ADDRESSES_SONIC) {
+        const balance = await viemClient.readContract({
+            address: config[chain].beets!.address as `0x${string}`,
+            abi: beetsAbi,
+            functionName: 'balanceOf',
+            args: [address as `0x${string}`],
+        });
+        totalSupply = totalSupply - balance;
     }
 
     return formatEther(totalSupply);

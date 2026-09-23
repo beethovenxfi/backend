@@ -23,7 +23,7 @@ import _ from 'lodash';
 import { prisma } from '../../../prisma/prisma-client';
 import { Chain, Prisma, PrismaUserStakedBalance, PrismaUserWalletBalance } from '@prisma/client';
 import { fixedNumber } from '../../view-helpers/fixed-number';
-import { ElementData, FxData, GyroData, StableData, QuantAmmWeightedData, ReclammData } from '../subgraph-mapper';
+import { GyroData, StableData, QuantAmmWeightedData, ReclammData } from '../subgraph-mapper';
 import { LBPoolData, FixedLBPData } from '../pool-data';
 import { ZERO_ADDRESS } from '@balancer/sdk';
 import { mapHookToGqlHook } from '../../sources/transformers';
@@ -272,7 +272,6 @@ export class PoolGqlLoaderService {
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,
             hook: mapHookToGqlHook(pool.hook as HookData),
             incentivized: pool.categories.some((category) => category === 'INCENTIVIZED'),
-            vaultVersion: pool.protocolVersion,
             decimals: 18,
             dynamicData: this.getPoolDynamicData(pool),
             poolTokens: pool.tokens.map((token) => mapPoolToken(token, pool.protocolVersion)),
@@ -451,42 +450,9 @@ export class PoolGqlLoaderService {
                 in: where?.idIn?.map((id) => id.toLowerCase()) || undefined,
                 notIn: where?.idNotIn?.map((id) => id.toLowerCase()) || undefined,
             },
-            ...(where?.categoryIn && !where?.tagIn
-                ? { categories: { hasSome: where.categoryIn.map((s) => s.toUpperCase()) } }
-                : {}),
-            ...(where?.categoryNotIn && !where?.tagNotIn
-                ? { NOT: { categories: { hasSome: where.categoryNotIn.map((s) => s.toUpperCase()) } } }
-                : {}),
-            ...(where?.tagIn && !where?.categoryIn
-                ? { categories: { hasSome: where.tagIn.map((s) => s.toUpperCase()) } }
-                : {}),
-            ...(where?.tagNotIn && !where?.categoryNotIn
+            ...(where?.tagIn ? { categories: { hasSome: where.tagIn.map((s) => s.toUpperCase()) } } : {}),
+            ...(where?.tagNotIn
                 ? { NOT: { categories: { hasSome: where.tagNotIn.map((s) => s.toUpperCase()) } } }
-                : {}),
-            filters: {
-                ...(where?.filterNotIn
-                    ? {
-                          every: {
-                              filterId: {
-                                  notIn: where.filterNotIn,
-                              },
-                          },
-                      }
-                    : {}),
-                ...(where?.filterIn
-                    ? {
-                          some: {
-                              filterId: {
-                                  in: where.filterIn,
-                              },
-                          },
-                      }
-                    : {}),
-            },
-            ...(where?.hasHook !== undefined && where.hasHook
-                ? { hook: { path: ['address'], string_starts_with: '0x' } }
-                : where?.hasHook !== undefined && !where.hasHook
-                ? { hook: { equals: Prisma.DbNull } }
                 : {}),
         };
 
@@ -563,25 +529,11 @@ export class PoolGqlLoaderService {
                     ...(typeData as StableData),
                     ...mappedData,
                 };
-            case 'META_STABLE':
-                return {
-                    __typename: 'GqlPoolMetaStable',
-                    ...poolWithoutTypeData,
-                    ...(typeData as StableData),
-                    ...mappedData,
-                };
             case 'COMPOSABLE_STABLE':
                 return {
                     __typename: 'GqlPoolComposableStable',
                     ...poolWithoutTypeData,
                     ...(typeData as StableData),
-                    ...mappedData,
-                };
-            case 'ELEMENT':
-                return {
-                    __typename: 'GqlPoolElement',
-                    ...poolWithoutTypeData,
-                    ...(typeData as ElementData),
                     ...mappedData,
                 };
             case 'LIQUIDITY_BOOTSTRAPPING':
@@ -650,13 +602,6 @@ export class PoolGqlLoaderService {
                     } as GyroData),
                     ...mappedData,
                 };
-            case 'FX':
-                return {
-                    __typename: 'GqlPoolFx',
-                    ...poolWithoutTypeData,
-                    ...mappedData,
-                    ...(typeData as FxData),
-                };
             case 'QUANT_AMM_WEIGHTED':
                 return {
                     __typename: 'GqlPoolQuantAmmWeighted',
@@ -698,23 +643,7 @@ export class PoolGqlLoaderService {
                             apr: `${level.apr}`,
                         })),
                     },
-                    farm: null,
                     gauge: null,
-                    aura: null,
-                };
-            } else if (staking.farm) {
-                return {
-                    ...staking,
-                    gauge: null,
-                    reliquary: null,
-                    aura: null,
-                };
-            } else if (staking.vebal) {
-                return {
-                    ...staking,
-                    gauge: null,
-                    reliquary: null,
-                    aura: null,
                 };
             }
         }
@@ -725,18 +654,12 @@ export class PoolGqlLoaderService {
             return null;
         }
 
-        const auraPool = pool.staking.find(
-            (staking) => staking.type === 'AURA' && staking.aura && !staking.aura!.isShutdown,
-        );
-
         return {
             ...sorted[0],
             gauge: {
                 ...sorted[0].gauge!,
                 otherGauges: sorted.slice(1).map((item) => item.gauge!),
             },
-            aura: auraPool?.aura,
-            farm: null,
             reliquary: null,
         };
     }
@@ -841,23 +764,6 @@ export class PoolGqlLoaderService {
             lifetimeVolume: `${fixedNumber(lifetimeVolume, 2)}`,
             lifetimeSwapFees: `${fixedNumber(lifetimeSwapFees, 2)}`,
             holdersCount: `${holdersCount}`,
-            swapsCount: `${swapsCount}`,
-            sharePriceAth: '0',
-            sharePriceAtl: '0',
-            totalLiquidityAth: '0',
-            totalLiquidityAtl: '0',
-            volume24hAtl: '0',
-            volume24hAth: '0',
-            fees24hAtl: '0',
-            fees24hAth: '0',
-            sharePriceAthTimestamp: 0,
-            sharePriceAtlTimestamp: 0,
-            totalLiquidityAthTimestamp: 0,
-            totalLiquidityAtlTimestamp: 0,
-            fees24hAthTimestamp: 0,
-            fees24hAtlTimestamp: 0,
-            volume24hAthTimestamp: 0,
-            volume24hAtlTimestamp: 0,
             protocolYieldCapture24h: `${fixedNumber(protocolYieldCapture24h || 0, 2)}`,
             protocolYieldCapture48h: `${fixedNumber(protocolYieldCapture48h || 0, 2)}`,
             protocolFees24h: `${fixedNumber(protocolFees24h || 0, 2)}`,
@@ -1005,10 +911,6 @@ const searchFilters = (args: QueryPoolGetPoolsArgs) => {
 
     if (args.where?.poolTypeIn) {
         where += `AND p.type = ANY('{${args.where?.poolTypeIn.map(sanitizeInput).join(',')}}')`;
-    }
-
-    if (args.where?.categoryIn) {
-        where += `AND p.categories @> ARRAY['${args.where?.categoryIn.map(sanitizeInput).join("','")}']`;
     }
 
     if (args.where?.tagIn) {

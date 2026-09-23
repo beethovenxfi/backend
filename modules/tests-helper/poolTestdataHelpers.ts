@@ -7,71 +7,64 @@ export type DeepPartial<T> = {
     [P in keyof T]?: DeepPartial<T[P]>;
 };
 
-type DefaulToken = 'usdc' | 'wftm' | 'wbtc' | 'weth' | 'beets' | 'dai' | 'boo' | 'fba' | 'fbeets';
+type DefaultToken = 'usdc' | 'ws' | 'weth' | 'beets' | 'sts' | 'scusd' | 'sceth' | 'loops';
 
-export const defaultTokens: Record<DefaulToken, Prisma.PrismaTokenCreateInput> = {
+export const defaultTokens: Record<DefaultToken, Prisma.PrismaTokenCreateInput> = {
     usdc: {
-        address: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
-        symbol: 'USDC',
-        name: 'USD Coin',
+        address: '0x29219dd400f2bf60e5a23d13be72b486d4038894',
+        symbol: 'USDC.e',
+        name: 'Bridged USDC',
         decimals: 6,
-        chain: 'FANTOM',
+        chain: 'SONIC',
     },
-    wftm: {
-        address: '0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83',
-        symbol: 'wFTM',
-        name: 'Wrapped Fantom',
+    ws: {
+        address: '0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38',
+        symbol: 'wS',
+        name: 'Wrapped Sonic',
         decimals: 18,
-        chain: 'FANTOM',
-    },
-    wbtc: {
-        address: '0x321162cd933e2be498cd2267a90534a804051b11',
-        symbol: 'wBTC',
-        name: 'Wrapped Bitcoin',
-        decimals: 8,
-        chain: 'FANTOM',
+        chain: 'SONIC',
     },
     weth: {
-        address: '0x74b23882a30290451a17c44f4f05243b6b58c76d',
+        address: '0x50c42deacd8fc9773493ed674b675be577f2634b',
         symbol: 'wETH',
-        name: 'Wrapped Ethereum',
+        name: 'Wrapped Ether',
         decimals: 18,
-        chain: 'FANTOM',
+        chain: 'SONIC',
     },
     beets: {
-        address: '0xf24bcf4d1e507740041c9cfd2dddb29585adce1e',
+        address: '0x2d0e0814e62d80056181f5cd932274405966e4f0',
         symbol: 'BEETS',
         name: 'Beethoven X',
         decimals: 18,
-        chain: 'FANTOM',
+        chain: 'SONIC',
     },
-    dai: {
-        address: '0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e',
-        symbol: 'DAI',
-        name: 'Dai',
+    sts: {
+        address: '0xe5da20f15420ad15de0fa650600afc998bbe3955',
+        symbol: 'stS',
+        name: 'Staked Sonic',
         decimals: 18,
-        chain: 'FANTOM',
+        chain: 'SONIC',
     },
-    boo: {
-        address: '0x841fad6eae12c286d1fd18d1d525dffa75c7effe',
-        symbol: 'BOO',
-        name: 'Spookyswap',
-        decimals: 18,
-        chain: 'FANTOM',
+    scusd: {
+        address: '0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae',
+        symbol: 'scUSD',
+        name: 'Sonic USD',
+        decimals: 6,
+        chain: 'SONIC',
     },
-    fba: {
-        address: '0x0e249130b3545a2a287de9f27d805cab95f03db9',
-        symbol: 'FBA',
-        name: 'Firebird Aggregator',
+    sceth: {
+        address: '0x3bce5cb273f0f148010bbea2470e7b5df84c7812',
+        symbol: 'scETH',
+        name: 'Sonic ETH',
         decimals: 18,
-        chain: 'FANTOM',
+        chain: 'SONIC',
     },
-    fbeets: {
-        address: '0xfcef8a994209d6916eb2c86cdd2afd60aa6f54b1',
-        symbol: 'FBEETS',
-        name: 'Fresh Beets',
+    loops: {
+        address: '0xc76995054ce51dfbbc954840d699b2f33d2538ee',
+        symbol: 'LOOPS',
+        name: 'Loops',
         decimals: 18,
-        chain: 'FANTOM',
+        chain: 'SONIC',
     },
 };
 
@@ -83,7 +76,7 @@ export async function createTokens(tokens: Prisma.PrismaTokenCreateInput[]) {
 
 const defaultWeightedPool: Prisma.PrismaPoolCreateInput = {
     id: '0xf3a602d30dcb723a74a0198313a7551feaca7dac00010000000000000000005f',
-    chain: 'FANTOM',
+    chain: 'SONIC',
     createTime: moment().subtract(10, 'days').unix(),
     address: '0xf3a602d30dcb723a74a0198313a7551feaca7dac',
     symbol: 'BPT-QUARTET',
@@ -91,12 +84,12 @@ const defaultWeightedPool: Prisma.PrismaPoolCreateInput = {
     decimals: 18,
     type: PrismaPoolType.WEIGHTED,
     swapFeeManager: '0x0000000000000000000000000000000000000000',
-    factory: '0x92b377187bccc6556fced2f1e6dad65850c20630',
+    factory: '0xba1333333333a1ba1108e8412f11850a5c319ba9',
     tokens: {},
     dynamicData: {
         create: {
             id: '0xf3a602d30dcb723a74a0198313a7551feaca7dac00010000000000000000005f',
-            blockNumber: 45000000,
+            blockNumber: 13000000,
             swapFee: '0.0025',
             swapEnabled: true,
             totalShares: '98618',
@@ -111,8 +104,8 @@ const defaultWeightedPool: Prisma.PrismaPoolCreateInput = {
     staking: {
         create: {
             id: '17',
-            address: '0x8166994d9ebbe5829ec86bd81258149b87facfd3',
-            type: 'MASTER_CHEF',
+            address: '0x973670ce19594f857a7cd85ee834c7a74a941684',
+            type: 'RELIQUARY',
         },
     },
 };
@@ -133,8 +126,8 @@ export async function createWeightedPoolFromDefault(
     if (defaultWeightedPool.staking?.create) {
         defaultWeightedPool.staking.create = {
             id: `${pool.id}-stake`,
-            address: '0x8166994d9ebbe5829ec86bd81258149b87facfd3',
-            type: 'MASTER_CHEF',
+            address: '0x973670ce19594f857a7cd85ee834c7a74a941684',
+            type: 'RELIQUARY',
         };
     }
 
@@ -176,7 +169,7 @@ const defaultWeightedPoolSnapshot: Prisma.PrismaPoolSnapshotCreateInput = {
     id: '0xf3a602d30dcb723a74a0198313a7551feaca7dac00010000000000000000005f-1660089600',
     pool: {
         connect: {
-            id_chain: { id: '0xf3a602d30dcb723a74a0198313a7551feaca7dac00010000000000000000005f', chain: 'FANTOM' },
+            id_chain: { id: '0xf3a602d30dcb723a74a0198313a7551feaca7dac00010000000000000000005f', chain: 'SONIC' },
         },
     },
     timestamp: 1660089600,
@@ -203,14 +196,14 @@ function randomNumberFromInterval(min: number, max: number) {
 }
 
 export async function createRandomSnapshotsForPoolForTimestamp(poolId: string, tokenCount: number, timestamp: number) {
-    const totlaShares = randomNumberFromInterval(100000, 3000000);
+    const totalShares = randomNumberFromInterval(100000, 3000000);
     const amounts = Array.from({ length: tokenCount }, () => randomNumberFromInterval(10, 50).toString());
     await prisma.prismaPoolSnapshot.create({
         data: {
             id: `${poolId}-${timestamp}`,
             pool: {
                 connect: {
-                    id_chain: { id: poolId, chain: 'FANTOM' },
+                    id_chain: { id: poolId, chain: 'SONIC' },
                 },
             },
             timestamp,
@@ -219,8 +212,8 @@ export async function createRandomSnapshotsForPoolForTimestamp(poolId: string, t
             swapsCount: randomNumberFromInterval(1000, 50000),
             sharePrice: randomNumberFromInterval(100, 500),
             totalLiquidity: randomNumberFromInterval(10000, 500000),
-            totalShares: totlaShares.toString(),
-            totalSharesNum: totlaShares,
+            totalShares: totalShares.toString(),
+            totalSharesNum: totalShares,
             amounts,
         },
     });
@@ -229,14 +222,14 @@ export async function createRandomSnapshotsForPoolForTimestamp(poolId: string, t
 export async function createRandomSnapshotsForPool(poolId: string, tokenCount: number, numSnapshots: number) {
     for (let i = 0; i < numSnapshots; i++) {
         const timestamp = moment().startOf('day').subtract(i, 'days').unix();
-        const totlaShares = randomNumberFromInterval(100000, 3000000);
+        const totalShares = randomNumberFromInterval(100000, 3000000);
         const amounts = Array.from({ length: tokenCount }, () => randomNumberFromInterval(10, 50).toString());
         await prisma.prismaPoolSnapshot.create({
             data: {
                 id: `${poolId}-${timestamp}`,
                 pool: {
                     connect: {
-                        id_chain: { id: poolId, chain: 'FANTOM' },
+                        id_chain: { id: poolId, chain: 'SONIC' },
                     },
                 },
                 timestamp,
@@ -245,8 +238,8 @@ export async function createRandomSnapshotsForPool(poolId: string, tokenCount: n
                 swapsCount: randomNumberFromInterval(1000, 50000),
                 sharePrice: randomNumberFromInterval(100, 500),
                 totalLiquidity: randomNumberFromInterval(10000, 500000),
-                totalShares: totlaShares.toString(),
-                totalSharesNum: totlaShares,
+                totalShares: totalShares.toString(),
+                totalSharesNum: totalShares,
                 amounts,
             },
         });
@@ -254,7 +247,6 @@ export async function createRandomSnapshotsForPool(poolId: string, tokenCount: n
 }
 
 const defaultUserBalanceSnapshot: Omit<Prisma.PrismaUserPoolBalanceSnapshotCreateInput, 'id'> = {
-    // id: `0x001a-0x0000000000000000000000000000000000000001-${moment().unix()}`,
     timestamp: moment().unix(),
     user: {
         connect: {
@@ -262,7 +254,7 @@ const defaultUserBalanceSnapshot: Omit<Prisma.PrismaUserPoolBalanceSnapshotCreat
         },
     },
     poolToken: '0x001',
-    pool: { connect: { id_chain: { id: '0x001a', chain: 'FANTOM' } } },
+    pool: { connect: { id_chain: { id: '0x001a', chain: 'SONIC' } } },
     walletBalance: '1',
     farmBalance: '1',
     gaugeBalance: '0',

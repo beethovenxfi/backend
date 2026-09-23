@@ -10,14 +10,14 @@ import { createHandlers } from './create-handlers';
  */
 async function exampleUsage() {
     // Create handlers for mainnet
-    const handlers = createHandlers([Chain.MAINNET]);
+    const handlers = createHandlers([Chain.SONIC]);
 
     // Create manager
     const manager = new PricingManager(handlers);
 
     // Fetch tokens for pricing
     const repo = new PricingRepository(eventsRepository);
-    const tokens = await repo.getTokensForPricing(Chain.MAINNET, [
+    const tokens = await repo.getTokensForPricing(Chain.SONIC, [
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // Underlying
         '0xd4fa2d31b7968e448877f69a96de69f5de8cd23e', // ERC4626 aave token
         '0x7204b7dbf9412567835633b6f00c3edc3a8d6330', // Morpho token

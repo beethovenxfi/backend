@@ -29,15 +29,7 @@ export const fetchOnChainPoolState = async (pools: PoolInput[], batchSize = 1024
     const multicaller = new Multicaller3Viem(pools[0].chain, abi, batchSize);
 
     pools.forEach(({ id, type, address }) => {
-        // filter certain pool types that don't have pausedState or recovery mode
-        if (type !== 'ELEMENT') {
-            multicaller.call(`${id}.pausedState`, address, 'getPausedState');
-        }
-        if (
-            type !== 'LIQUIDITY_BOOTSTRAPPING' && // exclude all LBP
-            type !== 'META_STABLE' && // exclude meta stable
-            type !== 'ELEMENT' // exclude element
-        ) {
+        if (type !== 'LIQUIDITY_BOOTSTRAPPING') {
             multicaller.call(`${id}.inRecoveryMode`, address, 'inRecoveryMode');
         }
     });

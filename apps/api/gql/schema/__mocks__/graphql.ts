@@ -18,18 +18,15 @@ import {
     GqlPoolBase,
     GqlPoolComposableStable,
     GqlPoolDynamicData,
-    GqlPoolElement,
     GqlPoolEvent,
     GqlPoolEventAmount,
     GqlPoolEventsFilter,
     GqlPoolFeaturedPool,
     GqlPoolFilter,
     GqlPoolFixedPriceLbp,
-    GqlPoolFx,
     GqlPoolGyro,
     GqlPoolLiquidityBootstrapping,
     GqlPoolLiquidityBootstrappingV3,
-    GqlPoolMetaStable,
     GqlPoolMinimal,
     GqlPoolMutationResult,
     GqlPoolQuantAmmWeighted,
@@ -37,15 +34,11 @@ import {
     GqlPoolSnapshot,
     GqlPoolStable,
     GqlPoolStaking,
-    GqlPoolStakingAura,
-    GqlPoolStakingFarmRewarder,
     GqlPoolStakingGauge,
     GqlPoolStakingGaugeReward,
-    GqlPoolStakingMasterChefFarm,
     GqlPoolStakingOtherGauge,
     GqlPoolStakingReliquaryFarm,
     GqlPoolStakingReliquaryFarmLevel,
-    GqlPoolStakingVebal,
     GqlPoolSwapEventCowAmm,
     GqlPoolSwapEventV3,
     GqlPoolTimePeriod,
@@ -78,12 +71,6 @@ import {
     GqlTokenPrice,
     GqlTokenPriceChartDataItem,
     GqlUserStakedBalance,
-    GqlVeBalBalance,
-    GqlVeBalLockSnapshot,
-    GqlVeBalUserData,
-    GqlVotingGauge,
-    GqlVotingGaugeToken,
-    GqlVotingPool,
     HookConfig,
     LbpMetadataInput,
     LbpPriceChartData,
@@ -162,8 +149,8 @@ export const aFeeTakingHookParams = (overrides?: Partial<FeeTakingHookParams>): 
 
 export const aGqlAggregatorPoolFilter = (overrides?: Partial<GqlAggregatorPoolFilter>): GqlAggregatorPoolFilter => {
     return {
-        chainIn: overrides && overrides.hasOwnProperty('chainIn') ? overrides.chainIn! : [GqlChain.ARBITRUM],
-        chainNotIn: overrides && overrides.hasOwnProperty('chainNotIn') ? overrides.chainNotIn! : [GqlChain.ARBITRUM],
+        chainIn: overrides && overrides.hasOwnProperty('chainIn') ? overrides.chainIn! : [GqlChain.SONIC],
+        chainNotIn: overrides && overrides.hasOwnProperty('chainNotIn') ? overrides.chainNotIn! : [GqlChain.SONIC],
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : aGqlPoolTimePeriod(),
         idIn: overrides && overrides.hasOwnProperty('idIn') ? overrides.idIn! : ['cognatus'],
         idNotIn: overrides && overrides.hasOwnProperty('idNotIn') ? overrides.idNotIn! : ['confido'],
@@ -188,7 +175,7 @@ export const aGqlAggregatorPoolFilter = (overrides?: Partial<GqlAggregatorPoolFi
 export const aGqlHistoricalTokenPrice = (overrides?: Partial<GqlHistoricalTokenPrice>): GqlHistoricalTokenPrice => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'statua',
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         prices: overrides && overrides.hasOwnProperty('prices') ? overrides.prices! : [aGqlHistoricalTokenPriceEntry()],
     };
 };
@@ -332,7 +319,6 @@ export const aGqlNestedPool = (overrides?: Partial<GqlNestedPool>): GqlNestedPoo
         nestedPercentage:
             overrides && overrides.hasOwnProperty('nestedPercentage') ? overrides.nestedPercentage! : 'utilis',
         nestedShares: overrides && overrides.hasOwnProperty('nestedShares') ? overrides.nestedShares! : 'cupio',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'cumque',
         pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'autem',
         poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'eius',
         swapFee: overrides && overrides.hasOwnProperty('swapFee') ? overrides.swapFee! : 'consequatur',
@@ -350,7 +336,7 @@ export const aGqlPoolAddRemoveEventV3 = (overrides?: Partial<GqlPoolAddRemoveEve
     return {
         blockNumber: overrides && overrides.hasOwnProperty('blockNumber') ? overrides.blockNumber! : 7419,
         blockTimestamp: overrides && overrides.hasOwnProperty('blockTimestamp') ? overrides.blockTimestamp! : 3691,
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '1c522128-0a83-4c14-bc33-fb2cde2ada36',
         logIndex: overrides && overrides.hasOwnProperty('logIndex') ? overrides.logIndex! : 2895,
         poolId: overrides && overrides.hasOwnProperty('poolId') ? overrides.poolId! : 'venia',
@@ -373,7 +359,7 @@ export const aGqlPoolAggregator = (overrides?: Partial<GqlPoolAggregator>): GqlP
         c: overrides && overrides.hasOwnProperty('c') ? overrides.c! : 'cena',
         centerednessMargin:
             overrides && overrides.hasOwnProperty('centerednessMargin') ? overrides.centerednessMargin! : 'carmen',
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 1115,
         currentFourthRootPriceRatio:
             overrides && overrides.hasOwnProperty('currentFourthRootPriceRatio')
@@ -453,8 +439,7 @@ export const aGqlPoolAprItem = (overrides?: Partial<GqlPoolAprItem>): GqlPoolApr
             overrides && overrides.hasOwnProperty('rewardTokenAddress') ? overrides.rewardTokenAddress! : 'video',
         rewardTokenSymbol:
             overrides && overrides.hasOwnProperty('rewardTokenSymbol') ? overrides.rewardTokenSymbol! : 'adduco',
-        title: overrides && overrides.hasOwnProperty('title') ? overrides.title! : 'pel',
-        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolAprItemType.AURA,
+        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolAprItemType.DYNAMIC_SWAP_FEE_24H,
     };
 };
 
@@ -465,7 +450,7 @@ export const aGqlPoolBase = (overrides?: Partial<GqlPoolBase>): GqlPoolBase => {
             overrides && overrides.hasOwnProperty('categories')
                 ? overrides.categories!
                 : [GqlPoolFilterCategory.BLACK_LISTED],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 480,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 7138,
         dynamicData:
@@ -483,7 +468,6 @@ export const aGqlPoolBase = (overrides?: Partial<GqlPoolBase>): GqlPoolBase => {
                 ? overrides.liquidityManagement!
                 : aLiquidityManagement(),
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'umbra',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'cimentarius',
         pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'suasoria',
         poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'ubi',
         poolTokens:
@@ -497,7 +481,6 @@ export const aGqlPoolBase = (overrides?: Partial<GqlPoolBase>): GqlPoolBase => {
         type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
         userBalance:
             overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 3019,
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 6596,
     };
 };
@@ -511,7 +494,7 @@ export const aGqlPoolComposableStable = (overrides?: Partial<GqlPoolComposableSt
             overrides && overrides.hasOwnProperty('categories')
                 ? overrides.categories!
                 : [GqlPoolFilterCategory.BLACK_LISTED],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 2374,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 4357,
         dynamicData:
@@ -529,7 +512,6 @@ export const aGqlPoolComposableStable = (overrides?: Partial<GqlPoolComposableSt
                 ? overrides.liquidityManagement!
                 : aLiquidityManagement(),
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'thesaurus',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'vigor',
         pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'aiunt',
         poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'enim',
         poolTokens:
@@ -542,7 +524,6 @@ export const aGqlPoolComposableStable = (overrides?: Partial<GqlPoolComposableSt
         type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
         userBalance:
             overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 2165,
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 4219,
     };
 };
@@ -555,12 +536,6 @@ export const aGqlPoolDynamicData = (overrides?: Partial<GqlPoolDynamicData>): Gq
             overrides && overrides.hasOwnProperty('aggregateYieldFee') ? overrides.aggregateYieldFee! : 'tertius',
         aprItems: overrides && overrides.hasOwnProperty('aprItems') ? overrides.aprItems! : [aGqlPoolAprItem()],
         fees24h: overrides && overrides.hasOwnProperty('fees24h') ? overrides.fees24h! : 'iusto',
-        fees24hAth: overrides && overrides.hasOwnProperty('fees24hAth') ? overrides.fees24hAth! : 'ara',
-        fees24hAthTimestamp:
-            overrides && overrides.hasOwnProperty('fees24hAthTimestamp') ? overrides.fees24hAthTimestamp! : 44,
-        fees24hAtl: overrides && overrides.hasOwnProperty('fees24hAtl') ? overrides.fees24hAtl! : 'cubo',
-        fees24hAtlTimestamp:
-            overrides && overrides.hasOwnProperty('fees24hAtlTimestamp') ? overrides.fees24hAtlTimestamp! : 4398,
         fees48h: overrides && overrides.hasOwnProperty('fees48h') ? overrides.fees48h! : 'tristis',
         holdersCount: overrides && overrides.hasOwnProperty('holdersCount') ? overrides.holdersCount! : 'eveniet',
         isInRecoveryMode:
@@ -585,44 +560,19 @@ export const aGqlPoolDynamicData = (overrides?: Partial<GqlPoolDynamicData>): Gq
             overrides && overrides.hasOwnProperty('protocolYieldCapture48h')
                 ? overrides.protocolYieldCapture48h!
                 : 'aegre',
-        sharePriceAth: overrides && overrides.hasOwnProperty('sharePriceAth') ? overrides.sharePriceAth! : 'substantia',
-        sharePriceAthTimestamp:
-            overrides && overrides.hasOwnProperty('sharePriceAthTimestamp') ? overrides.sharePriceAthTimestamp! : 9956,
-        sharePriceAtl: overrides && overrides.hasOwnProperty('sharePriceAtl') ? overrides.sharePriceAtl! : 'ipsa',
-        sharePriceAtlTimestamp:
-            overrides && overrides.hasOwnProperty('sharePriceAtlTimestamp') ? overrides.sharePriceAtlTimestamp! : 520,
         surplus24h: overrides && overrides.hasOwnProperty('surplus24h') ? overrides.surplus24h! : 'venia',
         surplus48h: overrides && overrides.hasOwnProperty('surplus48h') ? overrides.surplus48h! : 'usque',
         swapEnabled: overrides && overrides.hasOwnProperty('swapEnabled') ? overrides.swapEnabled! : true,
         swapFee: overrides && overrides.hasOwnProperty('swapFee') ? overrides.swapFee! : 'sponte',
-        swapsCount: overrides && overrides.hasOwnProperty('swapsCount') ? overrides.swapsCount! : 'decens',
         totalLiquidity:
             overrides && overrides.hasOwnProperty('totalLiquidity') ? overrides.totalLiquidity! : 'adimpleo',
         totalLiquidity24hAgo:
             overrides && overrides.hasOwnProperty('totalLiquidity24hAgo') ? overrides.totalLiquidity24hAgo! : 'denique',
-        totalLiquidityAth:
-            overrides && overrides.hasOwnProperty('totalLiquidityAth') ? overrides.totalLiquidityAth! : 'vaco',
-        totalLiquidityAthTimestamp:
-            overrides && overrides.hasOwnProperty('totalLiquidityAthTimestamp')
-                ? overrides.totalLiquidityAthTimestamp!
-                : 7314,
-        totalLiquidityAtl:
-            overrides && overrides.hasOwnProperty('totalLiquidityAtl') ? overrides.totalLiquidityAtl! : 'compello',
-        totalLiquidityAtlTimestamp:
-            overrides && overrides.hasOwnProperty('totalLiquidityAtlTimestamp')
-                ? overrides.totalLiquidityAtlTimestamp!
-                : 83,
         totalShares: overrides && overrides.hasOwnProperty('totalShares') ? overrides.totalShares! : 'abbas',
         totalShares24hAgo:
             overrides && overrides.hasOwnProperty('totalShares24hAgo') ? overrides.totalShares24hAgo! : 'adimpleo',
         totalSupply: overrides && overrides.hasOwnProperty('totalSupply') ? overrides.totalSupply! : 'tubineus',
         volume24h: overrides && overrides.hasOwnProperty('volume24h') ? overrides.volume24h! : 'thymbra',
-        volume24hAth: overrides && overrides.hasOwnProperty('volume24hAth') ? overrides.volume24hAth! : 'vaco',
-        volume24hAthTimestamp:
-            overrides && overrides.hasOwnProperty('volume24hAthTimestamp') ? overrides.volume24hAthTimestamp! : 2658,
-        volume24hAtl: overrides && overrides.hasOwnProperty('volume24hAtl') ? overrides.volume24hAtl! : 'debeo',
-        volume24hAtlTimestamp:
-            overrides && overrides.hasOwnProperty('volume24hAtlTimestamp') ? overrides.volume24hAtlTimestamp! : 4905,
         volume48h: overrides && overrides.hasOwnProperty('volume48h') ? overrides.volume48h! : 'perferendis',
         yieldCapture24h:
             overrides && overrides.hasOwnProperty('yieldCapture24h') ? overrides.yieldCapture24h! : 'similique',
@@ -631,59 +581,11 @@ export const aGqlPoolDynamicData = (overrides?: Partial<GqlPoolDynamicData>): Gq
     };
 };
 
-export const aGqlPoolElement = (overrides?: Partial<GqlPoolElement>): GqlPoolElement => {
-    return {
-        address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'tempora',
-        baseToken: overrides && overrides.hasOwnProperty('baseToken') ? overrides.baseToken! : 'ciminatio',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
-        createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 6548,
-        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 2732,
-        dynamicData:
-            overrides && overrides.hasOwnProperty('dynamicData') ? overrides.dynamicData! : aGqlPoolDynamicData(),
-        factory: overrides && overrides.hasOwnProperty('factory') ? overrides.factory! : 'officia',
-        hasAnyAllowedBuffer:
-            overrides && overrides.hasOwnProperty('hasAnyAllowedBuffer') ? overrides.hasAnyAllowedBuffer! : true,
-        hasErc4626: overrides && overrides.hasOwnProperty('hasErc4626') ? overrides.hasErc4626! : false,
-        hasNestedErc4626:
-            overrides && overrides.hasOwnProperty('hasNestedErc4626') ? overrides.hasNestedErc4626! : false,
-        hook: overrides && overrides.hasOwnProperty('hook') ? overrides.hook! : aGqlHook(),
-        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '25bf8967-dcb6-409e-8526-3372ec1b588b',
-        liquidityManagement:
-            overrides && overrides.hasOwnProperty('liquidityManagement')
-                ? overrides.liquidityManagement!
-                : aLiquidityManagement(),
-        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'caute',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'suscipio',
-        pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'viriliter',
-        poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'accusamus',
-        poolTokens:
-            overrides && overrides.hasOwnProperty('poolTokens') ? overrides.poolTokens! : [aGqlPoolTokenDetail()],
-        principalToken:
-            overrides && overrides.hasOwnProperty('principalToken') ? overrides.principalToken! : 'debilito',
-        protocolVersion: overrides && overrides.hasOwnProperty('protocolVersion') ? overrides.protocolVersion! : 6936,
-        staking: overrides && overrides.hasOwnProperty('staking') ? overrides.staking! : aGqlPoolStaking(),
-        swapFeeManager:
-            overrides && overrides.hasOwnProperty('swapFeeManager') ? overrides.swapFeeManager! : 'provident',
-        symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'inventore',
-        tags: overrides && overrides.hasOwnProperty('tags') ? overrides.tags! : ['denuo'],
-        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
-        unitSeconds: overrides && overrides.hasOwnProperty('unitSeconds') ? overrides.unitSeconds! : 'saepe',
-        userBalance:
-            overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 295,
-        version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 5160,
-    };
-};
-
 export const aGqlPoolEvent = (overrides?: Partial<GqlPoolEvent>): GqlPoolEvent => {
     return {
         blockNumber: overrides && overrides.hasOwnProperty('blockNumber') ? overrides.blockNumber! : 173,
         blockTimestamp: overrides && overrides.hasOwnProperty('blockTimestamp') ? overrides.blockTimestamp! : 2199,
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '0fbcd1b6-21f3-421e-954e-10737e9500df',
         logIndex: overrides && overrides.hasOwnProperty('logIndex') ? overrides.logIndex! : 6040,
         poolId: overrides && overrides.hasOwnProperty('poolId') ? overrides.poolId! : 'debilito',
@@ -706,7 +608,7 @@ export const aGqlPoolEventAmount = (overrides?: Partial<GqlPoolEventAmount>): Gq
 
 export const aGqlPoolEventsFilter = (overrides?: Partial<GqlPoolEventsFilter>): GqlPoolEventsFilter => {
     return {
-        chainIn: overrides && overrides.hasOwnProperty('chainIn') ? overrides.chainIn! : [GqlChain.ARBITRUM],
+        chainIn: overrides && overrides.hasOwnProperty('chainIn') ? overrides.chainIn! : [GqlChain.SONIC],
         poolId: overrides && overrides.hasOwnProperty('poolId') ? overrides.poolId! : 'censura',
         poolIdIn: overrides && overrides.hasOwnProperty('poolIdIn') ? overrides.poolIdIn! : ['caute'],
         type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolEventType.ADD,
@@ -729,20 +631,9 @@ export const aGqlPoolFeaturedPool = (overrides?: Partial<GqlPoolFeaturedPool>): 
 
 export const aGqlPoolFilter = (overrides?: Partial<GqlPoolFilter>): GqlPoolFilter => {
     return {
-        categoryIn:
-            overrides && overrides.hasOwnProperty('categoryIn')
-                ? overrides.categoryIn!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
-        categoryNotIn:
-            overrides && overrides.hasOwnProperty('categoryNotIn')
-                ? overrides.categoryNotIn!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
-        chainIn: overrides && overrides.hasOwnProperty('chainIn') ? overrides.chainIn! : [GqlChain.ARBITRUM],
-        chainNotIn: overrides && overrides.hasOwnProperty('chainNotIn') ? overrides.chainNotIn! : [GqlChain.ARBITRUM],
+        chainIn: overrides && overrides.hasOwnProperty('chainIn') ? overrides.chainIn! : [GqlChain.SONIC],
+        chainNotIn: overrides && overrides.hasOwnProperty('chainNotIn') ? overrides.chainNotIn! : [GqlChain.SONIC],
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : aGqlPoolTimePeriod(),
-        filterIn: overrides && overrides.hasOwnProperty('filterIn') ? overrides.filterIn! : ['velit'],
-        filterNotIn: overrides && overrides.hasOwnProperty('filterNotIn') ? overrides.filterNotIn! : ['solum'],
-        hasHook: overrides && overrides.hasOwnProperty('hasHook') ? overrides.hasHook! : true,
         idIn: overrides && overrides.hasOwnProperty('idIn') ? overrides.idIn! : ['cogito'],
         idNotIn: overrides && overrides.hasOwnProperty('idNotIn') ? overrides.idNotIn! : ['theatrum'],
         minTvl: overrides && overrides.hasOwnProperty('minTvl') ? overrides.minTvl! : 6.8,
@@ -772,7 +663,7 @@ export const aGqlPoolFixedPriceLbp = (overrides?: Partial<GqlPoolFixedPriceLbp>)
             overrides && overrides.hasOwnProperty('categories')
                 ? overrides.categories!
                 : [GqlPoolFilterCategory.BLACK_LISTED],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 9201,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 8695,
         description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'acies',
@@ -800,7 +691,6 @@ export const aGqlPoolFixedPriceLbp = (overrides?: Partial<GqlPoolFixedPriceLbp>)
                 ? overrides.liquidityManagement!
                 : aLiquidityManagement(),
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'ipsa',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'debitis',
         pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'contigo',
         poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'thorax',
         poolTokens:
@@ -825,59 +715,9 @@ export const aGqlPoolFixedPriceLbp = (overrides?: Partial<GqlPoolFixedPriceLbp>)
         type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
         userBalance:
             overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 6223,
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 8290,
         website: overrides && overrides.hasOwnProperty('website') ? overrides.website! : 'delego',
         x: overrides && overrides.hasOwnProperty('x') ? overrides.x! : 'numquam',
-    };
-};
-
-export const aGqlPoolFx = (overrides?: Partial<GqlPoolFx>): GqlPoolFx => {
-    return {
-        address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'tepidus',
-        alpha: overrides && overrides.hasOwnProperty('alpha') ? overrides.alpha! : 'triduana',
-        beta: overrides && overrides.hasOwnProperty('beta') ? overrides.beta! : 'constans',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
-        createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 3699,
-        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 7274,
-        delta: overrides && overrides.hasOwnProperty('delta') ? overrides.delta! : 'aestas',
-        dynamicData:
-            overrides && overrides.hasOwnProperty('dynamicData') ? overrides.dynamicData! : aGqlPoolDynamicData(),
-        epsilon: overrides && overrides.hasOwnProperty('epsilon') ? overrides.epsilon! : 'demonstro',
-        factory: overrides && overrides.hasOwnProperty('factory') ? overrides.factory! : 'tot',
-        hasAnyAllowedBuffer:
-            overrides && overrides.hasOwnProperty('hasAnyAllowedBuffer') ? overrides.hasAnyAllowedBuffer! : false,
-        hasErc4626: overrides && overrides.hasOwnProperty('hasErc4626') ? overrides.hasErc4626! : true,
-        hasNestedErc4626:
-            overrides && overrides.hasOwnProperty('hasNestedErc4626') ? overrides.hasNestedErc4626! : false,
-        hook: overrides && overrides.hasOwnProperty('hook') ? overrides.hook! : aGqlHook(),
-        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 'dba0f4cd-ab4f-4413-9a73-ae82b967ea24',
-        lambda: overrides && overrides.hasOwnProperty('lambda') ? overrides.lambda! : 'provident',
-        liquidityManagement:
-            overrides && overrides.hasOwnProperty('liquidityManagement')
-                ? overrides.liquidityManagement!
-                : aLiquidityManagement(),
-        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'truculenter',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'umbra',
-        pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'adhuc',
-        poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'vacuus',
-        poolTokens:
-            overrides && overrides.hasOwnProperty('poolTokens') ? overrides.poolTokens! : [aGqlPoolTokenDetail()],
-        protocolVersion: overrides && overrides.hasOwnProperty('protocolVersion') ? overrides.protocolVersion! : 6747,
-        staking: overrides && overrides.hasOwnProperty('staking') ? overrides.staking! : aGqlPoolStaking(),
-        swapFeeManager:
-            overrides && overrides.hasOwnProperty('swapFeeManager') ? overrides.swapFeeManager! : 'attonbitus',
-        symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'cubicularis',
-        tags: overrides && overrides.hasOwnProperty('tags') ? overrides.tags! : ['vilicus'],
-        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
-        userBalance:
-            overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 1518,
-        version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 9766,
     };
 };
 
@@ -891,7 +731,7 @@ export const aGqlPoolGyro = (overrides?: Partial<GqlPoolGyro>): GqlPoolGyro => {
             overrides && overrides.hasOwnProperty('categories')
                 ? overrides.categories!
                 : [GqlPoolFilterCategory.BLACK_LISTED],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 2116,
         dSq: overrides && overrides.hasOwnProperty('dSq') ? overrides.dSq! : 'tolero',
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 4118,
@@ -911,7 +751,6 @@ export const aGqlPoolGyro = (overrides?: Partial<GqlPoolGyro>): GqlPoolGyro => {
                 ? overrides.liquidityManagement!
                 : aLiquidityManagement(),
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'clibanus',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'itaque',
         pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'corpus',
         poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'antepono',
         poolTokens:
@@ -934,7 +773,6 @@ export const aGqlPoolGyro = (overrides?: Partial<GqlPoolGyro>): GqlPoolGyro => {
         userBalance:
             overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
         v: overrides && overrides.hasOwnProperty('v') ? overrides.v! : 'aperio',
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 8610,
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 9363,
         w: overrides && overrides.hasOwnProperty('w') ? overrides.w! : 'praesentium',
         z: overrides && overrides.hasOwnProperty('z') ? overrides.z! : 'enim',
@@ -950,7 +788,7 @@ export const aGqlPoolLiquidityBootstrapping = (
             overrides && overrides.hasOwnProperty('categories')
                 ? overrides.categories!
                 : [GqlPoolFilterCategory.BLACK_LISTED],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 2673,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 4836,
         dynamicData:
@@ -968,7 +806,6 @@ export const aGqlPoolLiquidityBootstrapping = (
                 ? overrides.liquidityManagement!
                 : aLiquidityManagement(),
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'quas',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'ago',
         pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'cubicularis',
         poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'celo',
         poolTokens:
@@ -981,7 +818,6 @@ export const aGqlPoolLiquidityBootstrapping = (
         type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
         userBalance:
             overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 8478,
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 782,
     };
 };
@@ -995,7 +831,7 @@ export const aGqlPoolLiquidityBootstrappingV3 = (
             overrides && overrides.hasOwnProperty('categories')
                 ? overrides.categories!
                 : [GqlPoolFilterCategory.BLACK_LISTED],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 4357,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 9639,
         description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'aliquam',
@@ -1024,7 +860,6 @@ export const aGqlPoolLiquidityBootstrappingV3 = (
                 ? overrides.liquidityManagement!
                 : aLiquidityManagement(),
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'corroboro',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'tergeo',
         pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'sordeo',
         poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'velociter',
         poolTokens:
@@ -1059,54 +894,9 @@ export const aGqlPoolLiquidityBootstrappingV3 = (
         type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
         userBalance:
             overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 4833,
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 9337,
         website: overrides && overrides.hasOwnProperty('website') ? overrides.website! : 'terror',
         x: overrides && overrides.hasOwnProperty('x') ? overrides.x! : 'sint',
-    };
-};
-
-export const aGqlPoolMetaStable = (overrides?: Partial<GqlPoolMetaStable>): GqlPoolMetaStable => {
-    return {
-        address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'acies',
-        amp: overrides && overrides.hasOwnProperty('amp') ? overrides.amp! : 'casso',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
-        createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 23,
-        decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 4942,
-        dynamicData:
-            overrides && overrides.hasOwnProperty('dynamicData') ? overrides.dynamicData! : aGqlPoolDynamicData(),
-        factory: overrides && overrides.hasOwnProperty('factory') ? overrides.factory! : 'adinventitias',
-        hasAnyAllowedBuffer:
-            overrides && overrides.hasOwnProperty('hasAnyAllowedBuffer') ? overrides.hasAnyAllowedBuffer! : true,
-        hasErc4626: overrides && overrides.hasOwnProperty('hasErc4626') ? overrides.hasErc4626! : false,
-        hasNestedErc4626:
-            overrides && overrides.hasOwnProperty('hasNestedErc4626') ? overrides.hasNestedErc4626! : false,
-        hook: overrides && overrides.hasOwnProperty('hook') ? overrides.hook! : aGqlHook(),
-        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 'be61061e-4c34-471f-b955-44e28a92d072',
-        liquidityManagement:
-            overrides && overrides.hasOwnProperty('liquidityManagement')
-                ? overrides.liquidityManagement!
-                : aLiquidityManagement(),
-        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'commodo',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'certe',
-        pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'concido',
-        poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'statua',
-        poolTokens:
-            overrides && overrides.hasOwnProperty('poolTokens') ? overrides.poolTokens! : [aGqlPoolTokenDetail()],
-        protocolVersion: overrides && overrides.hasOwnProperty('protocolVersion') ? overrides.protocolVersion! : 9959,
-        staking: overrides && overrides.hasOwnProperty('staking') ? overrides.staking! : aGqlPoolStaking(),
-        swapFeeManager: overrides && overrides.hasOwnProperty('swapFeeManager') ? overrides.swapFeeManager! : 'arto',
-        symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'cupio',
-        tags: overrides && overrides.hasOwnProperty('tags') ? overrides.tags! : ['pauci'],
-        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
-        userBalance:
-            overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 8703,
-        version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 3692,
     };
 };
 
@@ -1117,7 +907,7 @@ export const aGqlPoolMinimal = (overrides?: Partial<GqlPoolMinimal>): GqlPoolMin
             overrides && overrides.hasOwnProperty('categories')
                 ? overrides.categories!
                 : [GqlPoolFilterCategory.BLACK_LISTED],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 8328,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 7389,
         dynamicData:
@@ -1140,7 +930,6 @@ export const aGqlPoolMinimal = (overrides?: Partial<GqlPoolMinimal>): GqlPoolMin
                 ? overrides.liquidityManagement!
                 : aLiquidityManagement(),
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'accendo',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'amicitia',
         pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'suffoco',
         poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'summisse',
         poolTokens:
@@ -1153,14 +942,13 @@ export const aGqlPoolMinimal = (overrides?: Partial<GqlPoolMinimal>): GqlPoolMin
         type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
         userBalance:
             overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 7257,
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 6568,
     };
 };
 
 export const aGqlPoolMutationResult = (overrides?: Partial<GqlPoolMutationResult>): GqlPoolMutationResult => {
     return {
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         error: overrides && overrides.hasOwnProperty('error') ? overrides.error! : 'alveus',
         success: overrides && overrides.hasOwnProperty('success') ? overrides.success! : true,
         type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : 'animadverto',
@@ -1174,7 +962,7 @@ export const aGqlPoolQuantAmmWeighted = (overrides?: Partial<GqlPoolQuantAmmWeig
             overrides && overrides.hasOwnProperty('categories')
                 ? overrides.categories!
                 : [GqlPoolFilterCategory.BLACK_LISTED],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 1409,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 5290,
         dynamicData:
@@ -1192,7 +980,6 @@ export const aGqlPoolQuantAmmWeighted = (overrides?: Partial<GqlPoolQuantAmmWeig
                 ? overrides.liquidityManagement!
                 : aLiquidityManagement(),
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'verbera',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'certe',
         pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'viduo',
         poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'vinum',
         poolTokens:
@@ -1209,7 +996,6 @@ export const aGqlPoolQuantAmmWeighted = (overrides?: Partial<GqlPoolQuantAmmWeig
         type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
         userBalance:
             overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 8712,
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 2389,
         weightSnapshots:
             overrides && overrides.hasOwnProperty('weightSnapshots')
@@ -1227,7 +1013,7 @@ export const aGqlPoolReClamm = (overrides?: Partial<GqlPoolReClamm>): GqlPoolReC
                 : [GqlPoolFilterCategory.BLACK_LISTED],
         centerednessMargin:
             overrides && overrides.hasOwnProperty('centerednessMargin') ? overrides.centerednessMargin! : 'brevis',
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 3260,
         currentFourthRootPriceRatio:
             overrides && overrides.hasOwnProperty('currentFourthRootPriceRatio')
@@ -1258,7 +1044,6 @@ export const aGqlPoolReClamm = (overrides?: Partial<GqlPoolReClamm>): GqlPoolReC
                 ? overrides.liquidityManagement!
                 : aLiquidityManagement(),
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'veritas',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'ipsa',
         pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'trado',
         poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'cunabula',
         poolTokens:
@@ -1283,7 +1068,6 @@ export const aGqlPoolReClamm = (overrides?: Partial<GqlPoolReClamm>): GqlPoolReC
         type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
         userBalance:
             overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 2663,
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 1366,
     };
 };
@@ -1291,9 +1075,8 @@ export const aGqlPoolReClamm = (overrides?: Partial<GqlPoolReClamm>): GqlPoolReC
 export const aGqlPoolSnapshot = (overrides?: Partial<GqlPoolSnapshot>): GqlPoolSnapshot => {
     return {
         amounts: overrides && overrides.hasOwnProperty('amounts') ? overrides.amounts! : ['cunae'],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         fees24h: overrides && overrides.hasOwnProperty('fees24h') ? overrides.fees24h! : 'speculum',
-        holdersCount: overrides && overrides.hasOwnProperty('holdersCount') ? overrides.holdersCount! : 'compello',
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '8cc4c0f8-67ae-4d67-b35f-6b673f0af3a1',
         poolId: overrides && overrides.hasOwnProperty('poolId') ? overrides.poolId! : 'adiuvo',
         sharePrice: overrides && overrides.hasOwnProperty('sharePrice') ? overrides.sharePrice! : 'totus',
@@ -1303,10 +1086,6 @@ export const aGqlPoolSnapshot = (overrides?: Partial<GqlPoolSnapshot>): GqlPoolS
         totalLiquidity:
             overrides && overrides.hasOwnProperty('totalLiquidity') ? overrides.totalLiquidity! : 'synagoga',
         totalShares: overrides && overrides.hasOwnProperty('totalShares') ? overrides.totalShares! : 'angelus',
-        totalSurplus: overrides && overrides.hasOwnProperty('totalSurplus') ? overrides.totalSurplus! : 'nisi',
-        totalSwapFee: overrides && overrides.hasOwnProperty('totalSwapFee') ? overrides.totalSwapFee! : 'theca',
-        totalSwapVolume:
-            overrides && overrides.hasOwnProperty('totalSwapVolume') ? overrides.totalSwapVolume! : 'usque',
         volume24h: overrides && overrides.hasOwnProperty('volume24h') ? overrides.volume24h! : 'defaeco',
     };
 };
@@ -1320,7 +1099,7 @@ export const aGqlPoolStable = (overrides?: Partial<GqlPoolStable>): GqlPoolStabl
             overrides && overrides.hasOwnProperty('categories')
                 ? overrides.categories!
                 : [GqlPoolFilterCategory.BLACK_LISTED],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 9737,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 6134,
         dynamicData:
@@ -1338,7 +1117,6 @@ export const aGqlPoolStable = (overrides?: Partial<GqlPoolStable>): GqlPoolStabl
                 ? overrides.liquidityManagement!
                 : aLiquidityManagement(),
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'consectetur',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'amissio',
         pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'tyrannus',
         poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'summisse',
         poolTokens:
@@ -1351,7 +1129,6 @@ export const aGqlPoolStable = (overrides?: Partial<GqlPoolStable>): GqlPoolStabl
         type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
         userBalance:
             overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 5902,
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 3295,
     };
 };
@@ -1359,37 +1136,12 @@ export const aGqlPoolStable = (overrides?: Partial<GqlPoolStable>): GqlPoolStabl
 export const aGqlPoolStaking = (overrides?: Partial<GqlPoolStaking>): GqlPoolStaking => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'tricesimus',
-        aura: overrides && overrides.hasOwnProperty('aura') ? overrides.aura! : aGqlPoolStakingAura(),
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
-        farm: overrides && overrides.hasOwnProperty('farm') ? overrides.farm! : aGqlPoolStakingMasterChefFarm(),
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         gauge: overrides && overrides.hasOwnProperty('gauge') ? overrides.gauge! : aGqlPoolStakingGauge(),
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '78deac1b-3fa9-4e03-abb0-e09ed3e79cbf',
         reliquary:
             overrides && overrides.hasOwnProperty('reliquary') ? overrides.reliquary! : aGqlPoolStakingReliquaryFarm(),
-        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolStakingType.AURA,
-        vebal: overrides && overrides.hasOwnProperty('vebal') ? overrides.vebal! : aGqlPoolStakingVebal(),
-    };
-};
-
-export const aGqlPoolStakingAura = (overrides?: Partial<GqlPoolStakingAura>): GqlPoolStakingAura => {
-    return {
-        apr: overrides && overrides.hasOwnProperty('apr') ? overrides.apr! : 6.1,
-        auraPoolAddress: overrides && overrides.hasOwnProperty('auraPoolAddress') ? overrides.auraPoolAddress! : 'cubo',
-        auraPoolId: overrides && overrides.hasOwnProperty('auraPoolId') ? overrides.auraPoolId! : 'fugiat',
-        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '715d693f-5d92-4dca-855d-7ecb3472f605',
-        isShutdown: overrides && overrides.hasOwnProperty('isShutdown') ? overrides.isShutdown! : false,
-    };
-};
-
-export const aGqlPoolStakingFarmRewarder = (
-    overrides?: Partial<GqlPoolStakingFarmRewarder>,
-): GqlPoolStakingFarmRewarder => {
-    return {
-        address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'callide',
-        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '4454b8c0-f7fd-4994-bb3f-50e7bd53ea77',
-        rewardPerSecond:
-            overrides && overrides.hasOwnProperty('rewardPerSecond') ? overrides.rewardPerSecond! : 'condico',
-        tokenAddress: overrides && overrides.hasOwnProperty('tokenAddress') ? overrides.tokenAddress! : 'reprehenderit',
+        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolStakingType.GAUGE,
     };
 };
 
@@ -1415,17 +1167,6 @@ export const aGqlPoolStakingGaugeReward = (
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '623a9753-4f35-4c7b-a84b-59d9196e026c',
         rewardPerSecond: overrides && overrides.hasOwnProperty('rewardPerSecond') ? overrides.rewardPerSecond! : 'acer',
         tokenAddress: overrides && overrides.hasOwnProperty('tokenAddress') ? overrides.tokenAddress! : 'cribro',
-    };
-};
-
-export const aGqlPoolStakingMasterChefFarm = (
-    overrides?: Partial<GqlPoolStakingMasterChefFarm>,
-): GqlPoolStakingMasterChefFarm => {
-    return {
-        beetsPerBlock: overrides && overrides.hasOwnProperty('beetsPerBlock') ? overrides.beetsPerBlock! : 'decerno',
-        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '40cf33a0-8ddb-431b-adcc-5ae3f770873c',
-        rewarders:
-            overrides && overrides.hasOwnProperty('rewarders') ? overrides.rewarders! : [aGqlPoolStakingFarmRewarder()],
     };
 };
 
@@ -1468,18 +1209,11 @@ export const aGqlPoolStakingReliquaryFarmLevel = (
     };
 };
 
-export const aGqlPoolStakingVebal = (overrides?: Partial<GqlPoolStakingVebal>): GqlPoolStakingVebal => {
-    return {
-        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '78272fbc-f405-40e1-a234-cfe27994df0f',
-        vebalAddress: overrides && overrides.hasOwnProperty('vebalAddress') ? overrides.vebalAddress! : 'aperiam',
-    };
-};
-
 export const aGqlPoolSwapEventCowAmm = (overrides?: Partial<GqlPoolSwapEventCowAmm>): GqlPoolSwapEventCowAmm => {
     return {
         blockNumber: overrides && overrides.hasOwnProperty('blockNumber') ? overrides.blockNumber! : 2032,
         blockTimestamp: overrides && overrides.hasOwnProperty('blockTimestamp') ? overrides.blockTimestamp! : 9782,
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         fee: overrides && overrides.hasOwnProperty('fee') ? overrides.fee! : aGqlPoolEventAmount(),
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '19819e50-4e81-4033-9554-107d50e103ac',
         logIndex: overrides && overrides.hasOwnProperty('logIndex') ? overrides.logIndex! : 6105,
@@ -1500,7 +1234,7 @@ export const aGqlPoolSwapEventV3 = (overrides?: Partial<GqlPoolSwapEventV3>): Gq
     return {
         blockNumber: overrides && overrides.hasOwnProperty('blockNumber') ? overrides.blockNumber! : 9222,
         blockTimestamp: overrides && overrides.hasOwnProperty('blockTimestamp') ? overrides.blockTimestamp! : 5370,
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         fee: overrides && overrides.hasOwnProperty('fee') ? overrides.fee! : aGqlPoolEventAmount(),
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '22c54e65-0361-439f-b6fe-451c3ee62aca',
         logIndex: overrides && overrides.hasOwnProperty('logIndex') ? overrides.logIndex! : 2586,
@@ -1530,7 +1264,7 @@ export const aGqlPoolTokenDetail = (overrides?: Partial<GqlPoolTokenDetail>): Gq
         balanceUSD: overrides && overrides.hasOwnProperty('balanceUSD') ? overrides.balanceUSD! : 'vilicus',
         canUseBufferForSwaps:
             overrides && overrides.hasOwnProperty('canUseBufferForSwaps') ? overrides.canUseBufferForSwaps! : true,
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         chainId: overrides && overrides.hasOwnProperty('chainId') ? overrides.chainId! : 9332,
         coingeckoId: overrides && overrides.hasOwnProperty('coingeckoId') ? overrides.coingeckoId! : 'audeo',
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 4979,
@@ -1542,7 +1276,6 @@ export const aGqlPoolTokenDetail = (overrides?: Partial<GqlPoolTokenDetail>): Gq
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 'e40423b1-03be-4c55-bc71-724120b91514',
         index: overrides && overrides.hasOwnProperty('index') ? overrides.index! : 7065,
         isAllowed: overrides && overrides.hasOwnProperty('isAllowed') ? overrides.isAllowed! : true,
-        isBufferAllowed: overrides && overrides.hasOwnProperty('isBufferAllowed') ? overrides.isBufferAllowed! : false,
         isErc4626: overrides && overrides.hasOwnProperty('isErc4626') ? overrides.isErc4626! : false,
         isExemptFromProtocolYieldFee:
             overrides && overrides.hasOwnProperty('isExemptFromProtocolYieldFee')
@@ -1560,10 +1293,8 @@ export const aGqlPoolTokenDetail = (overrides?: Partial<GqlPoolTokenDetail>): Gq
             overrides && overrides.hasOwnProperty('priceRateProviderData')
                 ? overrides.priceRateProviderData!
                 : aGqlPriceRateProviderData(),
-        priority: overrides && overrides.hasOwnProperty('priority') ? overrides.priority! : 3622,
         scalingFactor: overrides && overrides.hasOwnProperty('scalingFactor') ? overrides.scalingFactor! : 'apto',
         symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'adsuesco',
-        tradable: overrides && overrides.hasOwnProperty('tradable') ? overrides.tradable! : false,
         underlyingToken:
             overrides && overrides.hasOwnProperty('underlyingToken') ? overrides.underlyingToken! : aGqlToken(),
         useUnderlyingForAddRemove:
@@ -1596,7 +1327,7 @@ export const aGqlPoolWeighted = (overrides?: Partial<GqlPoolWeighted>): GqlPoolW
             overrides && overrides.hasOwnProperty('categories')
                 ? overrides.categories!
                 : [GqlPoolFilterCategory.BLACK_LISTED],
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 9021,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 1563,
         dynamicData:
@@ -1614,7 +1345,6 @@ export const aGqlPoolWeighted = (overrides?: Partial<GqlPoolWeighted>): GqlPoolW
                 ? overrides.liquidityManagement!
                 : aLiquidityManagement(),
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'ab',
-        owner: overrides && overrides.hasOwnProperty('owner') ? overrides.owner! : 'tego',
         pauseManager: overrides && overrides.hasOwnProperty('pauseManager') ? overrides.pauseManager! : 'surgo',
         poolCreator: overrides && overrides.hasOwnProperty('poolCreator') ? overrides.poolCreator! : 'avaritia',
         poolTokens:
@@ -1627,7 +1357,6 @@ export const aGqlPoolWeighted = (overrides?: Partial<GqlPoolWeighted>): GqlPoolW
         type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
         userBalance:
             overrides && overrides.hasOwnProperty('userBalance') ? overrides.userBalance! : aGqlPoolUserBalance(),
-        vaultVersion: overrides && overrides.hasOwnProperty('vaultVersion') ? overrides.vaultVersion! : 5629,
         version: overrides && overrides.hasOwnProperty('version') ? overrides.version! : 3149,
     };
 };
@@ -1892,7 +1621,7 @@ export const aGqlSwapCallDataInput = (overrides?: Partial<GqlSwapCallDataInput>)
 export const aGqlToken = (overrides?: Partial<GqlToken>): GqlToken => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'vinculum',
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         chainId: overrides && overrides.hasOwnProperty('chainId') ? overrides.chainId! : 8759,
         coingeckoId: overrides && overrides.hasOwnProperty('coingeckoId') ? overrides.coingeckoId! : 'clibanus',
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 5655,
@@ -1972,7 +1701,7 @@ export const aGqlTokenFilter = (overrides?: Partial<GqlTokenFilter>): GqlTokenFi
 
 export const aGqlTokenMutationResult = (overrides?: Partial<GqlTokenMutationResult>): GqlTokenMutationResult => {
     return {
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         error: overrides && overrides.hasOwnProperty('error') ? overrides.error! : 'eos',
         success: overrides && overrides.hasOwnProperty('success') ? overrides.success! : false,
     };
@@ -1981,7 +1710,7 @@ export const aGqlTokenMutationResult = (overrides?: Partial<GqlTokenMutationResu
 export const aGqlTokenPrice = (overrides?: Partial<GqlTokenPrice>): GqlTokenPrice => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'surculus',
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         price: overrides && overrides.hasOwnProperty('price') ? overrides.price! : 9.5,
         updatedAt: overrides && overrides.hasOwnProperty('updatedAt') ? overrides.updatedAt! : 1169,
         updatedBy: overrides && overrides.hasOwnProperty('updatedBy') ? overrides.updatedBy! : 'dignissimos',
@@ -2004,81 +1733,7 @@ export const aGqlUserStakedBalance = (overrides?: Partial<GqlUserStakedBalance>)
         balanceUsd: overrides && overrides.hasOwnProperty('balanceUsd') ? overrides.balanceUsd! : 2.3,
         stakingId: overrides && overrides.hasOwnProperty('stakingId') ? overrides.stakingId! : 'nostrum',
         stakingType:
-            overrides && overrides.hasOwnProperty('stakingType') ? overrides.stakingType! : GqlPoolStakingType.AURA,
-    };
-};
-
-export const aGqlVeBalBalance = (overrides?: Partial<GqlVeBalBalance>): GqlVeBalBalance => {
-    return {
-        balance: overrides && overrides.hasOwnProperty('balance') ? overrides.balance! : 'voco',
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
-        locked: overrides && overrides.hasOwnProperty('locked') ? overrides.locked! : 'coruscus',
-        lockedUsd: overrides && overrides.hasOwnProperty('lockedUsd') ? overrides.lockedUsd! : 'calamitas',
-    };
-};
-
-export const aGqlVeBalLockSnapshot = (overrides?: Partial<GqlVeBalLockSnapshot>): GqlVeBalLockSnapshot => {
-    return {
-        balance: overrides && overrides.hasOwnProperty('balance') ? overrides.balance! : 'spiculum',
-        bias: overrides && overrides.hasOwnProperty('bias') ? overrides.bias! : 'cohaero',
-        slope: overrides && overrides.hasOwnProperty('slope') ? overrides.slope! : 'talus',
-        timestamp: overrides && overrides.hasOwnProperty('timestamp') ? overrides.timestamp! : 3964,
-    };
-};
-
-export const aGqlVeBalUserData = (overrides?: Partial<GqlVeBalUserData>): GqlVeBalUserData => {
-    return {
-        balance: overrides && overrides.hasOwnProperty('balance') ? overrides.balance! : 'coadunatio',
-        lockSnapshots:
-            overrides && overrides.hasOwnProperty('lockSnapshots')
-                ? overrides.lockSnapshots!
-                : [aGqlVeBalLockSnapshot()],
-        locked: overrides && overrides.hasOwnProperty('locked') ? overrides.locked! : 'crebro',
-        lockedUsd: overrides && overrides.hasOwnProperty('lockedUsd') ? overrides.lockedUsd! : 'decimus',
-        rank: overrides && overrides.hasOwnProperty('rank') ? overrides.rank! : 7664,
-    };
-};
-
-export const aGqlVotingGauge = (overrides?: Partial<GqlVotingGauge>): GqlVotingGauge => {
-    return {
-        addedTimestamp: overrides && overrides.hasOwnProperty('addedTimestamp') ? overrides.addedTimestamp! : 2496,
-        address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'causa',
-        childGaugeAddress:
-            overrides && overrides.hasOwnProperty('childGaugeAddress') ? overrides.childGaugeAddress! : 'canto',
-        isKilled: overrides && overrides.hasOwnProperty('isKilled') ? overrides.isKilled! : true,
-        relativeWeight:
-            overrides && overrides.hasOwnProperty('relativeWeight') ? overrides.relativeWeight! : 'venustas',
-        relativeWeightCap:
-            overrides && overrides.hasOwnProperty('relativeWeightCap') ? overrides.relativeWeightCap! : 'atque',
-    };
-};
-
-export const aGqlVotingGaugeToken = (overrides?: Partial<GqlVotingGaugeToken>): GqlVotingGaugeToken => {
-    return {
-        address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'ustilo',
-        logoURI: overrides && overrides.hasOwnProperty('logoURI') ? overrides.logoURI! : 'benevolentia',
-        symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'quis',
-        underlyingTokenAddress:
-            overrides && overrides.hasOwnProperty('underlyingTokenAddress')
-                ? overrides.underlyingTokenAddress!
-                : 'turba',
-        weight: overrides && overrides.hasOwnProperty('weight') ? overrides.weight! : 'synagoga',
-    };
-};
-
-export const aGqlVotingPool = (overrides?: Partial<GqlVotingPool>): GqlVotingPool => {
-    return {
-        address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'aliqua',
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
-        gauge: overrides && overrides.hasOwnProperty('gauge') ? overrides.gauge! : aGqlVotingGauge(),
-        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '5596acef-a1b2-436b-adfe-456f1d9e084c',
-        poolTokens:
-            overrides && overrides.hasOwnProperty('poolTokens') ? overrides.poolTokens! : [aGqlPoolTokenDetail()],
-        protocolVersion: overrides && overrides.hasOwnProperty('protocolVersion') ? overrides.protocolVersion! : 253,
-        symbol: overrides && overrides.hasOwnProperty('symbol') ? overrides.symbol! : 'victoria',
-        tags: overrides && overrides.hasOwnProperty('tags') ? overrides.tags! : ['veritatis'],
-        tokens: overrides && overrides.hasOwnProperty('tokens') ? overrides.tokens! : [aGqlVotingGaugeToken()],
-        type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolType.COMPOSABLE_STABLE,
+            overrides && overrides.hasOwnProperty('stakingType') ? overrides.stakingType! : GqlPoolStakingType.GAUGE,
     };
 };
 
@@ -2160,7 +1815,7 @@ export const aLbpPriceChartData = (overrides?: Partial<LbpPriceChartData>): LbpP
 export const aLbPoolInput = (overrides?: Partial<LbPoolInput>): LbPoolInput => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'sursum',
-        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.ARBITRUM,
+        chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
     };
 };
 
@@ -2240,10 +1895,6 @@ export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
             overrides && overrides.hasOwnProperty('poolSyncAllPoolsFromSubgraph')
                 ? overrides.poolSyncAllPoolsFromSubgraph!
                 : ['quos'],
-        poolSyncFxQuoteTokens:
-            overrides && overrides.hasOwnProperty('poolSyncFxQuoteTokens')
-                ? overrides.poolSyncFxQuoteTokens!
-                : [aGqlPoolMutationResult()],
         poolUpdateLiquidityValuesForAllPools:
             overrides && overrides.hasOwnProperty('poolUpdateLiquidityValuesForAllPools')
                 ? overrides.poolUpdateLiquidityValuesForAllPools!
@@ -2288,14 +1939,6 @@ export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
             overrides && overrides.hasOwnProperty('userSyncChangedWalletBalancesForAllPools')
                 ? overrides.userSyncChangedWalletBalancesForAllPools!
                 : 'apud',
-        veBalSyncAllUserBalances:
-            overrides && overrides.hasOwnProperty('veBalSyncAllUserBalances')
-                ? overrides.veBalSyncAllUserBalances!
-                : 'vestrum',
-        veBalSyncTotalSupply:
-            overrides && overrides.hasOwnProperty('veBalSyncTotalSupply')
-                ? overrides.veBalSyncTotalSupply!
-                : 'vehemens',
     };
 };
 
@@ -2428,22 +2071,6 @@ export const aQuery = (overrides?: Partial<Query>): Query => {
             overrides && overrides.hasOwnProperty('tokenGetTokensDynamicData')
                 ? overrides.tokenGetTokensDynamicData!
                 : [aGqlTokenDynamicData()],
-        veBalGetTotalSupply:
-            overrides && overrides.hasOwnProperty('veBalGetTotalSupply') ? overrides.veBalGetTotalSupply! : 'quis',
-        veBalGetUser:
-            overrides && overrides.hasOwnProperty('veBalGetUser') ? overrides.veBalGetUser! : aGqlVeBalUserData(),
-        veBalGetUserBalance:
-            overrides && overrides.hasOwnProperty('veBalGetUserBalance')
-                ? overrides.veBalGetUserBalance!
-                : 'administratio',
-        veBalGetUserBalances:
-            overrides && overrides.hasOwnProperty('veBalGetUserBalances')
-                ? overrides.veBalGetUserBalances!
-                : [aGqlVeBalBalance()],
-        veBalGetVotingList:
-            overrides && overrides.hasOwnProperty('veBalGetVotingList')
-                ? overrides.veBalGetVotingList!
-                : [aGqlVotingPool()],
     };
 };
 

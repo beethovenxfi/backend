@@ -121,14 +121,6 @@ const stableCalls = ({ id, address, tokens }: PoolInput, multicaller: IMulticall
     });
 };
 
-const metaStableCalls = ({ id, address, tokens }: PoolInput, multicaller: IMulticaller) => {
-    multicaller.call(`${id}.amp`, address, 'getAmplificationParameter');
-
-    tokens.forEach(({ address: tokenAddress }, i) => {
-        multicaller.call(`${id}.metaPriceRateCache[${i}]`, address, 'getPriceRateCache', [tokenAddress]);
-    });
-};
-
 const gyroECalls = ({ id, address }: PoolInput, multicaller: IMulticaller) => {
     multicaller.call(`${id}.tokenRates`, address, 'getTokenRates');
 };
@@ -139,14 +131,10 @@ const addPoolTypeSpecificCallsToMulticaller = (type: PoolInput['type'], version 
         case 'WEIGHTED':
             return weightedCalls;
         case 'LIQUIDITY_BOOTSTRAPPING':
-        case 'INVESTMENT':
             return lbpAndInvestmentCalls;
         case 'STABLE':
-        case 'PHANTOM_STABLE':
         case 'COMPOSABLE_STABLE':
             return stableCalls;
-        case 'META_STABLE':
-            return metaStableCalls;
         case 'GYRO':
         case 'GYROE':
             if (version === 2) {

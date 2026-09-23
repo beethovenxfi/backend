@@ -1,7 +1,5 @@
 import {
     SnapshotsController,
-    CowAmmController,
-    FXPoolsController,
     PoolController,
     EventController,
     StakingController,
@@ -10,7 +8,6 @@ import {
     TokenYieldsController,
 } from '../modules/controllers';
 import { chainIdToChain } from '../config/chain-id-to-chain';
-import { VeBalVotingListService } from '../modules/vebal/vebal-voting-list.service';
 import { Chain, PrismaLastBlockSyncedCategory } from '@prisma/client';
 import { upsertLastSyncedBlock } from '../modules/actions/last-synced-block';
 import { prisma } from '../prisma/prisma-client';
@@ -20,7 +17,6 @@ import _ from 'lodash';
 import { AprService } from '../modules/aprs';
 import { PricingService } from '../modules/pricing';
 import { LoopsService } from '../modules/loops/service';
-import { veBalService } from '../modules/vebal/vebal.service';
 import { ContentController } from '../modules/content/content-controller';
 import { StakedSonicController } from '../modules/sts/sts-controller';
 import { UserBalancesController } from '../modules/user/user-balances-controller';
@@ -115,19 +111,6 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return UserBalancesController().syncUserBalancesFromV2Subgraph(chain);
     } else if (job === 'sync-user-balances-v3') {
         return UserBalancesController().syncUserBalancesFromV3Subgraph(chain);
-    } else if (job === 'sync-cow-amm-pools') {
-        return CowAmmController().syncPools(chain);
-    } else if (job === 'reload-cow-amm-pools') {
-        await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.COW_AMM_POOLS, 0);
-        return CowAmmController().syncPools(chain);
-    } else if (job === 'sync-cow-amm-swaps') {
-        return CowAmmController().syncSwaps(chain);
-    } else if (job === 'sync-cow-amm-join-exits') {
-        return CowAmmController().syncJoinExits(chain);
-    } else if (job === 'sync-categories') {
-        return ContentController().syncCategories();
-    } else if (job === 'sync-latest-fx-prices') {
-        return FXPoolsController().syncLatestPrices(chain);
     } else if (job === 'sync-rate-provider-reviews') {
         return ContentController().syncRateProviderReviews();
     } else if (job === 'sync-hook-reviews') {
@@ -165,8 +148,6 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         await TokenController().syncErc4626OnChainData(chain);
         const service = new PricingService([chain]);
         return service.updatePrices(chain);
-    } else if (job === 'sync-vebal') {
-        return new VeBalVotingListService().syncVotingGauges();
     } else if (job === 'sync-token-tvl') {
         return TokenController().syncTvl();
     } else if (job === 'sync-erc4626') {
@@ -186,12 +167,6 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
     } else if (job === 'sync-staked-balances') {
         await UserBalancesController().syncChangedStakedBalances(chain);
         return 'OK';
-    } else if (job === 'sync-vebal-balances') {
-        await veBalService.syncVeBalBalances(chain);
-        return 'OK';
-    } else if (job === 'sync-vebal-totalsupply') {
-        await veBalService.syncVeBalTotalSupply(chain);
-        return 'OK';
     }
     // Maintenance
     else if (job === 'sync-onchain-data-v2') {
@@ -202,8 +177,6 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
             await PoolController().syncOnchainDataForPoolsV2(chain);
         }
         return 'OK';
-    } else if (job === 'sync-fx-quote-tokens') {
-        return FXPoolsController().syncQuoteTokens(chain);
     } else if (job === 'sync-current-prices') {
         await syncCurrentPricesFromApi(chain);
 

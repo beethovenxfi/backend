@@ -9,7 +9,7 @@ export interface WorkerJob {
 
 export type DeploymentEnv = 'canary' | 'main';
 
-export type StakingServiceType = 'gauge' | 'vebal' | 'reliquary';
+export type StakingServiceType = 'gauge' | 'reliquary';
 
 export interface NetworkData {
     chain: {

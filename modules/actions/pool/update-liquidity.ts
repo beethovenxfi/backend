@@ -32,7 +32,7 @@ export const updateLiquidity24hAgo = async (ids: string[], chain: Chain, client:
     if (ids.length === 0) return [];
 
     // Get timestamp and block number
-    const ts = chain === Chain.SEPOLIA ? hoursAgo(1) : daysAgo(1);
+    const ts = daysAgo(1);
     const blockNumber = await blockNumbers().getBlock(chain, ts);
 
     if (!blockNumber) {

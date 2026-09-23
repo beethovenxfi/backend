@@ -7,9 +7,6 @@ model PrismaUser {
     walletBalances          PrismaUserWalletBalance[]
     stakedBalances          PrismaUserStakedBalance[]
     
-    veBalBalance            PrismaVeBalUserBalance[]
-
-    veBalBalanceSnapshots   PrismaVeBalUserBalanceSnapshot[]
 }
 
 
@@ -76,8 +73,6 @@ enum PrismaUserBalanceType {
     WALLET
     STAKED
     RELIQUARY
-    AURA
-    VEBAL
 }
 
 model PrismaUserPoolBalanceSnapshot {
@@ -117,16 +112,4 @@ model PrismaUserRelicSnapshot {
     balance                 String
     entryTimestamp          Int
     level                   Int
-}
-
-model PrismaVeBalUserBalanceSnapshot {
-    @@id([userAddress, timestamp])
-    userAddress             String
-    user                    PrismaUser          @relation(fields:[userAddress], references: [address])
-    chain                   Chain               
-    timestamp               Int
-
-    bias                    String
-    slope                   String
-    balance                 String
 }

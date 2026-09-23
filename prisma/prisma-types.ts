@@ -70,11 +70,6 @@ export const prismaPoolWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolD
         dynamicData: true,
         staking: {
             include: {
-                farm: {
-                    include: {
-                        rewarders: true,
-                    },
-                },
                 gauge: {
                     include: {
                         rewards: true,
@@ -87,8 +82,6 @@ export const prismaPoolWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolD
                         },
                     },
                 },
-                aura: true,
-                vebal: true,
             },
         },
         allTokens: {
@@ -284,11 +277,6 @@ export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolDefaultArgs>(
         },
         staking: {
             include: {
-                farm: {
-                    include: {
-                        rewarders: true,
-                    },
-                },
                 gauge: {
                     include: {
                         rewards: true,
@@ -301,8 +289,6 @@ export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolDefaultArgs>(
                         },
                     },
                 },
-                aura: true,
-                vebal: true,
             },
         },
     },

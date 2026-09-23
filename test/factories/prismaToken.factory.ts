@@ -8,12 +8,12 @@ export const prismaPoolTokenFactory = Factory.define<PrismaPoolTokenWithDynamicD
     const tokenAddress = params?.address || createRandomAddress();
     const poolId = params?.poolId || createRandomAddress();
     const decimals = params?.token?.decimals ?? 18;
-    const chain = params?.chain ?? 'SEPOLIA';
+    const chain = params?.chain ?? 'SONIC';
     return {
         id: poolId + '-' + tokenAddress,
         address: tokenAddress,
         poolId: poolId,
-        chain: 'SEPOLIA',
+        chain: 'SONIC',
         index: sequence ? sequence - 1 : 0,
         nestedPoolId: null,
         priceRateProvider: ZERO_ADDRESS,
@@ -32,7 +32,7 @@ export const prismaPoolTokenFactory = Factory.define<PrismaPoolTokenWithDynamicD
 export const prismaTokenFactory = Factory.define<PrismaToken>(() => {
     return {
         address: createRandomAddress(),
-        chain: 'SEPOLIA',
+        chain: 'SONIC',
         symbol: 'TestToken',
         name: 'testToken',
         description: '',

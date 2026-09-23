@@ -86,11 +86,6 @@ export class CoingeckoDataService {
         const allTokens = await prisma.prismaToken.findMany({
             where: {
                 OR: [{ coingeckoTokenId: null }, { coingeckoPlatformId: null }],
-                AND: {
-                    chain: {
-                        not: 'SEPOLIA',
-                    },
-                },
             },
         });
 

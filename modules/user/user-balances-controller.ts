@@ -1,6 +1,5 @@
 import { Chain, PrismaPoolStakingType } from '@prisma/client';
 import config from '../../config';
-import { syncBptBalancesCowAmm } from './lib/bpt-balances/sync-bpt-balances-cow-amm';
 import { syncBptBalancesV2 } from './lib/bpt-balances/sync-bpt-balances-v2';
 import { createUserStakedBalanceServices } from './lib/user-staked-balance-service.factory';
 import { syncBptBalancesV3 } from './lib/bpt-balances/sync-bpt-balances-v3';
@@ -18,7 +17,6 @@ export function UserBalancesController() {
                 config[chain].balancer.v3.vaultAddress !== ''
                     ? syncBptBalancesV3(chain, balancerV3)
                     : Promise.resolve(),
-                cowAmm ? syncBptBalancesCowAmm(chain, cowAmm) : Promise.resolve(),
             ]);
 
             return true;

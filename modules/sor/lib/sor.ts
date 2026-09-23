@@ -4,16 +4,7 @@ import { Router } from './router';
 import { SorAbortError } from '../errors';
 import { PrismaPoolAndHookWithDynamic } from '../../../prisma/prisma-types';
 import { checkInputs, isLiquidityManagement } from './utils/helpers';
-import {
-    ComposableStablePool,
-    FxPool,
-    Gyro2Pool,
-    Gyro3Pool,
-    GyroEPool,
-    MetaStablePool,
-    StablePool,
-    WeightedPool,
-} from './poolsV2';
+import { ComposableStablePool, Gyro2Pool, Gyro3Pool, GyroEPool, StablePool, WeightedPool } from './poolsV2';
 import { BasePool } from './poolsV2/basePool';
 import { SorSwapOptions } from './types';
 import { PathWithAmount } from './path';
@@ -96,7 +87,6 @@ export class SOR {
                         break;
                     }
                     case 'COMPOSABLE_STABLE':
-                    case 'PHANTOM_STABLE':
                         basePools.push(ComposableStablePool.fromPrismaPool(prismaPool));
                         break;
                     case 'STABLE':
@@ -115,13 +105,6 @@ export class SOR {
                                 basePools.push(StablePool.fromPrismaPool(prismaPool));
                             }
                         }
-                        break;
-                    case 'META_STABLE':
-                        basePools.push(MetaStablePool.fromPrismaPool(prismaPool));
-                        break;
-                    case 'FX':
-                        const fxPool = FxPool.fromPrismaPool(prismaPool);
-                        basePools.push(fxPool);
                         break;
                     case 'GYRO':
                         if (protocolVersion === 3) {

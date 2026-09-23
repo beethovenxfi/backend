@@ -47,7 +47,6 @@ extend type Mutation {
     poolLoadSnapshotsForPools(poolId: String!, chain: GqlChain!): String!
     poolLoadOnChainDataForAllPools(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
     poolReloadPools(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
-    poolSyncFxQuoteTokens(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
     poolReloadSwaps(chain: GqlChain!, poolId: String!): String!
 }
 
@@ -86,10 +85,6 @@ type GqlPoolMinimal {
     """
     chain: GqlChain!
     """
-    The vault version on which the pool is deployed, 2 or 3
-    """
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
-    """
     The protocol version on which the pool is deployed, 1, 2 or 3
     """
     protocolVersion: Int!
@@ -125,10 +120,6 @@ type GqlPoolMinimal {
     The decimals of the BPT, usually 18
     """
     decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
     """
     Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
     """
@@ -279,18 +270,12 @@ Supported pool types
 enum GqlPoolType {
     WEIGHTED
     STABLE
-    META_STABLE
-    PHANTOM_STABLE
     COMPOSABLE_STABLE
-    ELEMENT
     UNKNOWN
     LIQUIDITY_BOOTSTRAPPING
-    INVESTMENT
     GYRO
     GYRO3
     GYROE
-    FX
-    COW_AMM
     QUANT_AMM_WEIGHTED
     RECLAMM
     FIXED_LBP
@@ -308,10 +293,6 @@ interface GqlPoolBase {
     The chain on which the pool is deployed
     """
     chain: GqlChain!
-    """
-    The vault version on which the pool is deployed, 2 or 3
-    """
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
     """
     The protocol version on which the pool is deployed, 1, 2 or 3
     """
@@ -336,10 +317,6 @@ interface GqlPoolBase {
     The decimals of the BPT, usually 18
     """
     decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
     """
     Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
     """
@@ -467,27 +444,6 @@ type GqlPoolDynamicData {
     lifetimeVolume: BigDecimal!
     lifetimeSwapFees: BigDecimal!
     holdersCount: BigInt!
-    swapsCount: BigInt! @deprecated
-
-    sharePriceAth: BigDecimal! @deprecated
-    sharePriceAthTimestamp: Int! @deprecated
-    sharePriceAtl: BigDecimal! @deprecated
-    sharePriceAtlTimestamp: Int! @deprecated
-
-    totalLiquidityAth: BigDecimal! @deprecated
-    totalLiquidityAthTimestamp: Int! @deprecated
-    totalLiquidityAtl: BigDecimal! @deprecated
-    totalLiquidityAtlTimestamp: Int! @deprecated
-
-    volume24hAth: BigDecimal! @deprecated
-    volume24hAthTimestamp: Int! @deprecated
-    volume24hAtl: BigDecimal! @deprecated
-    volume24hAtlTimestamp: Int! @deprecated
-
-    fees24hAth: BigDecimal! @deprecated
-    fees24hAthTimestamp: Int! @deprecated
-    fees24hAtl: BigDecimal! @deprecated
-    fees24hAtlTimestamp: Int! @deprecated
 }
 
 type QuantAmmWeightedParams {
@@ -520,16 +476,11 @@ type QuantAmmWeightSnapshot {
 type GqlPoolQuantAmmWeighted implements GqlPoolBase {
     id: ID!
     chain: GqlChain!
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
     protocolVersion: Int!
     name: String!
     symbol: String!
     address: Bytes!
     decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
     """
     Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
     """
@@ -567,16 +518,11 @@ type GqlPoolQuantAmmWeighted implements GqlPoolBase {
 type GqlPoolWeighted implements GqlPoolBase {
     id: ID!
     chain: GqlChain!
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
     protocolVersion: Int!
     name: String!
     symbol: String!
     address: Bytes!
     decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
     """
     Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
     """
@@ -610,17 +556,12 @@ type GqlPoolWeighted implements GqlPoolBase {
 type GqlPoolGyro implements GqlPoolBase {
     id: ID!
     chain: GqlChain!
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
     protocolVersion: Int!
     name: String!
     type: GqlPoolType!
     symbol: String!
     address: Bytes!
     decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
     """
     Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
     """
@@ -669,69 +610,14 @@ type GqlPoolGyro implements GqlPoolBase {
     userBalance: GqlPoolUserBalance
 }
 
-type GqlPoolFx implements GqlPoolBase {
-    alpha: String!
-    beta: String!
-    delta: String!
-    epsilon: String!
-    lambda: String!
-
-    # Base pool
-    id: ID!
-    chain: GqlChain!
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
-    protocolVersion: Int!
-    type: GqlPoolType!
-    version: Int!
-    name: String!
-    symbol: String!
-    address: Bytes!
-    decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
-    """
-    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
-    """
-    swapFeeManager: Bytes
-    """
-    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
-    """
-    pauseManager: Bytes
-    """
-    Account empowered to set the pool creator fee percentage
-    """
-    poolCreator: Bytes
-    factory: Bytes
-    createTime: Int!
-    poolTokens: [GqlPoolTokenDetail!]!
-    categories: [GqlPoolFilterCategory]
-    tags: [String]
-    liquidityManagement: LiquidityManagement
-    hasErc4626: Boolean!
-    hasNestedErc4626: Boolean!
-    hasAnyAllowedBuffer: Boolean!
-    hook: GqlHook
-
-    dynamicData: GqlPoolDynamicData!
-    staking: GqlPoolStaking
-    userBalance: GqlPoolUserBalance
-}
-
 type GqlPoolLiquidityBootstrapping implements GqlPoolBase {
     id: ID!
     chain: GqlChain!
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
     protocolVersion: Int!
     name: String!
     symbol: String!
     address: Bytes!
     decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
     """
     Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
     """
@@ -772,16 +658,11 @@ type GqlLBPTopTrade {
 type GqlPoolLiquidityBootstrappingV3 implements GqlPoolBase {
     id: ID!
     chain: GqlChain!
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
     protocolVersion: Int!
     name: String!
     symbol: String!
     address: Bytes!
     decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
     """
     Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
     """
@@ -843,16 +724,11 @@ type GqlPoolLiquidityBootstrappingV3 implements GqlPoolBase {
 type GqlPoolFixedPriceLBP implements GqlPoolBase {
     id: ID!
     chain: GqlChain!
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
     protocolVersion: Int!
     name: String!
     symbol: String!
     address: Bytes!
     decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
     """
     Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
     """
@@ -909,16 +785,11 @@ type GqlPoolFixedPriceLBP implements GqlPoolBase {
 type GqlPoolStable implements GqlPoolBase {
     id: ID!
     chain: GqlChain!
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
     protocolVersion: Int!
     name: String!
     symbol: String!
     address: Bytes!
     decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
     """
     Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
     """
@@ -945,51 +816,6 @@ type GqlPoolStable implements GqlPoolBase {
 
     amp: BigInt!
     bptPriceRate: BigDecimal!
-    staking: GqlPoolStaking
-    type: GqlPoolType!
-    version: Int!
-
-    userBalance: GqlPoolUserBalance
-}
-
-type GqlPoolMetaStable implements GqlPoolBase {
-    id: ID!
-    chain: GqlChain!
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
-    protocolVersion: Int!
-    name: String!
-    symbol: String!
-    address: Bytes!
-    decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
-    """
-    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
-    """
-    swapFeeManager: Bytes
-    """
-    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
-    """
-    pauseManager: Bytes
-    """
-    Account empowered to set the pool creator fee percentage
-    """
-    poolCreator: Bytes
-    factory: Bytes
-    createTime: Int!
-    dynamicData: GqlPoolDynamicData!
-    poolTokens: [GqlPoolTokenDetail!]!
-    categories: [GqlPoolFilterCategory]
-    tags: [String]
-    liquidityManagement: LiquidityManagement
-    hasErc4626: Boolean!
-    hasNestedErc4626: Boolean!
-    hasAnyAllowedBuffer: Boolean!
-    hook: GqlHook
-
-    amp: BigInt!
     staking: GqlPoolStaking
     type: GqlPoolType!
     version: Int!
@@ -1000,16 +826,11 @@ type GqlPoolMetaStable implements GqlPoolBase {
 type GqlPoolComposableStable implements GqlPoolBase {
     id: ID!
     chain: GqlChain!
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
     protocolVersion: Int!
     name: String!
     symbol: String!
     address: Bytes!
     decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
     """
     Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
     """
@@ -1043,68 +864,15 @@ type GqlPoolComposableStable implements GqlPoolBase {
     userBalance: GqlPoolUserBalance
 }
 
-type GqlPoolElement implements GqlPoolBase {
-    id: ID!
-    chain: GqlChain!
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
-    protocolVersion: Int!
-    name: String!
-    symbol: String!
-    address: Bytes!
-    decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
-    """
-    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
-    """
-    swapFeeManager: Bytes
-    """
-    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
-    """
-    pauseManager: Bytes
-    """
-    Account empowered to set the pool creator fee percentage
-    """
-    poolCreator: Bytes
-    factory: Bytes
-    createTime: Int!
-    dynamicData: GqlPoolDynamicData!
-    poolTokens: [GqlPoolTokenDetail!]!
-    categories: [GqlPoolFilterCategory]
-    tags: [String]
-    liquidityManagement: LiquidityManagement
-    hasErc4626: Boolean!
-    hasNestedErc4626: Boolean!
-    hasAnyAllowedBuffer: Boolean!
-    hook: GqlHook
-
-    #element specific fields
-    unitSeconds: BigInt!
-    principalToken: Bytes!
-    baseToken: Bytes!
-    staking: GqlPoolStaking
-    type: GqlPoolType!
-    version: Int!
-
-    userBalance: GqlPoolUserBalance
-}
-
 type GqlPoolReClamm implements GqlPoolBase {
     id: ID!
     chain: GqlChain!
-    vaultVersion: Int! @deprecated(reason: "use protocolVersion instead")
     protocolVersion: Int!
     name: String!
     type: GqlPoolType!
     symbol: String!
     address: Bytes!
     decimals: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
     """
     Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
     """
@@ -1176,13 +944,10 @@ union GqlPoolUnion =
       GqlPoolWeighted
     | GqlPoolQuantAmmWeighted
     | GqlPoolStable
-    | GqlPoolMetaStable
     | GqlPoolComposableStable
-    | GqlPoolElement
     | GqlPoolLiquidityBootstrapping
     | GqlPoolLiquidityBootstrappingV3
     | GqlPoolGyro
-    | GqlPoolFx
     | GqlPoolReClamm
     | GqlPoolFixedPriceLBP
 
@@ -1268,10 +1033,6 @@ type GqlPoolTokenDetail {
     """
     underlyingToken: GqlToken
     """
-    If it is an ERC4626 token, this defines whether we allow it to use the buffer for pool operations.
-    """
-    isBufferAllowed: Boolean! @deprecated(reason: "Use useUnderlyingForAddRemove and useWrappedForAddRemove instead")
-    """
     If it is an ERC4626 token, this defines whether we allow underlying tokens to be used for add/remove operations.
     """
     useUnderlyingForAddRemove: Boolean
@@ -1303,14 +1064,6 @@ type GqlPoolTokenDetail {
     Token logo
     """
     logoURI: String
-    """
-    Is the token tradable
-    """
-    tradable: Boolean @deprecated(reason: "Unused")
-    """
-    The priority of the token, can be used for sorting.
-    """
-    priority: Int @deprecated(reason: "Unused")
     chain: GqlChain
     chainId: Int
 }
@@ -1343,10 +1096,6 @@ type GqlNestedPool {
     Version of the pool.
     """
     version: Int!
-    """
-    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-    """
-    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
     """
     Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
     """
@@ -1442,8 +1191,6 @@ enum GqlPoolFilterCategory {
 }
 
 input GqlPoolFilter {
-    categoryIn: [GqlPoolFilterCategory!] @deprecated(reason: "Use tagIn instead")
-    categoryNotIn: [GqlPoolFilterCategory!] @deprecated(reason: "Use tagNotIn instead")
     """
     For list of tags see: https://github.com/balancer/metadata/blob/main/pools/index.json
     Use uppercase
@@ -1460,15 +1207,12 @@ input GqlPoolFilter {
     poolTypeNotIn: [GqlPoolType!]
     idIn: [String!]
     idNotIn: [String!]
-    filterIn: [String!] @deprecated(reason: "unused")
-    filterNotIn: [String!] @deprecated(reason: "unused")
     chainIn: [GqlChain!]
     chainNotIn: [GqlChain!]
     createTime: GqlPoolTimePeriod
     userAddress: String
     protocolVersionIn: [Int!]
     minTvl: Float
-    hasHook: Boolean @deprecated(reason: "use tags to filter instead")
     """
     Only returns pools where the rateproviders are reviewed. Default: false
     """
@@ -1483,11 +1227,6 @@ type GqlPoolAprItem {
     The id of the APR item
     """
     id: ID!
-
-    """
-    The title of the APR item, a human readable form
-    """
-    title: String! @deprecated(reason: "No replacement, should be built client side")
     """
     The APR value in % -> 0.2 = 20%
     """
@@ -1510,10 +1249,6 @@ type GqlPoolAprItem {
 Enum representing the different types of the APR in a pool.
 """
 enum GqlPoolAprItemType {
-    """
-    Represents the swap fee APR in a pool.
-    """
-    SWAP_FEE @deprecated(reason: "Use SWAP_FEE_24H instead")
     """
     Swap fee APR based on data from the last 24h
     """
@@ -1543,10 +1278,6 @@ enum GqlPoolAprItemType {
     """
     STAKING
     """
-    Reward APR in a pool from veBAL emissions allocated by gauge votes. Emitted in BAL.
-    """
-    VEBAL_EMISSIONS
-    """
     Reward APR in a pool from maBEETS emissions allocated by gauge votes. Emitted in BEETS.
     """
     MABEETS_EMISSIONS
@@ -1555,17 +1286,9 @@ enum GqlPoolAprItemType {
     """
     STAKING_BOOST
     """
-    APR in a pool that can be earned through locking, i.e. veBAL
-    """
-    LOCKING
-    """
     APR that can be earned thourgh voting, i.e. gauge votes
     """
     VOTING
-    """
-    APR that pools earns when BPT is staked on AURA.
-    """
-    AURA @deprecated(reason: "Aura no longer available")
     """
     Rewards distributed by merkl.xyz
     """
@@ -1578,22 +1301,6 @@ enum GqlPoolAprItemType {
     APR calculated for QUANT-AMM pools based on performance measurements over a month
     """
     QUANT_AMM_UPLIFT
-    """
-    Cow AMM specific APR
-    """
-    SURPLUS @deprecated(reason: "Use SURPLUS_24H instead")
-    """
-    Surplus APR based on data from the last 24h
-    """
-    SURPLUS_24H
-    """
-    Surplus APR based on data from the last 7d
-    """
-    SURPLUS_7D
-    """
-    Surplus APR based on data from the last 30d
-    """
-    SURPLUS_30D
 }
 
 type GqlPoolFeaturedPool {
@@ -1621,11 +1328,7 @@ type GqlPoolSnapshot {
     fees24h: String!
     surplus24h: String!
     totalShares: String!
-    totalSwapVolume: String! @deprecated
-    totalSwapFee: String! @deprecated
-    totalSurplus: String! @deprecated
     swapsCount: String!
-    holdersCount: String! @deprecated
     sharePrice: String!
     amounts: [String!]!
 }
@@ -1636,19 +1339,12 @@ type GqlPoolStaking {
     type: GqlPoolStakingType!
     address: String!
     gauge: GqlPoolStakingGauge
-    farm: GqlPoolStakingMasterChefFarm
     reliquary: GqlPoolStakingReliquaryFarm
-    aura: GqlPoolStakingAura @deprecated(reason: "Aura no longer available")
-    vebal: GqlPoolStakingVebal
 }
 
 enum GqlPoolStakingType {
     GAUGE
     RELIQUARY
-    MASTER_CHEF
-    FRESH_BEETS
-    AURA @deprecated(reason: "Aura no longer available")
-    VEBAL
 }
 
 enum GqlPoolStakingGaugeStatus {
@@ -1681,32 +1377,6 @@ type GqlPoolStakingOtherGauge {
     status: GqlPoolStakingGaugeStatus!
     version: Int!
     rewards: [GqlPoolStakingGaugeReward!]!
-}
-
-type GqlPoolStakingMasterChefFarm {
-    id: ID!
-    beetsPerBlock: String!
-    rewarders: [GqlPoolStakingFarmRewarder!]
-}
-
-type GqlPoolStakingFarmRewarder {
-    id: ID!
-    address: String!
-    tokenAddress: String!
-    rewardPerSecond: String!
-}
-
-type GqlPoolStakingAura @deprecated(reason: "Aura no longer available") {
-    id: ID!
-    auraPoolAddress: String!
-    auraPoolId: String!
-    isShutdown: Boolean!
-    apr: Float!
-}
-
-type GqlPoolStakingVebal {
-    id: ID!
-    vebalAddress: String!
 }
 
 type GqlPoolStakingReliquaryFarm {

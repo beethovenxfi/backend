@@ -1,7 +1,7 @@
 import { Chain, PrismaPoolType } from '@prisma/client';
 import { BalancerPoolFragment } from '../subgraphs/balancer-subgraph/generated/balancer-subgraph-types';
 import { zeroAddress as AddressZero } from 'viem';
-import { fx, gyro, element, stable, quantAmmWeighted, reclamm, fixedLBP, lbPool } from './pool-data';
+import { gyro, stable, quantAmmWeighted, reclamm, fixedLBP, lbPool } from './pool-data';
 
 export const subgraphToPrismaCreate = (
     pool: BalancerPoolFragment,
@@ -144,25 +144,14 @@ const mapSubgraphPoolTypeToPoolType = (poolType: string): PrismaPoolType => {
             return 'LIQUIDITY_BOOTSTRAPPING';
         case 'Stable':
             return 'STABLE';
-        case 'MetaStable':
-            return 'META_STABLE';
-        // for the old phantom stable pool, we add it to the DB as type COMPOSABLE_STABLE with version 0
-        case 'StablePhantom':
-            return 'COMPOSABLE_STABLE';
         case 'ComposableStable':
             return 'COMPOSABLE_STABLE';
-        case 'Element':
-            return 'ELEMENT';
-        case 'Investment':
-            return 'INVESTMENT';
         case 'Gyro2':
             return 'GYRO';
         case 'Gyro3':
             return 'GYRO3';
         case 'GyroE':
             return 'GYROE';
-        case 'FX':
-            return 'FX';
     }
 
     return 'UNKNOWN';
@@ -180,19 +169,14 @@ const mapPoolTypeVersion = (poolType: string, poolTypeVersion: number): number =
 
 // v2 types
 export const typeDataMapper = {
-    ELEMENT: element,
-    FX: fx,
     GYRO: gyro,
     GYRO3: gyro,
     GYROE: gyro,
     STABLE: stable,
     COMPOSABLE_STABLE: stable,
-    META_STABLE: stable,
 };
 
-export type FxData = ReturnType<typeof fx>;
 export type GyroData = ReturnType<typeof gyro>;
-export type ElementData = ReturnType<typeof element>;
 export type StableData = ReturnType<typeof stable>;
 export type QuantAmmWeightedData = ReturnType<typeof quantAmmWeighted> & {
     firstFourWeightsAndMultipliers?: string[];

@@ -31,11 +31,7 @@ export function mapAprItems(pool: PrismaPoolMinimal): GqlPoolAprItem[] {
         let type: GqlPoolAprItemType;
         switch (aprItem.type) {
             case PrismaPoolAprType.NATIVE_REWARD:
-                if (pool.chain === 'FANTOM' || pool.chain === 'SONIC') {
-                    type = 'MABEETS_EMISSIONS';
-                } else {
-                    type = 'VEBAL_EMISSIONS';
-                }
+                type = 'MABEETS_EMISSIONS';
                 break;
             case PrismaPoolAprType.THIRD_PARTY_REWARD:
                 type = 'STAKING';
@@ -50,7 +46,6 @@ export function mapAprItems(pool: PrismaPoolMinimal): GqlPoolAprItem[] {
 
         aprItems.push({
             id: aprItem.id,
-            title: aprItem.title,
             apr: aprItem.apr,
             type: type,
             rewardTokenAddress: aprItem.rewardTokenAddress,
@@ -89,7 +84,6 @@ export function mapPoolToken(
         maxWithdraw: poolToken.token.maxWithdraw === '0' ? undefined : poolToken.token.maxWithdraw,
         isExemptFromProtocolYieldFee: poolToken.exemptFromProtocolYieldFee,
         scalingFactor: poolToken.scalingFactor,
-        tradable: !poolToken.token.types.find((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT'),
         chain: poolToken.chain,
         chainId: Number(chainToChainId[poolToken.chain]),
     };
@@ -104,7 +98,6 @@ function mapNestedPool(nestedPool: PrismaNestedPoolWithSingleLayerNesting, token
 
     return {
         ...nestedPool,
-        owner: nestedPool.swapFeeManager, // Keep for backwards compatibility
         liquidityManagement: (nestedPool.liquidityManagement as LiquidityManagement) || undefined,
         totalLiquidity: `${totalLiquidity}`,
         totalShares: `${totalShares}`,

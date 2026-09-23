@@ -3,11 +3,6 @@ import { beetsGetCirculatingSupply, beetsGetTotalSupply } from '../../modules/be
 
 export function loadRestRoutes(app: Express) {
     app.use('/health', (_, res) => res.sendStatus(200));
-    app.use('/circulating_supply', (_, res) => {
-        beetsGetCirculatingSupply('FANTOM').then((result) => {
-            res.send(result);
-        });
-    });
     app.use('/circulating_supply_sonic', (_, res) => {
         beetsGetCirculatingSupply('SONIC').then((result) => {
             res.send(result);

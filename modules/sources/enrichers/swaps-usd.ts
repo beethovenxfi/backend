@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { daysAgo, roundToHour, roundToMidnight } from '../../common/time';
-import { Chain, PrismaPoolToken } from '@prisma/client';
+import { Chain } from '@prisma/client';
 import { prisma } from '../../../prisma/prisma-client';
 import { SwapEvent } from '../../../prisma/prisma-types';
 
@@ -11,11 +11,7 @@ import { SwapEvent } from '../../../prisma/prisma-types';
  * @param chain
  * @returns
  */
-export async function swapsUsd(
-    swaps: SwapEvent[],
-    chain: Chain,
-    fxPools: { id: string; typeData: { quoteToken: string }; tokens: PrismaPoolToken[] }[] = [],
-): Promise<SwapEvent[]> {
+export async function swapsUsd(swaps: SwapEvent[], chain: Chain): Promise<SwapEvent[]> {
     // Enrich with USD values
     // Group swaps based on timestamp, hourly and daily buckets
     const groupedSwaps = _.groupBy(swaps, (swap) => {
@@ -46,33 +42,6 @@ export async function swapsUsd(
             const surplusToken = tokenPrices.find((price) => price.tokenAddress === swap.payload.surplus?.address);
             let feeValueUSD = parseFloat(swap.payload.fee.amount) * (feeToken?.price || 0);
             const dynamicFeeValueUSD = parseFloat(swap.payload.dynamicFee?.amount || '0') * (feeToken?.price || 0);
-
-            // FX pools have a different fee calculation
-            // Replica of the subgraph logic:
-            // https://github.com/balancer/balancer-subgraph-v2/blob/60453224453bd07a0a3a22a8ad6cc26e65fd809f/src/mappings/vault.ts#L551-L564
-            const fxPool = fxPools.find((pool) => pool.id === swap.poolId);
-            if (fxPool) {
-                const quoteTokenAddress = fxPool.typeData.quoteToken;
-                const baseTokenAddress =
-                    swap.payload.tokenIn.address === quoteTokenAddress
-                        ? swap.payload.tokenOut.address
-                        : swap.payload.tokenIn.address;
-                let isTokenInBase = swap.payload.tokenOut.address === quoteTokenAddress;
-                let baseRate = fxPool.tokens.find((t) => t.address === baseTokenAddress)?.latestFxPrice;
-                let quoteRate = fxPool.tokens.find((t) => t.address === quoteTokenAddress)?.latestFxPrice;
-
-                if (baseRate && quoteRate) {
-                    if (isTokenInBase) {
-                        feeValueUSD =
-                            parseFloat(swap.payload.tokenIn.amount) * baseRate -
-                            parseFloat(swap.payload.tokenOut.amount) * quoteRate;
-                    } else {
-                        feeValueUSD =
-                            parseFloat(swap.payload.tokenIn.amount) * quoteRate -
-                            parseFloat(swap.payload.tokenOut.amount) * baseRate;
-                    }
-                }
-            }
 
             const payload = {
                 fee: {

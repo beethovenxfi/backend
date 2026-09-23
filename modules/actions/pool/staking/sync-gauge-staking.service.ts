@@ -12,14 +12,12 @@ import { prisma } from '../../../../prisma/prisma-client';
 import { prismaBulkExecuteOperations } from '../../../../prisma/prisma-util';
 import { Chain, PrismaPoolStakingType } from '@prisma/client';
 import { GaugeSubgraphService, LiquidityGaugeStatus } from '../../../subgraphs/gauge-subgraph/gauge-subgraph.service';
-import gaugeControllerHelperAbi from '../../../vebal/abi/gaugeControllerHelper.json';
 import childChainGaugeV2Abi from './abi/ChildChainGaugeV2.json';
 import childChainGaugeV1Abi from './abi/ChildChainGaugeV1.json';
 import mainnetLiquidityGaugeAbi from './abi/MainnetLiquidityGauge.json';
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 import type { JsonFragment } from '@ethersproject/abi';
-import { getInflationRate } from '../../../vebal/balancer-token-admin.service';
 import _ from 'lodash';
 import { Multicaller3Viem } from '../../../web3/multicaller-viem';
 import { formatEther } from 'viem';
@@ -58,7 +56,6 @@ export const syncGaugeStakingForPools = async (
         ...childChainGaugeV2Abi.filter((abi) => abi.name === 'working_supply'),
         ...childChainGaugeV2Abi.filter((abi) => abi.name === 'inflation_rate'),
         ...mainnetLiquidityGaugeAbi.filter((abi) => abi.name === 'getRelativeWeightCap'),
-        gaugeControllerHelperAbi.find((abi) => abi.name === 'gauge_relative_weight'),
     ] as JsonFragment[]);
 
     const rewardsMulticallerV1 = new Multicaller3Viem(chain, [
@@ -92,7 +89,7 @@ export const syncGaugeStakingForPools = async (
             : !gauge.isPreferentialGauge
             ? 'ACTIVE'
             : ('PREFERRED' as LiquidityGaugeStatus),
-        version: gauge.streamer || chain == 'MAINNET' ? 1 : (2 as 1 | 2),
+        version: 2 as 1 | 2,
         tokens: gauge.tokens || [],
         createTime: gauge.gauge?.addedTimestamp,
     }));
@@ -256,27 +253,6 @@ const getOnchainRewardTokensData = async (
         isVeBalemissions: boolean;
     }[]
 > => {
-    // Get onchain data for BAL rewards
-    const currentWeek = Math.floor(Date.now() / 1000 / 604800);
-    for (const gauge of gauges) {
-        balMulticaller.call(`${gauge.id}.totalSupply`, gauge.id, 'totalSupply', [], true);
-        if (gauge.version === 2) {
-            balMulticaller.call(`${gauge.id}.rate`, gauge.id, 'inflation_rate', [currentWeek], true);
-            balMulticaller.call(`${gauge.id}.workingSupply`, gauge.id, 'working_supply', [], true);
-        } else if (chain === Chain.MAINNET && gaugeControllerHelperAddress) {
-            balMulticaller.call(
-                `${gauge.id}.weight`,
-                gaugeControllerHelperAddress,
-                'gauge_relative_weight',
-                [gauge.id],
-                true,
-            );
-            balMulticaller.call(`${gauge.id}.workingSupply`, gauge.id, 'working_supply', [], true);
-            balMulticaller.call(`${gauge.id}.relativeWeightCap`, gauge.id, 'getRelativeWeightCap', [], true);
-        }
-    }
-    const balData = (await balMulticaller.execute()) as GaugeBalDistributionData;
-
     // Get onchain data for reward tokens
     const decimals: { [address: string]: number } = {};
     for (const gauge of gauges) {
@@ -306,36 +282,10 @@ const getOnchainRewardTokensData = async (
     const rewardsDataV2 = (await rewardsMulticallerV2.execute()) as GaugeRewardData;
     const rewardsData = { ...rewardsDataV1, ...rewardsDataV2 };
 
-    const totalBalRate = parseFloat(formatEther(await getInflationRate(chain)));
     const now = Math.floor(Date.now() / 1000);
 
     // Format onchain rates for all the rewards
     const onchainRates = [
-        ...Object.keys(balData).map((gaugeAddress) => {
-            const id = `${gaugeAddress}-${balAddress}-balgauge`.toLowerCase();
-            const { rate, weight, workingSupply, totalSupply, relativeWeightCap } = balData[gaugeAddress];
-
-            const weightAfterCap = weight
-                ? Math.min(
-                      parseFloat(formatUnits(relativeWeightCap || '1000000000000000000')), // Old v1 gauges don't have relativeWeightCap
-                      parseFloat(formatUnits(weight)),
-                  )
-                : undefined;
-
-            const rewardPerSecond = rate
-                ? formatUnits(rate) // L2 V2 case for BAL rewards
-                : weightAfterCap
-                ? (weightAfterCap! * totalBalRate).toFixed(18) // mainnet case for BAL rewards
-                : '0'; // mainnet case without any votes for this gauge for BAL rewards
-
-            return {
-                id,
-                rewardPerSecond,
-                workingSupply: workingSupply ? formatUnits(workingSupply) : '0',
-                totalSupply: totalSupply ? formatUnits(totalSupply) : '0',
-                isVeBalemissions: true,
-            };
-        }),
         ...Object.keys(rewardsData)
             .map((gaugeAddress) => [
                 // L2 V1 case with any token
@@ -346,13 +296,12 @@ const getOnchainRewardTokensData = async (
                         period_finish && Number(period_finish) > now
                             ? formatUnits(rate!, decimals[tokenAddress])
                             : '0.0';
-                    const { totalSupply } = balData[gaugeAddress];
 
                     return {
                         id,
                         rewardPerSecond,
                         workingSupply: '0',
-                        totalSupply: totalSupply ? formatUnits(totalSupply) : '0',
+                        totalSupply: '0',
                         isVeBalemissions: false,
                     };
                 }),
@@ -376,9 +325,6 @@ export const deleteGaugeStakingForAllPools = async (
     if (stakingTypes.includes('GAUGE')) {
         await prisma.prismaUserStakedBalance.deleteMany({
             where: { staking: { type: 'GAUGE', chain: chain } },
-        });
-        await prisma.prismaVotingGauge.deleteMany({
-            where: { chain: chain },
         });
         await prisma.prismaPoolStakingGaugeReward.deleteMany({ where: { chain: chain } });
         await prisma.prismaPoolStakingGauge.deleteMany({ where: { chain: chain } });

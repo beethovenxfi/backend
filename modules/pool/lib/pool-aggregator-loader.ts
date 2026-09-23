@@ -7,7 +7,7 @@ import {
     LiquidityManagement,
 } from '../../../apps/api/gql/generated-schema';
 import _ from 'lodash';
-import { FxData, GyroData, StableData, QuantAmmWeightedData, ReclammData } from '../subgraph-mapper';
+import { GyroData, StableData, QuantAmmWeightedData, ReclammData } from '../subgraph-mapper';
 import { mapHookToGqlHook } from '../../sources/transformers';
 import { chainToChainId } from '../../../config/chain-id-to-chain';
 import { zeroAddress } from 'viem';
@@ -137,14 +137,11 @@ export class PoolAggregatorLoader {
             }),
         ]);
 
-        const typesMap = dbTypes.reduce(
-            (agg, item) => {
-                agg[`${item.chain}-${item.tokenAddress}`] ||= [];
-                agg[`${item.chain}-${item.tokenAddress}`].push(item);
-                return agg;
-            },
-            {} as Record<string, PrismaTokenType[]>,
-        );
+        const typesMap = dbTypes.reduce((agg, item) => {
+            agg[`${item.chain}-${item.tokenAddress}`] ||= [];
+            agg[`${item.chain}-${item.tokenAddress}`].push(item);
+            return agg;
+        }, {} as Record<string, PrismaTokenType[]>);
 
         const tokensMap = Object.fromEntries(
             dbTokens.map((token) => [
@@ -412,7 +409,6 @@ export class PoolAggregatorLoader {
 
         switch (pool.type) {
             case 'STABLE':
-            case 'META_STABLE':
             case 'COMPOSABLE_STABLE':
                 return {
                     ...mappedData,
@@ -425,11 +421,6 @@ export class PoolAggregatorLoader {
                     ...mappedData,
                     ...(typeData as GyroData), // Deprecated
                 };
-            case 'FX':
-                return {
-                    ...mappedData,
-                    ...(typeData as FxData), // Deprecated
-                };
             case 'QUANT_AMM_WEIGHTED':
                 return {
                     ...mappedData,
@@ -439,10 +430,6 @@ export class PoolAggregatorLoader {
                 return {
                     ...mappedData,
                     ...(typeData as ReclammData), // Deprecated
-                };
-            case 'ELEMENT':
-                return {
-                    ...mappedData,
                 };
             case 'LIQUIDITY_BOOTSTRAPPING':
                 return {

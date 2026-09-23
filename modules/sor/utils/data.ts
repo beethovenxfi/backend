@@ -69,11 +69,8 @@ async function getPools(chain: Chain, poolIds?: string[]): Promise<SORDbPool[]> 
     const type = {
         in: [
             'WEIGHTED',
-            'META_STABLE',
-            'PHANTOM_STABLE',
             'COMPOSABLE_STABLE',
             'STABLE',
-            'FX',
             'GYRO',
             'GYRO3',
             'GYROE',
@@ -93,41 +90,6 @@ async function getPools(chain: Chain, poolIds?: string[]): Promise<SORDbPool[]> 
                 chain,
                 type,
                 dynamicData: {
-                    totalSharesNum: { gt: 0.000000000001 },
-                    swapEnabled: true,
-                    isPaused: false,
-                },
-            },
-            include: {
-                tokens: {
-                    orderBy: [{ index: 'asc' }],
-                    include: {
-                        token: true,
-                    },
-                },
-                dynamicData: true,
-            },
-        });
-    } else {
-        pools = await prisma.prismaPool.findMany({
-            where: {
-                id: { notIn: [...poolsToIgnore] },
-                chain,
-                type,
-                dynamicData: {
-                    OR: [
-                        {
-                            totalLiquidity: { gte: 100 },
-                        },
-                        {
-                            chain: 'SEPOLIA',
-                        },
-                        {
-                            pool: {
-                                type: 'LIQUIDITY_BOOTSTRAPPING',
-                            },
-                        },
-                    ],
                     totalSharesNum: { gt: 0.000000000001 },
                     swapEnabled: true,
                     isPaused: false,

@@ -13,30 +13,14 @@ datasource db {
 }
 
 enum Chain {
-    ARBITRUM
-    AVALANCHE
-    BASE
-    FANTOM
-    GNOSIS
-    HYPEREVM
-    MAINNET
-    MONAD
-    OPTIMISM
-    POLYGON
-    PLASMA
-    SEPOLIA
-    ZKEVM
-    FRAXTAL
-    MODE
     SONIC
-    XLAYER
 }
 
 model PrismaLastBlockSynced {
     @@id([category, chain])
 
     category            PrismaLastBlockSyncedCategory
-    chain               Chain       @default(MAINNET)
+    chain               Chain       @default(SONIC)
     blockNumber         Int
 }
 
@@ -44,20 +28,9 @@ enum PrismaLastBlockSyncedCategory {
     POOLS
     POOLS_V3
     ADD_POOLS_V3
-    FARMS
-    COW_AMM_POOLS
-    COW_AMM_ADD_POOLS
-    COW_AMM_JOIN_EXITS
-    COW_AMM_SWAPS
-    COW_AMM_SNAPSHOTS
-    SNAPSHOTS_COW_AMM
-    SNAPSHOTS_V2
-    SNAPSHOTS_V3
     SNAPSHOTS
     BPT_BALANCES_V2
     BPT_BALANCES_V3
-    BPT_BALANCES_FBEETS
-    BPT_BALANCES_COW_AMM
     GAUGE_BALANCES
     JOIN_EXITS_V2
     SWAPS_V2

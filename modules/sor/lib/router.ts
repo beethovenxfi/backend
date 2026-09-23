@@ -78,10 +78,7 @@ export class Router {
                 try {
                     const pathWithAmount = new PathWithAmount(path.tokens, path.pools, path.isBuffer, amount);
 
-                    // prevent paths with high gas cost on HyperEvm due to small blocks limitation
-                    const isHyperEvm = swapAmount.token.chainId === parseInt(chainToChainId[Chain.HYPEREVM]);
                     const gasCostTooHigh =
-                        isHyperEvm &&
                         pathWithAmount.swapStepsGreaterThanBufferLimit > SWAPS_GREATER_THAN_BUFFER_LIMIT_THRESHOLD;
 
                     // remove paths with buffer steps that would revert onchain because the swap

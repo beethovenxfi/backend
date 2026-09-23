@@ -5,7 +5,6 @@ export type PoolUpsertData = {
     tokens: Prisma.PrismaTokenCreateInput[];
     poolDynamicData: Omit<Prisma.PrismaPoolDynamicDataCreateInput, 'pool'>;
     poolToken: Prisma.PrismaPoolTokenCreateManyInput[];
-    poolExpandedTokens: Prisma.PrismaPoolExpandedTokensCreateManyInput[];
 };
 
 export type PoolDynamicUpsertData = {
@@ -79,58 +78,12 @@ export const prismaPoolWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolD
                 },
             },
         },
-        allTokens: {
-            include: {
-                token: {
-                    include: {
-                        types: true,
-                    },
-                },
-                nestedPool: {
-                    include: {
-                        allTokens: {
-                            include: {
-                                token: {
-                                    include: {
-                                        types: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
         aprItems: true,
         tokens: {
             orderBy: { index: 'asc' },
             include: {
                 token: {
                     include: { types: true },
-                },
-                nestedPool: {
-                    include: {
-                        dynamicData: true,
-                        tokens: {
-                            orderBy: { index: 'asc' },
-                            include: {
-                                token: {
-                                    include: { types: true },
-                                },
-                                nestedPool: {
-                                    include: {
-                                        dynamicData: true,
-                                        tokens: {
-                                            orderBy: { index: 'asc' },
-                                            include: {
-                                                token: true,
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
                 },
             },
         },
@@ -139,66 +92,11 @@ export const prismaPoolWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolD
 
 export type PrismaPoolWithExpandedNesting = Prisma.PrismaPoolGetPayload<typeof prismaPoolWithExpandedNesting>;
 
-export const nestedPoolWithSingleLayerNesting = Prisma.validator<Prisma.PrismaPoolDefaultArgs>()({
-    include: {
-        dynamicData: true,
-        tokens: {
-            orderBy: { index: 'asc' },
-            include: {
-                token: {
-                    include: { types: true },
-                },
-                nestedPool: {
-                    include: {
-                        dynamicData: true,
-                        tokens: {
-                            orderBy: { index: 'asc' },
-                            include: {
-                                token: true,
-                            },
-                        },
-                    },
-                },
-            },
-        },
-    },
-});
-
-export type PrismaNestedPoolWithSingleLayerNesting = Prisma.PrismaPoolGetPayload<
-    typeof nestedPoolWithSingleLayerNesting
->;
-
 const prismaPoolTokenWithExpandedNesting = Prisma.validator<Prisma.PrismaPool$tokensArgs>()({
     include: {
         token: {
             include: {
                 types: true,
-            },
-        },
-        nestedPool: {
-            include: {
-                dynamicData: true,
-                tokens: {
-                    orderBy: { index: 'asc' },
-                    include: {
-                        token: {
-                            include: {
-                                types: true,
-                            },
-                        },
-                        nestedPool: {
-                            include: {
-                                dynamicData: true,
-                                tokens: {
-                                    orderBy: { index: 'asc' },
-                                    include: {
-                                        token: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
             },
         },
     },
@@ -215,58 +113,12 @@ export type PrismaTokenWithTypes = PrismaToken & {
 export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolDefaultArgs>()({
     include: {
         dynamicData: true,
-        allTokens: {
-            include: {
-                token: {
-                    include: {
-                        types: true,
-                    },
-                },
-                nestedPool: {
-                    include: {
-                        allTokens: {
-                            include: {
-                                token: {
-                                    include: {
-                                        types: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
         aprItems: true,
         tokens: {
             orderBy: { index: 'asc' },
             include: {
                 token: {
                     include: { types: true },
-                },
-                nestedPool: {
-                    include: {
-                        dynamicData: true,
-                        tokens: {
-                            orderBy: { index: 'asc' },
-                            include: {
-                                token: {
-                                    include: { types: true },
-                                },
-                                nestedPool: {
-                                    include: {
-                                        dynamicData: true,
-                                        tokens: {
-                                            orderBy: { index: 'asc' },
-                                            include: {
-                                                token: true,
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
                 },
             },
         },

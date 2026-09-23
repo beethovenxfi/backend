@@ -112,10 +112,6 @@ type GqlToken {
     """
     priceRateProviderData: GqlPriceRateProviderData
     """
-    The rate provider data for the token
-    """
-    rateProviderData: GqlPriceRateProviderData @deprecated(reason: "Use priceRateProviderData instead")
-    """
     Whether the token is considered an ERC4626 token.
     """
     isErc4626: Boolean!
@@ -191,7 +187,6 @@ type GqlPriceRateProviderUpgradeableComponent {
 }
 
 enum GqlTokenType {
-    WHITE_LISTED @deprecated(reason: "Use BLOCKED instead")
     BLOCKED_V2
     BLOCKED_V3
     BPT

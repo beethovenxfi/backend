@@ -24,7 +24,6 @@ const aggregatorPrismaValidator = Prisma.validator<Prisma.PrismaPoolDefaultArgs>
                 },
             },
         },
-        // allTokens: true,
     },
 });
 
@@ -94,12 +93,10 @@ export class PoolAggregatorLoader {
             ...(args.where?.tokensIn
                 ? {
                       AND: args.where.tokensIn.map((token) => ({
-                          allTokens: {
+                          tokens: {
                               some: {
-                                  token: {
-                                      address: {
-                                          equals: token.toLowerCase(),
-                                      },
+                                  address: {
+                                      equals: token.toLowerCase(),
                                   },
                               },
                           },
@@ -159,11 +156,6 @@ export class PoolAggregatorLoader {
                 include: {
                     dynamicData: true,
                     tokens: { orderBy: [{ index: 'asc' }] },
-                    ...(args.where?.tokensIn
-                        ? {
-                              allTokens: true,
-                          }
-                        : {}),
                 },
             })
             .then((pools) =>
@@ -358,10 +350,12 @@ export class PoolAggregatorLoader {
                     weight: token.weight,
                     isErc4626: token.token.types ? types.includes('ERC4626') : false,
                     balanceUSD: `${token.balanceUSD}`,
-                    hasNestedPool: token.token.types ? token.address !== pool.address && types.includes('BPT') : false,
                     index: token.index,
                     id: token.id,
-                    isAllowed: types.includes('BLOCKED_V2') || types.includes('BLOCKED_V3'),
+                    isAllowed:
+                        pool.protocolVersion === 1 ||
+                        (pool.protocolVersion === 2 && !types.includes('BLOCKED_V2')) ||
+                        (pool.protocolVersion === 3 && !types.includes('BLOCKED_V3')),
                     isBufferAllowed: token.token.isBufferAllowed,
                     isExemptFromProtocolYieldFee: token.exemptFromProtocolYieldFee,
                     canUseBufferForSwaps: erc4626Review.canUseBufferForSwaps,

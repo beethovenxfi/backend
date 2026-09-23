@@ -20,11 +20,6 @@ const balancerResolvers: Resolvers = {
             const pools = loader.aggregatorPools(args);
             return pools;
         },
-        poolGetAggregatorPools: async (parent, args, context) => {
-            const loader = new PoolAggregatorLoader();
-            const pools = loader.aggregatorPools(args);
-            return pools;
-        },
         poolGetPool: async (parent, { id, chain, userAddress }, context, info) => {
             const fields = graphqlFields(info);
             return poolService.getGqlPool(fields, id, chain, userAddress ? userAddress : undefined);
@@ -55,11 +50,6 @@ const balancerResolvers: Resolvers = {
                 volume24h: `${snapshot.volume24h}`,
                 fees24h: `${snapshot.fees24h}`,
                 swapsCount: `${snapshot.swapsCount}`,
-                // fill deprecated fields with empty arrays/strings
-                totalSwapVolume: `0`,
-                totalSwapFee: `0`,
-                totalSurplus: `0`,
-                holdersCount: `0`,
             }));
         },
     },

@@ -24,7 +24,6 @@ model PrismaToken {
 
     types               PrismaTokenType[]
 
-    expandedPools       PrismaPoolExpandedTokens[]
     poolTokens          PrismaPoolToken[]
 
     underlyingTokenAddress   String?

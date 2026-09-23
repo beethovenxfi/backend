@@ -96,10 +96,6 @@ type GqlPoolMinimal {
     """
     hasErc4626: Boolean!
     """
-    Whether at least one token in a nested pool is considered an ERC4626 token.
-    """
-    hasNestedErc4626: Boolean!
-    """
     Whether at least one token in this pool is considered an ERC4626 token and the buffer is allowed.
     """
     hasAnyAllowedBuffer: Boolean!
@@ -373,10 +369,6 @@ interface GqlPoolBase {
     """
     hasErc4626: Boolean!
     """
-    Whether at least one token in a nested pool is considered an ERC4626 token.
-    """
-    hasNestedErc4626: Boolean!
-    """
     Whether at least one token in this pool is considered an ERC4626 token and the buffer is allowed.
     """
     hasAnyAllowedBuffer: Boolean!
@@ -492,7 +484,6 @@ type GqlPoolQuantAmmWeighted implements GqlPoolBase {
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
-    hasNestedErc4626: Boolean!
     hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
@@ -534,7 +525,6 @@ type GqlPoolWeighted implements GqlPoolBase {
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
-    hasNestedErc4626: Boolean!
     hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
     staking: GqlPoolStaking
@@ -573,7 +563,6 @@ type GqlPoolGyro implements GqlPoolBase {
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
-    hasNestedErc4626: Boolean!
     hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
@@ -629,7 +618,6 @@ type GqlPoolLiquidityBootstrapping implements GqlPoolBase {
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
-    hasNestedErc4626: Boolean!
     hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
@@ -674,7 +662,6 @@ type GqlPoolLiquidityBootstrappingV3 implements GqlPoolBase {
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
-    hasNestedErc4626: Boolean!
     hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
@@ -740,7 +727,6 @@ type GqlPoolFixedPriceLBP implements GqlPoolBase {
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
-    hasNestedErc4626: Boolean!
     hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
@@ -801,7 +787,6 @@ type GqlPoolStable implements GqlPoolBase {
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
-    hasNestedErc4626: Boolean!
     hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
@@ -842,7 +827,6 @@ type GqlPoolComposableStable implements GqlPoolBase {
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
-    hasNestedErc4626: Boolean!
     hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
@@ -884,7 +868,6 @@ type GqlPoolReClamm implements GqlPoolBase {
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
-    hasNestedErc4626: Boolean!
     hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
@@ -943,8 +926,7 @@ union GqlPoolUnion =
     | GqlPoolFixedPriceLBP
 
 """
-All info on the pool token. It will also include the nested pool if the token is a BPT. It will only support 1 level of nesting.
-A second (unsupported) level of nesting is shown by having hasNestedPool = true but nestedPool = null.
+All info on the pool token.
 """
 type GqlPoolTokenDetail {
     """
@@ -1000,14 +982,6 @@ type GqlPoolTokenDetail {
     """
     scalingFactor: BigDecimal
     """
-    Indicates whether this token is a BPT and therefor has a nested pool.
-    """
-    hasNestedPool: Boolean!
-    """
-    Additional data for the nested pool if the token is a BPT. Null otherwise.
-    """
-    nestedPool: GqlNestedPool
-    """
     Whether the token is in the allow list.
     """
     isAllowed: Boolean!
@@ -1057,96 +1031,6 @@ type GqlPoolTokenDetail {
     logoURI: String
     chain: GqlChain
     chainId: Int
-}
-
-"""
-All info on the nested pool if the token is a BPT. It will only support 1 level of nesting.
-"""
-type GqlNestedPool {
-    """
-    Unique identifier of the pool.
-    """
-    id: ID!
-    """
-    Name of the pool.
-    """
-    name: String!
-    """
-    Symbol of the pool.
-    """
-    symbol: String!
-    """
-    Address of the pool.
-    """
-    address: Bytes!
-    """
-    Type of the pool.
-    """
-    type: GqlPoolType!
-    """
-    Version of the pool.
-    """
-    version: Int!
-    """
-    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
-    """
-    swapFeeManager: Bytes
-    """
-    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
-    """
-    pauseManager: Bytes
-    """
-    Account empowered to set the pool creator fee percentage
-    """
-    poolCreator: Bytes
-    """
-    Address of the factory contract that created the pool, if applicable.
-    """
-    factory: Bytes
-    """
-    Timestamp of when the pool was created.
-    """
-    createTime: Int!
-    """
-    List of all tokens in the pool.
-    """
-    tokens: [GqlPoolTokenDetail!]!
-    """
-    Total number of shares in the pool.
-    """
-    totalShares: BigDecimal!
-    """
-    Total liquidity in the pool in USD.
-    """
-    totalLiquidity: BigDecimal!
-    """
-    Number of shares of the parent pool in the nested pool.
-    """
-    nestedShares: BigDecimal!
-    """
-    Total liquidity of the parent pool in the nested pool in USD.
-    """
-    nestedLiquidity: BigDecimal!
-    """
-    Percentage of the parents pool shares inside the nested pool.
-    """
-    nestedPercentage: BigDecimal!
-    """
-    Fee charged for swapping tokens in the pool as %. 0.01 -> 0.01%
-    """
-    swapFee: BigDecimal!
-    """
-    Price rate of this pool or the Balancer Pool Token (BPT).
-    """
-    bptPriceRate: BigDecimal!
-    """
-    Liquidity management settings for v3 pools.
-    """
-    liquidityManagement: LiquidityManagement
-    """
-    Hook assigned to a pool
-    """
-    hook: GqlHook
 }
 
 input GqlPoolTimePeriod {
@@ -1252,10 +1136,6 @@ enum GqlPoolAprItemType {
     Represents the yield from an IB (Interest-Bearing) asset APR in a pool.
     """
     IB_YIELD
-    """
-    Represents if the APR items comes from a nested pool.
-    """
-    NESTED
     """
     Staking reward APR in a pool from a reward token.
     """
@@ -1403,8 +1283,6 @@ input GqlPoolEventsFilter {
     chainIn: [GqlChain]
     poolId: String
     type: GqlPoolEventType
-    poolIdIn: [String] @deprecated
-    typeIn: [GqlPoolEventType] @deprecated
     userAddress: String
 }
 

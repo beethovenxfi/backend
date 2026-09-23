@@ -68,7 +68,6 @@ export const mapHookToGqlHook = (hookData: HookData): GqlHook | undefined => {
 
     return {
         address: hookData.address,
-        name: hookData.name || '',
         type: hookData.type,
         config: {
             enableHookAdjustedAmounts: hookData.enableHookAdjustedAmounts,
@@ -90,17 +89,5 @@ export const mapHookToGqlHook = (hookData: HookData): GqlHook | undefined => {
                     ...hookData.dynamicData,
                 } as HookParams)) ||
             undefined,
-        // Deprecated
-        enableHookAdjustedAmounts: hookData.enableHookAdjustedAmounts,
-        shouldCallAfterSwap: hookData.shouldCallAfterSwap,
-        shouldCallBeforeSwap: hookData.shouldCallBeforeSwap,
-        shouldCallAfterInitialize: hookData.shouldCallAfterInitialize,
-        shouldCallBeforeInitialize: hookData.shouldCallBeforeInitialize,
-        shouldCallAfterAddLiquidity: hookData.shouldCallAfterAddLiquidity,
-        shouldCallBeforeAddLiquidity: hookData.shouldCallBeforeAddLiquidity,
-        shouldCallAfterRemoveLiquidity: hookData.shouldCallAfterRemoveLiquidity,
-        shouldCallBeforeRemoveLiquidity: hookData.shouldCallBeforeRemoveLiquidity,
-        shouldCallComputeDynamicSwapFee: hookData.shouldCallComputeDynamicSwapFee,
-        dynamicData: hookData.dynamicData,
     };
 };

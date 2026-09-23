@@ -6,7 +6,7 @@ import _ from 'lodash';
 const aprsInclude = Prisma.validator<Prisma.PrismaPoolDefaultArgs>()({
     include: {
         dynamicData: true,
-        tokens: { include: { token: true, nestedPool: true } },
+        tokens: { include: { token: true } },
         staking: { include: { gauge: { include: { rewards: true } }, reliquary: { include: { levels: true } } } },
     },
 });
@@ -48,7 +48,6 @@ export class AprRepository {
                     },
                     include: {
                         token: true,
-                        nestedPool: true,
                     },
                 })
                 .then((records) => _.groupBy(records, 'poolId') as Record<string, typeof records>),

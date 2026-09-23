@@ -157,7 +157,7 @@ const getPoolMetadataTags = async (existingTags: Record<string, Set<string>>): P
                 for (const tokenAddress of tag.tokens[chainId]) {
                     const chain = chainIdToChain[chainId];
                     const poolsWithToken = await prisma.prismaPool.findMany({
-                        where: { chain: chain, allTokens: { some: { tokenAddress: tokenAddress.toLowerCase() } } },
+                        where: { chain: chain, tokens: { some: { address: tokenAddress.toLowerCase() } } },
                     });
                     poolsWithToken.forEach((pool) => {
                         if (!existingTags[pool.id]) {
@@ -177,7 +177,7 @@ const getPoolMetadataTags = async (existingTags: Record<string, Set<string>>): P
     // fetch pools with tokens from db
     const sonicPools = await prisma.prismaPool.findMany({
         where: { chain: 'SONIC' },
-        select: { id: true, address: true, chain: true, allTokens: true },
+        select: { id: true, address: true, chain: true, tokens: { select: { address: true } } },
     });
 
     // from the tag list, find all tags that start with points_sonic
@@ -203,8 +203,8 @@ const getPoolMetadataTags = async (existingTags: Record<string, Set<string>>): P
 
     // find pools that have only sonic point bearing tokens
     const sonicPointBearingPools = sonicPools.filter((pool) => {
-        const tokenAddresses = pool.allTokens
-            .map((token) => token.tokenAddress.toLowerCase())
+        const tokenAddresses = pool.tokens
+            .map((token) => token.address.toLowerCase())
             .filter((address) => address !== pool.address.toLowerCase());
         return tokenAddresses.every((address) => sonicPointBearingTokenAddresses.includes(address));
     });
@@ -217,8 +217,8 @@ const getPoolMetadataTags = async (existingTags: Record<string, Set<string>>): P
         }
         // add a tag for each of the sonic point bearing token in the pool
         sonicPointBearingTags.forEach((tag) => {
-            pool.allTokens.forEach((token) => {
-                if (tag.tokens && tag.tokens['146']?.includes(token.tokenAddress.toLowerCase())) {
+            pool.tokens.forEach((token) => {
+                if (tag.tokens && tag.tokens['146']?.includes(token.address.toLowerCase())) {
                     existingTags[pool.id].add(tag.id.toUpperCase());
                 }
             });
@@ -272,7 +272,7 @@ const getErc4626Tags = async (existingTags: Record<string, Set<string>>): Promis
                 where: {
                     chain: chainIdToChain[chainId],
                     protocolVersion: 3,
-                    allTokens: { some: { tokenAddress: { in: addresses } } },
+                    tokens: { some: { address: { in: addresses } } },
                 },
             });
             for (const pool of poolsWithThisErc4626Token) {

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, json } from 'express';
 import { parse, print, visit } from 'graphql';
 
 const LOWER_REGEX =
-    /id|poolId|poolIdIn|address|addresses|userAddress|tokensIn|tokensNotIn|tokenInIn|tokenOutIn|tokenIn|tokenOut|idIn|idNotIn/;
+    /id|poolId|address|addresses|userAddress|tokensIn|tokensNotIn|tokenInIn|tokenOutIn|tokenIn|tokenOut|idIn|idNotIn/;
 
 const UPPER_REGEX = /categories/;
 

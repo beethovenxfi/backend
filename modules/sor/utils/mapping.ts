@@ -4,7 +4,6 @@ import {
     GqlSorSwapRoute,
     GqlSorSwapRouteHop,
     GqlSorGetSwapPaths,
-    GqlSorCallData,
     QuerySorGetSwapPathsArgs,
 } from '../../../apps/api/gql/generated-schema';
 import { SwapKind, TokenAmount, BatchSwapStep, DEFAULT_USERDATA, SingleSwap } from '@balancer/sdk';
@@ -23,25 +22,12 @@ export async function mapToGetSwapPathsInput(
 ): Promise<Omit<GetSwapPathsInput, 'protocolVersion'>> {
     const amountToken = args.swapType === 'EXACT_IN' ? args.tokenIn : args.tokenOut;
     const amount = await getTokenAmountHuman(amountToken, args.swapAmount, args.chain);
-    const wethIsEth =
-        args.tokenIn === config[args.chain].eth.address || args.tokenOut === config[args.chain].eth.address;
-
     return {
         chain: args.chain,
         swapAmount: amount,
         swapType: args.swapType,
         tokenIn: args.tokenIn,
         tokenOut: args.tokenOut,
-        queryBatchSwap: args.queryBatchSwap ?? false,
-        callDataInput: args.callDataInput
-            ? {
-                  receiver: args.callDataInput.receiver,
-                  sender: args.callDataInput.sender,
-                  slippagePercentage: args.callDataInput.slippagePercentage,
-                  deadline: args.callDataInput.deadline,
-                  wethIsEth,
-              }
-            : undefined,
         considerPoolsWithHooks: args.considerPoolsWithHooks ?? true,
         poolIds: args.poolIds ?? undefined,
     };
@@ -58,15 +44,12 @@ export async function mapToSorSwapPaths(
     let inputAmount = getInputAmount(paths);
     let outputAmount = getOutputAmount(paths);
 
-    // TODO: remove this once we fully deprecate queryBatchSwap, callDataInput and priceImpact
-    const callData: GqlSorCallData | undefined = undefined;
     const priceImpact = undefined;
     const priceImpactError =
         'Price impact could not be calculated for this path. The swap path is still valid and can be executed.';
 
     const sorPaths: GqlSorPath[] = paths.map((path) => ({
         protocolVersion,
-        vaultVersion: protocolVersion,
         inputAmountRaw: path.inputAmount.amount.toString(),
         outputAmountRaw: path.outputAmount.amount.toString(),
         tokens: path.tokens.map((token) => ({
@@ -85,7 +68,6 @@ export async function mapToSorSwapPaths(
 
     return {
         protocolVersion,
-        vaultVersion: protocolVersion,
         paths: sorPaths,
         swapType,
         swaps: mapSwaps(paths, swapKind),
@@ -108,7 +90,6 @@ export async function mapToSorSwapPaths(
             priceImpact: priceImpact,
             error: priceImpactError,
         },
-        callData,
     };
 }
 

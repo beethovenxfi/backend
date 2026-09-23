@@ -1,21 +1,12 @@
 import { Chain, PrismaPoolAprType } from '@prisma/client';
 import {
     GqlPoolTokenDetail,
-    GqlNestedPool,
-    GqlHook,
-    LiquidityManagement,
     GqlPoolAprItemType,
     GqlPoolAprItem,
 } from '../../../apps/api/gql/generated-schema';
-import {
-    PrismaPoolTokenWithExpandedNesting,
-    PrismaNestedPoolWithSingleLayerNesting,
-    HookData,
-    PrismaPoolMinimal,
-} from '../../../prisma/prisma-types';
+import { PrismaPoolTokenWithExpandedNesting, PrismaPoolMinimal } from '../../../prisma/prisma-types';
 import { floatToExactString } from '../../common/numbers';
 import { chainToChainId } from '../../../config/chain-id-to-chain';
-import { StableData } from '../subgraph-mapper';
 import { prisma } from '../../../prisma/prisma-client';
 import { tokenService } from '../../token/token.service';
 
@@ -23,20 +14,12 @@ export function mapAprItems(pool: PrismaPoolMinimal): GqlPoolAprItem[] {
     const aprItems: GqlPoolAprItem[] = [];
 
     for (const aprItem of pool.aprItems) {
-        // Skip items with APR of 0
-        if (aprItem.apr === 0) {
+        // Skip items with APR of 0 or without a type
+        if (aprItem.apr === 0 || !aprItem.type) {
             continue;
         }
 
-        let type: GqlPoolAprItemType;
-        switch (aprItem.type) {
-            case null:
-                type = 'NESTED';
-                break;
-            default:
-                type = aprItem.type;
-                break;
-        }
+        const type: GqlPoolAprItemType = aprItem.type;
 
         aprItems.push({
             id: aprItem.id,
@@ -49,26 +32,16 @@ export function mapAprItems(pool: PrismaPoolMinimal): GqlPoolAprItem[] {
     return aprItems;
 }
 
-export function mapPoolToken(
-    poolToken: PrismaPoolTokenWithExpandedNesting,
-    protocolVersion: number,
-    nestedPercentage = 1,
-): GqlPoolTokenDetail {
-    const { nestedPool } = poolToken;
-
-    const hasNestedPool = nestedPool !== null && nestedPool.id !== poolToken.poolId;
-
+export function mapPoolToken(poolToken: PrismaPoolTokenWithExpandedNesting, protocolVersion: number): GqlPoolTokenDetail {
     return {
         id: `${poolToken.poolId}-${poolToken.token.address}`,
         ...poolToken.token,
         index: poolToken.index,
-        balance: floatToExactString(parseFloat(poolToken.balance || '0') * nestedPercentage),
-        balanceUSD: floatToExactString((poolToken.balanceUSD || 0) * nestedPercentage),
+        balance: floatToExactString(parseFloat(poolToken.balance || '0')),
+        balanceUSD: floatToExactString(poolToken.balanceUSD || 0),
         priceRate: poolToken.priceRate || '1.0',
         priceRateProvider: poolToken.priceRateProvider,
         weight: poolToken.weight,
-        hasNestedPool: hasNestedPool,
-        nestedPool: hasNestedPool ? mapNestedPool(nestedPool, poolToken.balance || '0') : undefined,
         isAllowed:
             protocolVersion === 1 ||
             (protocolVersion === 2 && poolToken.token.types.every((type) => type.type !== 'BLOCKED_V2')) ||
@@ -80,37 +53,6 @@ export function mapPoolToken(
         scalingFactor: poolToken.scalingFactor,
         chain: poolToken.chain,
         chainId: Number(chainToChainId[poolToken.chain]),
-    };
-}
-
-function mapNestedPool(nestedPool: PrismaNestedPoolWithSingleLayerNesting, tokenBalance: string): GqlNestedPool {
-    const totalShares = parseFloat(nestedPool.dynamicData?.totalShares || '0');
-    const percentOfSupplyNested = totalShares > 0 ? parseFloat(tokenBalance) / totalShares : 0;
-    const totalLiquidity = nestedPool.dynamicData?.totalLiquidity || 0;
-
-    const hook = (nestedPool.hook as HookData)?.address ? (nestedPool.hook as HookData) : null;
-
-    return {
-        ...nestedPool,
-        liquidityManagement: (nestedPool.liquidityManagement as LiquidityManagement) || undefined,
-        totalLiquidity: `${totalLiquidity}`,
-        totalShares: `${totalShares}`,
-        nestedShares: `${totalShares * percentOfSupplyNested}`,
-        nestedLiquidity: `${totalLiquidity * percentOfSupplyNested}`,
-        nestedPercentage: `${percentOfSupplyNested}`,
-        tokens: nestedPool.tokens.map((token) =>
-            mapPoolToken(
-                {
-                    ...token,
-                    nestedPool: null,
-                },
-                nestedPool.protocolVersion,
-                percentOfSupplyNested,
-            ),
-        ),
-        swapFee: nestedPool.dynamicData?.swapFee || '0',
-        bptPriceRate: (nestedPool.typeData as StableData).bptPriceRate || '1.0',
-        hook: hook as GqlHook,
     };
 }
 
@@ -151,43 +93,5 @@ export async function enrichWithErc4626Data(poolTokens: GqlPoolTokenDetail[], ch
             }
         }
 
-        if (token.hasNestedPool) {
-            for (const nestedToken of token.nestedPool!.tokens) {
-                if (nestedToken.isErc4626) {
-                    const prismaToken = await prisma.prismaToken.findUnique({
-                        where: { address_chain: { address: nestedToken.address, chain: chain } },
-                    });
-                    if (prismaToken?.underlyingTokenAddress) {
-                        const tokenDefinition = await tokenService.getTokenDefinition(
-                            prismaToken.underlyingTokenAddress,
-                            chain,
-                        );
-                        nestedToken.underlyingToken = tokenDefinition;
-                    }
-
-                    const erc4626ReviewData = await prisma.prismaErc4626ReviewData.findUnique({
-                        where: {
-                            chain_erc4626Address: {
-                                chain: chain,
-                                erc4626Address: nestedToken.address,
-                            },
-                        },
-                    });
-                    if (erc4626ReviewData) {
-                        nestedToken.erc4626ReviewData = {
-                            ...erc4626ReviewData,
-                            warnings: erc4626ReviewData.warnings?.split(',') || [],
-                        };
-                        nestedToken.useUnderlyingForAddRemove = erc4626ReviewData.useUnderlyingForAddRemove;
-                        nestedToken.useWrappedForAddRemove = erc4626ReviewData.useUnderlyingForAddRemove;
-                        nestedToken.canUseBufferForSwaps = erc4626ReviewData.canUseBufferForSwaps;
-                    } else {
-                        nestedToken.useUnderlyingForAddRemove = false;
-                        nestedToken.useWrappedForAddRemove = true;
-                        nestedToken.canUseBufferForSwaps = false;
-                    }
-                }
-            }
-        }
     }
 }

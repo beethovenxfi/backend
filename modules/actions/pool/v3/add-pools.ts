@@ -39,7 +39,7 @@ export const addPools = async (
     const withUsd = inserts.map((item) => enrichPoolUpsertsUsd<typeof item>(item, prices));
 
     // Upsert pools to the database
-    for (const { pool, tokens, poolToken, poolDynamicData, poolExpandedTokens } of withUsd) {
+    for (const { pool, tokens, poolToken, poolDynamicData } of withUsd) {
         try {
             await prisma.$transaction([
                 prisma.prismaPool.upsert({
@@ -87,21 +87,6 @@ export const addPools = async (
                                 poolId: pool.id,
                                 chain,
                             },
-                            update: token,
-                        }),
-                    )) ||
-                    []),
-                ...((poolExpandedTokens &&
-                    poolExpandedTokens.map((token) =>
-                        prisma.prismaPoolExpandedTokens.upsert({
-                            where: {
-                                tokenAddress_poolId_chain: {
-                                    tokenAddress: token.tokenAddress,
-                                    poolId: pool.id,
-                                    chain,
-                                },
-                            },
-                            create: token,
                             update: token,
                         }),
                     )) ||

@@ -6,7 +6,6 @@ import { V3JoinedSubgraphPool } from '../subgraphs';
 import { parseEther } from 'viem';
 import { PoolUpsertData } from '../../../prisma/prisma-types';
 import { hookTransformer } from './hook-transformer';
-import _ from 'lodash';
 
 // Subgraph to DB format transformation
 export const poolUpsertTransformerV3 = (
@@ -16,17 +15,6 @@ export const poolUpsertTransformerV3 = (
 ): PoolUpsertData => {
     let type: PrismaPoolType;
     let typeData: ReturnType<(typeof typeDataMapper)[keyof typeof typeDataMapper]> | {} = {};
-
-    // expand the nested tokens
-    const allTokens = _.flattenDeep(
-        poolData.tokens.map((token) => [
-            token,
-            ...(token.nestedPool?.tokens || []).map((nestedToken) => ({
-                ...nestedToken,
-                nestedPoolId: token.nestedPool?.id || null,
-            })),
-        ]),
-    );
 
     switch (poolData.factory.type) {
         case PoolType.Weighted:
@@ -128,18 +116,11 @@ export const poolUpsertTransformerV3 = (
             chain: chain,
             address: token.address.toLowerCase(),
             index: token.index,
-            nestedPoolId: token.nestedPool?.id.toLowerCase() ?? null,
             priceRateProvider: poolData.rateProviders![i].address.toLowerCase(),
             exemptFromProtocolYieldFee: !token.paysYieldFees,
             scalingFactor: token.scalingFactor,
             balance: token.balance,
             weight: poolData.weightedParams ? poolData.weightedParams.weights[token.index] ?? null : null,
-        })),
-        poolExpandedTokens: allTokens.map((token) => ({
-            poolId: poolData.id.toLowerCase(),
-            chain,
-            tokenAddress: token.address.toLowerCase(),
-            nestedPoolId: token.nestedPool?.id.toLowerCase() || null,
         })),
     };
 };

@@ -127,7 +127,6 @@ CREATE TABLE "PrismaPoolToken" (
     "chain" "Chain" NOT NULL,
     "address" TEXT NOT NULL,
     "index" INTEGER NOT NULL,
-    "nestedPoolId" TEXT,
     "priceRateProvider" TEXT,
     "exemptFromProtocolYieldFee" BOOLEAN NOT NULL DEFAULT false,
     "scalingFactor" TEXT,
@@ -152,16 +151,6 @@ CREATE TABLE "PrismaPoolAprItem" (
     "type" "PrismaPoolAprType",
 
     CONSTRAINT "PrismaPoolAprItem_pkey" PRIMARY KEY ("id","chain")
-);
-
--- CreateTable
-CREATE TABLE "PrismaPoolExpandedTokens" (
-    "tokenAddress" TEXT NOT NULL,
-    "poolId" TEXT NOT NULL,
-    "chain" "Chain" NOT NULL,
-    "nestedPoolId" TEXT,
-
-    CONSTRAINT "PrismaPoolExpandedTokens_pkey" PRIMARY KEY ("tokenAddress","poolId","chain")
 );
 
 -- CreateTable
@@ -534,16 +523,10 @@ CREATE INDEX "PrismaPoolToken_poolId_chain_idx" ON "PrismaPoolToken"("poolId", "
 CREATE INDEX "PrismaPoolToken_address_chain_idx" ON "PrismaPoolToken"("address", "chain");
 
 -- CreateIndex
-CREATE INDEX "PrismaPoolToken_nestedPoolId_chain_idx" ON "PrismaPoolToken"("nestedPoolId", "chain");
-
--- CreateIndex
 CREATE INDEX "PrismaPoolAprItem_poolId_chain_idx" ON "PrismaPoolAprItem"("poolId", "chain");
 
 -- CreateIndex
 CREATE INDEX "PrismaPoolAprItem_chain_type_idx" ON "PrismaPoolAprItem"("chain", "type");
-
--- CreateIndex
-CREATE INDEX "PrismaPoolExpandedTokens_tokenAddress_chain_idx" ON "PrismaPoolExpandedTokens"("tokenAddress", "chain");
 
 -- CreateIndex
 CREATE INDEX "PrismaPoolStaking_poolId_chain_idx" ON "PrismaPoolStaking"("poolId", "chain");
@@ -648,19 +631,7 @@ ALTER TABLE "PrismaPoolToken" ADD CONSTRAINT "PrismaPoolToken_poolId_chain_fkey"
 ALTER TABLE "PrismaPoolToken" ADD CONSTRAINT "PrismaPoolToken_address_chain_fkey" FOREIGN KEY ("address", "chain") REFERENCES "PrismaToken"("address", "chain") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PrismaPoolToken" ADD CONSTRAINT "PrismaPoolToken_nestedPoolId_chain_fkey" FOREIGN KEY ("nestedPoolId", "chain") REFERENCES "PrismaPool"("id", "chain") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "PrismaPoolAprItem" ADD CONSTRAINT "PrismaPoolAprItem_poolId_chain_fkey" FOREIGN KEY ("poolId", "chain") REFERENCES "PrismaPool"("id", "chain") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "PrismaPoolExpandedTokens" ADD CONSTRAINT "PrismaPoolExpandedTokens_tokenAddress_chain_fkey" FOREIGN KEY ("tokenAddress", "chain") REFERENCES "PrismaToken"("address", "chain") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "PrismaPoolExpandedTokens" ADD CONSTRAINT "PrismaPoolExpandedTokens_poolId_chain_fkey" FOREIGN KEY ("poolId", "chain") REFERENCES "PrismaPool"("id", "chain") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "PrismaPoolExpandedTokens" ADD CONSTRAINT "PrismaPoolExpandedTokens_nestedPoolId_chain_fkey" FOREIGN KEY ("nestedPoolId", "chain") REFERENCES "PrismaPool"("id", "chain") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PrismaPoolStaking" ADD CONSTRAINT "PrismaPoolStaking_poolId_chain_fkey" FOREIGN KEY ("poolId", "chain") REFERENCES "PrismaPool"("id", "chain") ON DELETE CASCADE ON UPDATE CASCADE;

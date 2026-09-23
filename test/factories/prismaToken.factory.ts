@@ -15,7 +15,6 @@ export const prismaPoolTokenFactory = Factory.define<PrismaPoolTokenWithDynamicD
         poolId: poolId,
         chain: 'SONIC',
         index: sequence ? sequence - 1 : 0,
-        nestedPoolId: null,
         priceRateProvider: ZERO_ADDRESS,
         exemptFromProtocolYieldFee: false,
         token: prismaTokenFactory.build({ address: tokenAddress, decimals, chain }),

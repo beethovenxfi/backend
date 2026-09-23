@@ -39,7 +39,6 @@ export const swapPathsZeroResponse = (tokenIn: string, tokenOut: string, chain: 
         paths: [],
         tokenAddresses: [],
         swapType: 'EXACT_IN',
-        vaultVersion: 2,
         protocolVersion: 2,
         tokenIn: replaceZeroAddressWithEth(tokenIn, chain),
         tokenOut: replaceZeroAddressWithEth(tokenOut, chain),

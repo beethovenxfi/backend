@@ -7,9 +7,8 @@ export const subgraphToPrismaCreate = (
     pool: BalancerPoolFragment,
     chain: Chain,
     blockNumber: number,
-    nestedPools: { id: string; address: string }[],
 ) => {
-    const dbData = subgraphMapper(pool, chain, blockNumber, nestedPools);
+    const dbData = subgraphMapper(pool, chain, blockNumber);
 
     const prismaPoolRecordWithAssociations = {
         data: {
@@ -36,9 +35,8 @@ export const subgraphToPrismaUpdate = (
     pool: BalancerPoolFragment,
     chain: Chain,
     blockNumber: number,
-    nestedPools: { id: string; address: string }[],
 ) => {
-    const dbData = subgraphMapper(pool, chain, blockNumber, nestedPools);
+    const dbData = subgraphMapper(pool, chain, blockNumber);
     const { id, ...baseWithoutId } = dbData.base;
 
     const prismaPoolRecordWithDataAssociations = {
@@ -66,7 +64,6 @@ const subgraphMapper = (
     pool: BalancerPoolFragment,
     chain: Chain,
     blockNumber: number,
-    nestedPools: { id: string; address: string }[],
 ) => {
     const type = mapSubgraphPoolTypeToPoolType(pool.poolType!);
     const version = mapPoolTypeVersion(pool.poolType!, pool.poolTypeVersion!);
@@ -101,10 +98,6 @@ const subgraphMapper = (
 
     const tokens =
         pool.tokens?.map((token) => {
-            const nestedPool = nestedPools.find((nestedPool) => {
-                return pool.id !== nestedPool.id && nestedPool.address === token.address;
-            });
-
             let priceRateProvider;
             if (pool.priceRateProviders) {
                 const data = pool.priceRateProviders.find((provider) => provider.token.address === token.address);
@@ -118,7 +111,6 @@ const subgraphMapper = (
                 exemptFromProtocolYieldFee: token.isExemptFromYieldProtocolFee
                     ? token.isExemptFromYieldProtocolFee
                     : false,
-                nestedPoolId: nestedPool?.id,
                 index: token.index || pool.tokensList.findIndex((address) => address === token.address),
                 balance: token.balance,
                 balanceUSD: 0,

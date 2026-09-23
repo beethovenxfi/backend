@@ -14,6 +14,7 @@ import {
     Erc4626ReviewData,
     GqlPriceRateProviderData,
     GqlToken,
+    GqlTokenType,
     MutationTokenDeleteTokenTypeArgs,
     QueryTokenGetTokensArgs,
 } from '../../apps/api/gql/generated-schema';
@@ -76,11 +77,11 @@ export class TokenService {
             const erc4626Data = await this.getErc4626Data([token]);
             return {
                 ...token,
-                types: token.types.map((type) => type.type),
+                types: token.types.map((type) => type.type).filter((type): type is GqlTokenType => type !== 'WHITE_LISTED'),
                 isBufferAllowed: token.isBufferAllowed,
                 chainId: config[chain].chain.id,
                 tradable: !token.types.find((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT'),
-                rateProviderData: rateProviderData[token.address],
+                priceRateProviderData: rateProviderData[token.address],
                 coingeckoId: token.coingeckoTokenId,
                 isErc4626: token.types.some((type) => type.type === 'ERC4626'),
                 erc4626ReviewData: erc4626Data[`${token.address}-${token.chain}`],
@@ -174,9 +175,9 @@ export class TokenService {
 
         return tokens.map((token) => ({
             ...token,
+            types: token.types.filter((type): type is GqlTokenType => type !== 'WHITE_LISTED'),
             chainId: config[token.chain].chain.id,
             tradable: !token.types.find((type) => type === 'PHANTOM_BPT' || type === 'BPT'),
-            rateProviderData: rateProviderData[token.address],
             priceRateProviderData: rateProviderData[token.address],
             coingeckoId: token.coingeckoTokenId,
             isErc4626: token.types.some((type) => type === 'ERC4626'),

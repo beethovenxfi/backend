@@ -99,32 +99,6 @@ export class PoolGqlLoaderService {
                     };
                 }
             }
-            if (token.hasNestedPool) {
-                for (const nestedToken of token.nestedPool!.tokens) {
-                    if (nestedToken.priceRateProvider && nestedToken.priceRateProvider !== ZERO_ADDRESS) {
-                        const rateproviderData = await prisma.prismaPriceRateProviderData.findUnique({
-                            where: {
-                                chain_rateProviderAddress: {
-                                    chain: mappedPool.chain,
-                                    rateProviderAddress: nestedToken.priceRateProvider,
-                                },
-                            },
-                        });
-                        if (rateproviderData) {
-                            nestedToken.priceRateProviderData = {
-                                ...rateproviderData,
-                                warnings: rateproviderData.warnings?.split(',') || [],
-                                upgradeableComponents:
-                                    (rateproviderData.upgradableComponents as {
-                                        implementationReviewed: string;
-                                        entryPoint: string;
-                                    }[]) || [],
-                                address: rateproviderData.rateProviderAddress,
-                            };
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -279,11 +253,8 @@ export class PoolGqlLoaderService {
             userBalance: this.getUserBalance(pool, userWalletbalances, userStakedBalances),
             categories: pool.categories as GqlPoolFilterCategory[],
             tags: pool.categories,
-            hasErc4626: pool.allTokens.some((token) => token.token.types.some((type) => type.type === 'ERC4626')),
-            hasNestedErc4626: pool.allTokens.some((token) =>
-                token.nestedPool?.allTokens.some((token) => token.token.types.some((type) => type.type === 'ERC4626')),
-            ),
-            hasAnyAllowedBuffer: pool.allTokens.some(
+            hasErc4626: pool.tokens.some((token) => token.token.types.some((type) => type.type === 'ERC4626')),
+            hasAnyAllowedBuffer: pool.tokens.some(
                 (token) => token.token.types.some((type) => type.type === 'ERC4626') && token.token.isBufferAllowed,
             ),
         };
@@ -364,16 +335,14 @@ export class PoolGqlLoaderService {
             textSearch = { contains: args.textSearch, mode: 'insensitive' as const };
         }
 
-        const allTokensFilter: { allTokens: { some: { token: { address: { equals: string } } } } }[] = [];
-        const allTokensFilterNot = [];
+        const tokensFilter: Prisma.PrismaPoolWhereInput[] = [];
+        const tokensFilterNot: Prisma.PrismaPoolWhereInput[] = [];
         where?.tokensIn?.forEach((token) => {
-            allTokensFilter.push({
-                allTokens: {
+            tokensFilter.push({
+                tokens: {
                     some: {
-                        token: {
-                            address: {
-                                equals: token.toLowerCase(),
-                            },
+                        address: {
+                            equals: token.toLowerCase(),
                         },
                     },
                 },
@@ -381,13 +350,11 @@ export class PoolGqlLoaderService {
         });
 
         if (where?.tokensNotIn) {
-            allTokensFilterNot.push({
-                allTokens: {
+            tokensFilterNot.push({
+                tokens: {
                     every: {
-                        token: {
-                            address: {
-                                notIn: where.tokensNotIn.map((t) => t.toLowerCase()) || undefined,
-                            },
+                        address: {
+                            notIn: where.tokensNotIn.map((t) => t.toLowerCase()) || undefined,
                         },
                     },
                 },
@@ -445,7 +412,7 @@ export class PoolGqlLoaderService {
                 gt: where?.createTime?.gt || undefined,
                 lt: where?.createTime?.lt || undefined,
             },
-            AND: [{ OR: allTokensFilter }, { OR: allTokensFilterNot }],
+            AND: [{ OR: tokensFilter }, { OR: tokensFilterNot }],
             id: {
                 in: where?.idIn?.map((id) => id.toLowerCase()) || undefined,
                 notIn: where?.idNotIn?.map((id) => id.toLowerCase()) || undefined,
@@ -475,14 +442,10 @@ export class PoolGqlLoaderService {
                     {
                         ...filterArgs,
                         ...userArgs,
-                        allTokens: {
+                        tokens: {
                             some: {
                                 token: {
-                                    OR: [
-                                        { symbol: textSearch },
-                                        { address: filterArgs.allTokens?.some?.token?.address },
-                                        { address: textSearch },
-                                    ],
+                                    OR: [{ symbol: textSearch }, { address: textSearch }],
                                 },
                             },
                         },
@@ -502,21 +465,16 @@ export class PoolGqlLoaderService {
 
         const mappedData = {
             decimals: 18,
-            owner: pool.swapFeeManager, // Keep for backwards compatibility
             staking: this.getStakingData(pool),
             dynamicData: this.getPoolDynamicData(pool),
             poolTokens: pool.tokens.map((token) => mapPoolToken(token, pool.protocolVersion)),
             userBalance: this.getUserBalance(pool, userWalletbalances, userStakedBalances),
-            vaultVersion: poolWithoutTypeData.protocolVersion,
             categories: pool.categories as GqlPoolFilterCategory[],
             tags: pool.categories,
             hook: mapHookToGqlHook(pool.hook as HookData),
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,
-            hasErc4626: pool.allTokens.some((token) => token.token.types.some((type) => type.type === 'ERC4626')),
-            hasNestedErc4626: pool.allTokens.some((token) =>
-                token.nestedPool?.allTokens.some((token) => token.token.types.some((type) => type.type === 'ERC4626')),
-            ),
-            hasAnyAllowedBuffer: pool.allTokens.some(
+            hasErc4626: pool.tokens.some((token) => token.token.types.some((type) => type.type === 'ERC4626')),
+            hasAnyAllowedBuffer: pool.tokens.some(
                 (token) => token.token.types.some((type) => type.type === 'ERC4626') && token.token.isBufferAllowed,
             ),
         };

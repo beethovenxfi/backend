@@ -32,10 +32,7 @@ model PrismaPool {
     snapshots           PrismaPoolSnapshot[]
     aprItems            PrismaPoolAprItem[]
     categories          String[] @default([])
-    tokensWithPoolNested PrismaPoolToken[] @relation(name: "PoolNestedInToken")
 
-    allTokens           PrismaPoolExpandedTokens[]
-    allTokensNested     PrismaPoolExpandedTokens[] @relation(name: "NestedPoolForAllToken")
     staking             PrismaPoolStaking[]
 
     userWalletBalances  PrismaUserWalletBalance[]
@@ -122,9 +119,6 @@ model PrismaPoolToken {
     token                       PrismaToken          @relation(fields:[address, chain], references: [address, chain], onDelete: Cascade)
     index                       Int
 
-    nestedPoolId                String?
-    nestedPool                  PrismaPool?         @relation(name: "PoolNestedInToken", fields:[nestedPoolId, chain], references: [id, chain], onDelete: Cascade)
-
     priceRateProvider           String?
     exemptFromProtocolYieldFee  Boolean             @default(false)
 
@@ -140,7 +134,6 @@ model PrismaPoolToken {
     @@index([id, chain]) // Used for updates
     @@index([poolId, chain])
     @@index([address, chain])
-    @@index([nestedPoolId, chain])
 }
 
 model PrismaPoolAprItem {
@@ -174,21 +167,6 @@ enum PrismaPoolAprType {
     MABEETS_EMISSIONS
 }
 
-
-model PrismaPoolExpandedTokens {
-    @@id([tokenAddress, poolId, chain])
-
-    tokenAddress        String
-    token               PrismaToken         @relation(fields:[tokenAddress, chain], references: [address, chain])
-    poolId              String
-    pool                PrismaPool          @relation(fields:[poolId, chain], references: [id, chain], onDelete: Cascade)
-    chain               Chain
-
-    nestedPoolId        String?
-    nestedPool          PrismaPool?         @relation(name: "NestedPoolForAllToken", fields:[nestedPoolId, chain], references: [id, chain], onDelete: Cascade)
-
-    @@index([tokenAddress, chain])
-}
 
 model PrismaPoolStaking {
     @@id([id, chain])

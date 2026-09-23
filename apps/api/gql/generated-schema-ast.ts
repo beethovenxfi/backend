@@ -72,17 +72,12 @@ export const schema = gql`
 
     input GqlAggregatorPoolFilter {
         chainIn: [GqlChain!]
-        chainNotIn: [GqlChain!] @deprecated
-        createTime: GqlPoolTimePeriod @deprecated
         idIn: [String!]
-        idNotIn: [String!] @deprecated
         includeHooks: [GqlHookType!]
         minTvl: Float
         poolTypeIn: [GqlPoolType!]
-        poolTypeNotIn: [GqlPoolType!] @deprecated
         protocolVersionIn: [Int!]
         tokensIn: [String!]
-        tokensNotIn: [String!] @deprecated
     }
 
     scalar GqlBigNumber
@@ -97,9 +92,6 @@ export const schema = gql`
     type GqlHook {
         address: String!
         config: HookConfig
-        dynamicData: GqlHookData @deprecated
-        enableHookAdjustedAmounts: Boolean! @deprecated
-        name: String! @deprecated(reason: "unused")
 
         """
         Hook type specific params
@@ -110,24 +102,7 @@ export const schema = gql`
         The review for this hook if applicable.
         """
         reviewData: GqlHookReviewData
-        shouldCallAfterAddLiquidity: Boolean! @deprecated
-        shouldCallAfterInitialize: Boolean! @deprecated
-        shouldCallAfterRemoveLiquidity: Boolean! @deprecated
-        shouldCallAfterSwap: Boolean! @deprecated
-        shouldCallBeforeAddLiquidity: Boolean! @deprecated
-        shouldCallBeforeInitialize: Boolean! @deprecated
-        shouldCallBeforeRemoveLiquidity: Boolean! @deprecated
-        shouldCallBeforeSwap: Boolean! @deprecated
-        shouldCallComputeDynamicSwapFee: Boolean! @deprecated
         type: GqlHookType!
-    }
-
-    type GqlHookData {
-        addLiquidityFeePercentage: String
-        maxSurgeFeePercentage: String
-        removeLiquidityFeePercentage: String
-        surgeThresholdPercentage: String
-        swapFeePercentage: String
     }
 
     """
@@ -232,116 +207,6 @@ export const schema = gql`
         Net Asset Value in USD.
         """
         tvl: String!
-    }
-
-    """
-    All info on the nested pool if the token is a BPT. It will only support 1 level of nesting.
-    """
-    type GqlNestedPool {
-        """
-        Address of the pool.
-        """
-        address: Bytes!
-
-        """
-        Price rate of this pool or the Balancer Pool Token (BPT).
-        """
-        bptPriceRate: BigDecimal!
-
-        """
-        Timestamp of when the pool was created.
-        """
-        createTime: Int!
-
-        """
-        Address of the factory contract that created the pool, if applicable.
-        """
-        factory: Bytes
-
-        """
-        Hook assigned to a pool
-        """
-        hook: GqlHook
-
-        """
-        Unique identifier of the pool.
-        """
-        id: ID!
-
-        """
-        Liquidity management settings for v3 pools.
-        """
-        liquidityManagement: LiquidityManagement
-
-        """
-        Name of the pool.
-        """
-        name: String!
-
-        """
-        Total liquidity of the parent pool in the nested pool in USD.
-        """
-        nestedLiquidity: BigDecimal!
-
-        """
-        Percentage of the parents pool shares inside the nested pool.
-        """
-        nestedPercentage: BigDecimal!
-
-        """
-        Number of shares of the parent pool in the nested pool.
-        """
-        nestedShares: BigDecimal!
-
-        """
-        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
-        """
-        pauseManager: Bytes
-
-        """
-        Account empowered to set the pool creator fee percentage
-        """
-        poolCreator: Bytes
-
-        """
-        Fee charged for swapping tokens in the pool as %. 0.01 -> 0.01%
-        """
-        swapFee: BigDecimal!
-
-        """
-        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
-        """
-        swapFeeManager: Bytes
-
-        """
-        Symbol of the pool.
-        """
-        symbol: String!
-
-        """
-        List of all tokens in the pool.
-        """
-        tokens: [GqlPoolTokenDetail!]!
-
-        """
-        Total liquidity in the pool in USD.
-        """
-        totalLiquidity: BigDecimal!
-
-        """
-        Total number of shares in the pool.
-        """
-        totalShares: BigDecimal!
-
-        """
-        Type of the pool.
-        """
-        type: GqlPoolType!
-
-        """
-        Version of the pool.
-        """
-        version: Int!
     }
 
     """
@@ -536,11 +401,6 @@ export const schema = gql`
         name: String!
 
         """
-        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
-        """
-        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
-
-        """
         Account empowered to pause/unpause the pool (or 0 to delegate to governance)
         """
         pauseManager: Bytes
@@ -716,11 +576,6 @@ export const schema = gql`
         MERKL
 
         """
-        Represents if the APR items comes from a nested pool.
-        """
-        NESTED
-
-        """
         APR calculated for QUANT-AMM pools based on performance measurements over a month
         """
         QUANT_AMM_UPLIFT
@@ -794,11 +649,6 @@ export const schema = gql`
         Whether at least one token in this pool is considered an ERC4626 token.
         """
         hasErc4626: Boolean!
-
-        """
-        Whether at least one token in a nested pool is considered an ERC4626 token.
-        """
-        hasNestedErc4626: Boolean!
 
         """
         Hook assigned to a pool
@@ -888,7 +738,6 @@ export const schema = gql`
         factory: Bytes
         hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
-        hasNestedErc4626: Boolean!
         hook: GqlHook
         id: ID!
         liquidityManagement: LiquidityManagement
@@ -1042,9 +891,7 @@ export const schema = gql`
     input GqlPoolEventsFilter {
         chainIn: [GqlChain]
         poolId: String
-        poolIdIn: [String] @deprecated
         type: GqlPoolEventType
-        typeIn: [GqlPoolEventType] @deprecated
         userAddress: String
     }
 
@@ -1114,7 +961,6 @@ export const schema = gql`
         farcaster: String
         hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
-        hasNestedErc4626: Boolean!
         hook: GqlHook
         id: ID!
         isProjectTokenSwapInBlocked: Boolean!
@@ -1175,7 +1021,6 @@ export const schema = gql`
         factory: Bytes
         hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
-        hasNestedErc4626: Boolean!
         hook: GqlHook
         id: ID!
         lambda: String!
@@ -1228,7 +1073,6 @@ export const schema = gql`
         factory: Bytes
         hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
-        hasNestedErc4626: Boolean!
         hook: GqlHook
         id: ID!
         liquidityManagement: LiquidityManagement
@@ -1272,7 +1116,6 @@ export const schema = gql`
         farcaster: String
         hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
-        hasNestedErc4626: Boolean!
         hook: GqlHook
         id: ID!
         isProjectTokenSwapInBlocked: Boolean!
@@ -1372,11 +1215,6 @@ export const schema = gql`
         Whether at least one token in this pool is considered an ERC4626 token.
         """
         hasErc4626: Boolean!
-
-        """
-        Whether at least one token in a nested pool is considered an ERC4626 token.
-        """
-        hasNestedErc4626: Boolean!
 
         """
         Hook assigned to a pool
@@ -1513,7 +1351,6 @@ export const schema = gql`
         factory: Bytes
         hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
-        hasNestedErc4626: Boolean!
         hook: GqlHook
         id: ID!
         liquidityManagement: LiquidityManagement
@@ -1575,7 +1412,6 @@ export const schema = gql`
         factory: Bytes
         hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
-        hasNestedErc4626: Boolean!
         hook: GqlHook
         id: ID!
 
@@ -1664,7 +1500,6 @@ export const schema = gql`
         factory: Bytes
         hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
-        hasNestedErc4626: Boolean!
         hook: GqlHook
         id: ID!
         liquidityManagement: LiquidityManagement
@@ -1921,8 +1756,7 @@ export const schema = gql`
     }
 
     """
-    All info on the pool token. It will also include the nested pool if the token is a BPT. It will only support 1 level of nesting.
-    A second (unsupported) level of nesting is shown by having hasNestedPool = true but nestedPool = null.
+    All info on the pool token.
     """
     type GqlPoolTokenDetail {
         """
@@ -1961,11 +1795,6 @@ export const schema = gql`
         The ERC4626 review data for the token
         """
         erc4626ReviewData: Erc4626ReviewData
-
-        """
-        Indicates whether this token is a BPT and therefor has a nested pool.
-        """
-        hasNestedPool: Boolean!
 
         """
         Id of the token. A combination of pool id and token address.
@@ -2011,11 +1840,6 @@ export const schema = gql`
         Name of the pool token.
         """
         name: String!
-
-        """
-        Additional data for the nested pool if the token is a BPT. Null otherwise.
-        """
-        nestedPool: GqlNestedPool
 
         """
         If it is an appreciating token, it shows the current price rate. 1 otherwise.
@@ -2131,7 +1955,6 @@ export const schema = gql`
         factory: Bytes
         hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
-        hasNestedErc4626: Boolean!
         hook: GqlHook
         id: ID!
         liquidityManagement: LiquidityManagement
@@ -2243,8 +2066,6 @@ export const schema = gql`
         swapFee24h: BigDecimal!
         swapVolume24h: BigDecimal!
         totalLiquidity: BigDecimal!
-        totalSwapFee: BigDecimal! @deprecated(reason: "No replacement")
-        totalSwapVolume: BigDecimal! @deprecated(reason: "No replacement")
         yieldCapture24h: BigDecimal!
     }
 
@@ -2255,8 +2076,6 @@ export const schema = gql`
         swapFee24h: BigDecimal!
         swapVolume24h: BigDecimal!
         totalLiquidity: BigDecimal!
-        totalSwapFee: BigDecimal! @deprecated(reason: "No replacement")
-        totalSwapVolume: BigDecimal! @deprecated(reason: "No replacement")
         yieldCapture24h: BigDecimal!
     }
 
@@ -2279,42 +2098,10 @@ export const schema = gql`
         userCount: String!
     }
 
-    type GqlSorCallData {
-        """
-        The call data that needs to be sent to the RPC
-        """
-        callData: String!
-
-        """
-        Maximum amount to be sent for exact out orders
-        """
-        maxAmountInRaw: String
-
-        """
-        Minimum amount received for exact in orders
-        """
-        minAmountOutRaw: String
-
-        """
-        The target contract to send the call data to
-        """
-        to: String!
-
-        """
-        Value in ETH that needs to be sent for native swaps
-        """
-        value: BigDecimal!
-    }
-
     """
     The swap paths for a swap
     """
     type GqlSorGetSwapPaths {
-        """
-        Transaction data that can be posted to an RPC to execute the swap.
-        """
-        callData: GqlSorCallData @deprecated(reason: "Use Balancer SDK to build swap callData from SOR response")
-
         """
         The price of tokenOut in tokenIn.
         """
@@ -2399,11 +2186,6 @@ export const schema = gql`
         The amount of tokenOut in human form
         """
         tokenOutAmount: AmountHumanReadable!
-
-        """
-        The version of the vault these paths are from
-        """
-        vaultVersion: Int! @deprecated(reason: "Use protocolVersion instead")
     }
 
     """
@@ -2439,11 +2221,6 @@ export const schema = gql`
         A sorted list of tokens that are ussed in this path
         """
         tokens: [Token!]!
-
-        """
-        Vault version of this path.
-        """
-        vaultVersion: Int! @deprecated(reason: "Use protocolVersion instead")
     }
 
     """
@@ -2647,31 +2424,6 @@ export const schema = gql`
     }
 
     """
-    Inputs for the call data to create the swap transaction. If this input is given, call data is added to the response.
-    """
-    input GqlSwapCallDataInput {
-        """
-        How long the swap should be valid, provide a timestamp. "999999999999999999" for infinite. Default: infinite
-        """
-        deadline: Int
-
-        """
-        Who receives the output amount.
-        """
-        receiver: String!
-
-        """
-        Who sends the input amount.
-        """
-        sender: String!
-
-        """
-        The max slippage in percent 0.01 -> 0.01%
-        """
-        slippagePercentage: String!
-    }
-
-    """
     Represents a token in the system
     """
     type GqlToken {
@@ -2749,11 +2501,6 @@ export const schema = gql`
         The priority of the token, can be used for sorting.
         """
         priority: Int!
-
-        """
-        The rate provider data for the token
-        """
-        rateProviderData: GqlPriceRateProviderData @deprecated(reason: "Use priceRateProviderData instead")
 
         """
         The symbol of the token
@@ -2841,7 +2588,6 @@ export const schema = gql`
         BPT
         ERC4626
         PHANTOM_BPT
-        WHITE_LISTED @deprecated(reason: "Use BLOCKED instead")
     }
 
     type GqlUserStakedBalance {
@@ -3041,17 +2787,6 @@ export const schema = gql`
         poolEvents(first: Int, skip: Int, where: GqlPoolEventsFilter): [GqlPoolEvent!]!
 
         """
-        Returns all pools for a given filter, specific for aggregators
-        """
-        poolGetAggregatorPools(
-            first: Int
-            orderBy: GqlPoolOrderBy
-            orderDirection: GqlPoolOrderDirection
-            skip: Int
-            where: GqlPoolFilter
-        ): [GqlPoolAggregator!]! @deprecated(reason: "Use aggregatorPools instead")
-
-        """
         Returns the list of featured pools for chains
         """
         poolGetFeaturedPools(chains: [GqlChain!]!): [GqlPoolFeaturedPool!]!
@@ -3097,12 +2832,6 @@ export const schema = gql`
         """
         sorGetSwapPaths(
             """
-            Input data to create and return transaction data. If this config is given, call data is added to the response.
-            """
-            callDataInput: GqlSwapCallDataInput
-                @deprecated(reason: "Use Balancer SDK to build swap callData from SOR response")
-
-            """
             The Chain to query
             """
             chain: GqlChain!
@@ -3116,11 +2845,6 @@ export const schema = gql`
             Use specified poolIds only
             """
             poolIds: [String!]
-
-            """
-            Whether to run queryBatchSwap to update the return amount with most up-to-date on-chain values, default: false
-            """
-            queryBatchSwap: Boolean @deprecated(reason: "Use Balancer SDK to query on-chain amounts from SOR response")
 
             """
             The amount to swap, in human form.

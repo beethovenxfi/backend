@@ -1,5 +1,5 @@
 import { Chain } from '@prisma/client';
-import { GqlSorSwapType, GqlSwapCallDataInput } from '../../apps/api/gql/generated-schema';
+import { GqlSorSwapType } from '../../apps/api/gql/generated-schema';
 import { TokenAmount } from '@balancer/sdk';
 
 export interface GetSwapPathsInput {
@@ -8,11 +8,9 @@ export interface GetSwapPathsInput {
     tokenOut: string;
     swapType: GqlSorSwapType;
     swapAmount: TokenAmount;
-    queryBatchSwap: boolean;
     protocolVersion: number;
     considerPoolsWithHooks: boolean;
     poolIds?: string[];
-    callDataInput?: (GqlSwapCallDataInput & { wethIsEth: boolean }) | undefined;
 }
 
 export interface LiquidityManagement {

@@ -13,5 +13,5 @@
         "sourceMap": true,
         "types": ["vitest/globals", "bun"]
     },
-    "exclude": ["node_modules", "debug"]
+    "exclude": ["node_modules"]
 }

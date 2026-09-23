@@ -161,14 +161,7 @@ export class AprRepository {
               FROM "PrismaPoolAprItem" AS item
               WHERE item."poolId" = dyn."poolId"
                 AND item."chain"  = dyn."chain"
-                AND item."type" NOT IN (
-                  'SURPLUS',
-                  'SURPLUS_30D',
-                  'SURPLUS_7D',
-                  'SWAP_FEE_30D',
-                  'SWAP_FEE_7D',
-                  'DYNAMIC_SWAP_FEE_24H'
-                )
+                AND item."type" != 'DYNAMIC_SWAP_FEE_24H'
             ),
             0
           );

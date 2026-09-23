@@ -6,7 +6,6 @@ export type SwapStats = {
     volume: number;
     fees: number;
     dynamicFees?: number;
-    surplus?: number;
     latestBlockNumber: number;
     swapsCount: number;
 };

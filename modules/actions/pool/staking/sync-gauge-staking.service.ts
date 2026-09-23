@@ -1,20 +1,11 @@
 /**
- * Supports calculation of BAL and token rewards sent to gauges.
- * Balancer has 3 types of gauges:
- *
- * 1. Mainnet gauges with working supply and relative weight
- * 2. Old L2 gauges with BAL rewards sent as a reward token
- * 3. New L2 gauges (aka child chain gauges) with direct BAL rewards through a streamer.
- *
- * Reward data is fetched onchain and stored in the DB as a token rate per second.
+ * Syncs liquidity gauges and their reward token rates (per second) from the gauge subgraph and chain.
  */
 import { prisma } from '../../../../prisma/prisma-client';
 import { prismaBulkExecuteOperations } from '../../../../prisma/prisma-util';
 import { Chain, PrismaPoolStakingType } from '@prisma/client';
 import { GaugeSubgraphService, LiquidityGaugeStatus } from '../../../subgraphs/gauge-subgraph/gauge-subgraph.service';
 import childChainGaugeV2Abi from './abi/ChildChainGaugeV2.json';
-import childChainGaugeV1Abi from './abi/ChildChainGaugeV1.json';
-import mainnetLiquidityGaugeAbi from './abi/MainnetLiquidityGauge.json';
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 import type { JsonFragment } from '@ethersproject/abi';
@@ -33,36 +24,15 @@ interface GaugeRewardData {
     };
 }
 
-interface GaugeBalDistributionData {
-    [address: string]: {
-        rate?: BigNumber;
-        weight?: BigNumber;
-        workingSupply?: BigNumber;
-        totalSupply?: BigNumber;
-        relativeWeightCap?: BigNumber;
-    };
-}
-
 export const syncGaugeStakingForPools = async (
     gaugeSubgraphService: GaugeSubgraphService,
-    balAddressInput: string,
     chain: Chain,
-    gaugeControllerHelperAddress?: string,
 ): Promise<void> => {
-    const balAddress = balAddressInput.toLowerCase();
-
-    const balMulticaller = new Multicaller3Viem(chain, [
+    const supplyMulticaller = new Multicaller3Viem(chain, [
         ...childChainGaugeV2Abi.filter((abi) => abi.name === 'totalSupply'),
-        ...childChainGaugeV2Abi.filter((abi) => abi.name === 'working_supply'),
-        ...childChainGaugeV2Abi.filter((abi) => abi.name === 'inflation_rate'),
-        ...mainnetLiquidityGaugeAbi.filter((abi) => abi.name === 'getRelativeWeightCap'),
     ] as JsonFragment[]);
 
-    const rewardsMulticallerV1 = new Multicaller3Viem(chain, [
-        ...childChainGaugeV1Abi.filter((abi) => abi.name === 'reward_data'),
-    ]);
-
-    const rewardsMulticallerV2 = new Multicaller3Viem(chain, [
+    const rewardsMulticaller = new Multicaller3Viem(chain, [
         ...childChainGaugeV2Abi.filter((abi) => abi.name === 'reward_data'),
     ]);
 
@@ -89,7 +59,7 @@ export const syncGaugeStakingForPools = async (
             : !gauge.isPreferentialGauge
             ? 'ACTIVE'
             : ('PREFERRED' as LiquidityGaugeStatus),
-        version: 2 as 1 | 2,
+        version: 2,
         tokens: gauge.tokens || [],
         createTime: gauge.gauge?.addedTimestamp,
     }));
@@ -105,31 +75,21 @@ export const syncGaugeStakingForPools = async (
         }
     }
 
-    // Get tokens used for all reward tokens including native BAL address, which might not be on the list of tokens stored in the gauge
+    // Get tokens used for all reward tokens
     const prismaTokens = await prisma.prismaToken.findMany({
         where: {
             address: {
-                in: [
-                    balAddress,
-                    ...subgraphGauges
-                        .map((gauge) => gauge.tokens?.map((token) => token.id.split('-')[0].toLowerCase()))
-                        .flat()
-                        .filter((address): address is string => !!address),
-                ],
+                in: subgraphGauges
+                    .map((gauge) => gauge.tokens?.map((token) => token.id.split('-')[0].toLowerCase()))
+                    .flat()
+                    .filter((address): address is string => !!address),
             },
             chain,
         },
     });
 
-    const onchainRates = await getOnchainRewardTokensData(
-        gaugesForDb,
-        balAddress,
-        balMulticaller,
-        rewardsMulticallerV1,
-        rewardsMulticallerV2,
-        chain,
-        gaugeControllerHelperAddress,
-    );
+    const onchainRates = await getOnchainRewardTokensData(gaugesForDb, rewardsMulticaller);
+    const gaugeSupplies = await getOnchainGaugeSupplies(gaugesForDb, supplyMulticaller);
 
     // Prepare DB operations
     const operations: any[] = [];
@@ -160,13 +120,11 @@ export const syncGaugeStakingForPools = async (
         }
 
         const dbStakingGauge = allDbStakingGauges.find((stakingGauge) => stakingGauge?.id === gauge.id);
-        const workingSupply = onchainRates.find(({ id }) => id.includes(gauge.id))?.workingSupply;
-        const totalSupply = onchainRates.find(({ id }) => id.includes(gauge.id))?.totalSupply;
+        const totalSupply = gaugeSupplies[gauge.id] ?? '0';
         if (
             !dbStakingGauge ||
             dbStakingGauge.status !== gauge.status ||
             dbStakingGauge.version !== gauge.version ||
-            dbStakingGauge.workingSupply !== workingSupply ||
             dbStakingGauge.totalSupply !== totalSupply
         ) {
             operations.push(
@@ -179,14 +137,12 @@ export const syncGaugeStakingForPools = async (
                         chain,
                         status: gauge.status,
                         version: gauge.version,
-                        workingSupply: workingSupply,
-                        totalSupply: totalSupply,
+                        totalSupply,
                     },
                     update: {
                         status: gauge.status,
                         version: gauge.version,
-                        workingSupply: workingSupply,
-                        totalSupply: totalSupply,
+                        totalSupply,
                     },
                 }),
             );
@@ -196,7 +152,7 @@ export const syncGaugeStakingForPools = async (
     const allStakingGaugeRewards = allDbStakingGauges.map((gauge) => gauge?.rewards).flat();
 
     // DB operations for gauge reward tokens
-    for (const { id, rewardPerSecond, isVeBalemissions } of onchainRates) {
+    for (const { id, rewardPerSecond } of onchainRates) {
         const [gaugeId, tokenAddress] = id.toLowerCase().split('-');
         const token = prismaTokens.find((token) => token.address === tokenAddress);
         if (!token) {
@@ -221,11 +177,9 @@ export const syncGaugeStakingForPools = async (
                         gaugeId,
                         tokenAddress,
                         rewardPerSecond,
-                        isVeBalemissions,
                     },
                     update: {
                         rewardPerSecond,
-                        isVeBalemissions,
                     },
                     where: { id_chain: { id, chain } },
                 }),
@@ -236,86 +190,46 @@ export const syncGaugeStakingForPools = async (
     await prismaBulkExecuteOperations(operations, true);
 };
 
+const getOnchainGaugeSupplies = async (
+    gauges: { id: string }[],
+    supplyMulticaller: Multicaller3Viem,
+): Promise<{ [gaugeAddress: string]: string }> => {
+    for (const gauge of gauges) {
+        supplyMulticaller.call(gauge.id, gauge.id, 'totalSupply', [], true);
+    }
+    const supplies = (await supplyMulticaller.execute()) as { [gaugeAddress: string]: bigint | undefined };
+
+    return _.mapValues(supplies, (supply) => (supply !== undefined ? formatEther(supply) : '0'));
+};
+
 const getOnchainRewardTokensData = async (
-    gauges: { id: string; version: 1 | 2; tokens: { id: string; decimals: number }[] }[],
-    balAddress: string,
-    balMulticaller: Multicaller3Viem,
-    rewardsMulticallerV1: Multicaller3Viem,
-    rewardsMulticallerV2: Multicaller3Viem,
-    chain: Chain,
-    gaugeControllerHelperAddress?: string,
-): Promise<
-    {
-        id: string;
-        rewardPerSecond: string;
-        workingSupply: string;
-        totalSupply: string;
-        isVeBalemissions: boolean;
-    }[]
-> => {
+    gauges: { id: string; tokens: { id: string; decimals: number }[] }[],
+    rewardsMulticaller: Multicaller3Viem,
+): Promise<{ id: string; rewardPerSecond: string }[]> => {
     // Get onchain data for reward tokens
     const decimals: { [address: string]: number } = {};
     for (const gauge of gauges) {
         for (const token of gauge.tokens ?? []) {
             const [address] = token.id.toLowerCase().split('-');
             decimals[address] = token.decimals;
-            if (gauge.version === 1) {
-                rewardsMulticallerV1.call(
-                    `${gauge.id}.rewardData.${address}`,
-                    gauge.id,
-                    'reward_data',
-                    [address],
-                    true,
-                );
-            } else {
-                rewardsMulticallerV2.call(
-                    `${gauge.id}.rewardData.${address}`,
-                    gauge.id,
-                    'reward_data',
-                    [address],
-                    true,
-                );
-            }
+            rewardsMulticaller.call(`${gauge.id}.rewardData.${address}`, gauge.id, 'reward_data', [address], true);
         }
     }
-    const rewardsDataV1 = (await rewardsMulticallerV1.execute()) as GaugeRewardData;
-    const rewardsDataV2 = (await rewardsMulticallerV2.execute()) as GaugeRewardData;
-    const rewardsData = { ...rewardsDataV1, ...rewardsDataV2 };
+    const rewardsData = (await rewardsMulticaller.execute()) as GaugeRewardData;
 
     const now = Math.floor(Date.now() / 1000);
 
     // Format onchain rates for all the rewards
-    const onchainRates = [
-        ...Object.keys(rewardsData)
-            .map((gaugeAddress) => [
-                // L2 V1 case with any token
-                ...Object.keys(rewardsData[gaugeAddress].rewardData).map((tokenAddress) => {
-                    const id = `${gaugeAddress}-${tokenAddress}-reward`.toLowerCase();
-                    const { rate, period_finish } = rewardsData[gaugeAddress].rewardData[tokenAddress];
-                    const rewardPerSecond =
-                        period_finish && Number(period_finish) > now
-                            ? formatUnits(rate!, decimals[tokenAddress])
-                            : '0.0';
+    return Object.keys(rewardsData).flatMap((gaugeAddress) =>
+        Object.keys(rewardsData[gaugeAddress].rewardData).map((tokenAddress) => {
+            const id = `${gaugeAddress}-${tokenAddress}-reward`.toLowerCase();
+            const { rate, period_finish } = rewardsData[gaugeAddress].rewardData[tokenAddress];
+            const rewardPerSecond =
+                period_finish && Number(period_finish) > now ? formatUnits(rate!, decimals[tokenAddress]) : '0.0';
 
-                    return {
-                        id,
-                        rewardPerSecond,
-                        workingSupply: '0',
-                        totalSupply: '0',
-                        isVeBalemissions: false,
-                    };
-                }),
-            ])
-            .flat(),
-    ] as {
-        id: string;
-        rewardPerSecond: string;
-        workingSupply: string;
-        totalSupply: string;
-        isVeBalemissions: boolean;
-    }[];
-
-    return onchainRates;
+            return { id, rewardPerSecond };
+        }),
+    );
 };
 
 export const deleteGaugeStakingForAllPools = async (

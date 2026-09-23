@@ -40,7 +40,7 @@ export class LiquidityGaugeAprHandler implements AprHandler {
 
             // Get token rewards per year with data needed for the DB
             const rewards = await Promise.allSettled(
-                gauge.rewards.map(async ({ id, tokenAddress, rewardPerSecond, isVeBalemissions }) => {
+                gauge.rewards.map(async ({ id, tokenAddress, rewardPerSecond }) => {
                     const price = tokenService.getPriceForToken(tokenPrices, tokenAddress, pool.chain);
                     if (!price) {
                         return Promise.reject(`Price not found for ${tokenAddress}`);
@@ -61,7 +61,6 @@ export class LiquidityGaugeAprHandler implements AprHandler {
                         address: tokenAddress,
                         symbol: definition.symbol,
                         rewardPerYear: parseFloat(rewardPerSecond) * secondsPerYear * price,
-                        isVeBalemissions: isVeBalemissions,
                     };
                 }),
             );
@@ -80,7 +79,7 @@ export class LiquidityGaugeAprHandler implements AprHandler {
                     continue;
                 }
 
-                const { address, symbol, rewardPerYear, isVeBalemissions } = reward.value;
+                const { address, symbol, rewardPerYear } = reward.value;
 
                 const itemData: PrismaPoolAprItem = {
                     id: `${reward.value.id}-${symbol}-apr`,

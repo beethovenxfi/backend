@@ -6,7 +6,6 @@ import {
     Prisma,
     PrismaToken,
     PrismaTokenCurrentPrice,
-    PrismaTokenDynamicData,
     PrismaTokenPrice,
     PrismaTokenTypeOption,
 } from '@prisma/client';
@@ -15,7 +14,6 @@ import {
     Erc4626ReviewData,
     GqlPriceRateProviderData,
     GqlToken,
-    GqlTokenChartDataRange,
     MutationTokenDeleteTokenTypeArgs,
     QueryTokenGetTokensArgs,
 } from '../../apps/api/gql/generated-schema';
@@ -314,65 +312,6 @@ export class TokenService {
 
     public getPriceForToken(tokenPrices: PrismaTokenCurrentPrice[], tokenAddress: string, chain: Chain): number {
         return this.tokenPriceService.getPriceForToken(tokenPrices, tokenAddress, chain);
-    }
-
-    public async getTokenDynamicData(tokenAddress: string, chain: Chain): Promise<PrismaTokenDynamicData | null> {
-        const token = await prisma.prismaToken.findUnique({
-            where: {
-                address_chain: {
-                    address: tokenAddress.toLowerCase(),
-                    chain: chain,
-                },
-            },
-            include: {
-                dynamicData: true,
-            },
-        });
-
-        if (token) {
-            return token.dynamicData;
-        }
-
-        return null;
-    }
-
-    public async getTokensDynamicData(tokenAddresses: string[], chain: Chain): Promise<PrismaTokenDynamicData[]> {
-        const tokens = await prisma.prismaToken.findMany({
-            where: {
-                address: { in: tokenAddresses.map((address) => address.toLowerCase()) },
-                chain: chain,
-            },
-            include: {
-                dynamicData: true,
-            },
-        });
-
-        // why doesn't this work with map??
-        const dynamicData: PrismaTokenDynamicData[] = [];
-        for (const token of tokens) {
-            if (token.dynamicData) {
-                dynamicData.push(token.dynamicData);
-            }
-        }
-
-        return dynamicData;
-    }
-
-    public async getTokenPricesForRange(
-        tokenAddress: string[],
-        range: GqlTokenChartDataRange,
-        chain: Chain,
-    ): Promise<PrismaTokenPrice[]> {
-        return this.tokenPriceService.getTokenPricesForRange(tokenAddress, range, chain);
-    }
-
-    public async getRelativeDataForRange(
-        tokenIn: string,
-        tokenOut: string,
-        range: GqlTokenChartDataRange,
-        chain: Chain,
-    ): Promise<TokenPriceItem[]> {
-        return this.tokenPriceService.getRelativeDataForRange(tokenIn, tokenOut, range, chain);
     }
 
     public async purgeOldTokenPricesForAllChains() {

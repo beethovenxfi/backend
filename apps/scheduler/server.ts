@@ -3,7 +3,6 @@ import config from '../../config';
 import { sleep } from '../../modules/common/promise';
 import { scheduleJobs } from './job-queue';
 import { createAlerts } from './create-alerts';
-// import { createMonitors } from './create-monitors';
 
 let chainIds = Object.values(config).map((c) => String(c.chain.id));
 
@@ -22,7 +21,6 @@ export async function startSchedulerServer() {
                 // start up time will be a bit slower
                 await createAlerts(chainId);
             }
-            // await createMonitors(chainId);
             // delay to accomodate for aws rate limits
             await sleep(5000);
         }

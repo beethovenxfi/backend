@@ -187,7 +187,6 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         // await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.ADD_POOLS_V3, 0);
         // await PoolController().addPoolsV3(chain, false);
         // await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.COW_AMM_POOLS, 0);
-        // await CowAmmController().syncPools(chain);
 
         // get all current prices first to
         const endpoint = 'https://api-v3.balancer.fi/graphql';
@@ -265,7 +264,6 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
                         },
                         update: {
                             price: price.price,
-                            close: price.price,
                             updatedBy: price.updatedBy,
                         },
                         create: {
@@ -273,10 +271,6 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
                             chain: token.chain as Chain,
                             timestamp: parseFloat(price.timestamp),
                             price: price.price,
-                            high: price.price,
-                            low: price.price,
-                            open: price.price,
-                            close: price.price,
                             updatedBy: price.updatedBy,
                         },
                     });

@@ -16,12 +16,10 @@ model PrismaToken {
     twitterUsername     String?
     priority            Int                 @default(0)
     coingeckoPlatformId String?
-    coingeckoContractAddress String?
     coingeckoTokenId    String?
     excludedFromCoingecko Boolean           @default(false)
 
     currentPrice        PrismaTokenCurrentPrice?
-    dynamicData         PrismaTokenDynamicData?
     prices              PrismaTokenPrice[]
 
     types               PrismaTokenType[]
@@ -74,37 +72,7 @@ model PrismaTokenPrice {
     timestamp           Int
     price               Float
 
-    high                Float
-    low                 Float
-    open                Float
-    close               Float
-
     @@index([timestamp, chain])
-    @@index([tokenAddress, chain])
-}
-
-model PrismaTokenDynamicData {
-    @@id([tokenAddress, chain])
-
-    coingeckoId         String
-    tokenAddress        String
-    token               PrismaToken         @relation(fields:[tokenAddress, chain], references: [address, chain], onDelete: Cascade)
-    chain               Chain
-    updatedAt           DateTime            @updatedAt
-
-    price               Float
-    ath                 Float
-    atl                 Float
-    marketCap           Float?
-    fdv                 Float?
-    high24h             Float
-    low24h              Float
-    priceChange24h      Float
-    priceChangePercent24h Float
-    priceChangePercent7d Float?
-    priceChangePercent14d Float?
-    priceChangePercent30d Float?
-
     @@index([tokenAddress, chain])
 }
 

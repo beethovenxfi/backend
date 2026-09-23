@@ -5,7 +5,6 @@ import { Chain } from '@prisma/client';
 const sourceToHandler = {
     aave: sources.aaveOnchainHandler,
     euler: sources.eulerYieldHandler,
-    teth: sources.treehouseYieldHandler,
     sts: sources.stsYieldHandler,
     http: sources.httpTokenYieldHandler,
     contract: sources.contractTokenYieldHandler,

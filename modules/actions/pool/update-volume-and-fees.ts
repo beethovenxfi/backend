@@ -9,7 +9,6 @@ import { SwapStatsRepository, eventsRepository } from '../../repositories/events
 const emptyStats = {
     volume: 0,
     fees: 0,
-    surplus: 0,
 };
 
 /**
@@ -72,11 +71,9 @@ export async function updateVolumeAndFees(
 
         const volume24h = poolStats24h.volume;
         const fees24h = poolStats24h.fees;
-        const surplus24h = poolStats24h.surplus || 0;
 
         const volume48h = poolStats48h.volume;
         const fees48h = poolStats48h.fees;
-        const surplus48h = poolStats48h.surplus || 0;
 
         let protocolFees24h = poolStats24h.fees * protocolSwapFeePercentage;
         let protocolFees48h = poolStats48h.fees * protocolSwapFeePercentage;
@@ -138,10 +135,8 @@ export async function updateVolumeAndFees(
             pool.dynamicData &&
             (Math.abs(pool.dynamicData.volume24h - volume24h) > 1 ||
                 Math.abs(pool.dynamicData.fees24h - fees24h) > 1 ||
-                Math.abs(pool.dynamicData.surplus24h - surplus24h) > 1 ||
                 Math.abs(pool.dynamicData.volume48h - volume48h) > 1 ||
                 Math.abs(pool.dynamicData.fees48h - fees48h) > 1 ||
-                Math.abs(pool.dynamicData.surplus48h - surplus48h) > 1 ||
                 Math.abs(pool.dynamicData.protocolFees24h - protocolFees24h) > 1 ||
                 Math.abs(pool.dynamicData.protocolFees48h - protocolFees48h) > 1 ||
                 Math.abs(pool.dynamicData.yieldCapture24h - yieldCapture24h) > 1 ||
@@ -157,8 +152,6 @@ export async function updateVolumeAndFees(
                         fees24h,
                         volume48h,
                         fees48h,
-                        surplus24h,
-                        surplus48h,
                         protocolFees24h,
                         protocolFees48h,
                         yieldCapture24h,

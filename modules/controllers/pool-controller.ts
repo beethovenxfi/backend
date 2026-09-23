@@ -43,7 +43,6 @@ export function PoolController(tracer?: any) {
             const balancerQueriesAddress = config[chain].balancer.v2.balancerQueriesAddress;
             const yieldProtocolFeePercentage = config[chain].balancer.v2.defaultYieldFeePercentage;
             const swapProtocolFeePercentage = config[chain].balancer.v2.defaultSwapFeePercentage;
-            const gyroConfig = config[chain].gyro?.config;
 
             const viemClient = getViemClient(chain);
             const latestBlock = await viemClient.getBlockNumber();
@@ -55,7 +54,6 @@ export function PoolController(tracer?: any) {
                 balancerQueriesAddress,
                 yieldProtocolFeePercentage,
                 swapProtocolFeePercentage,
-                gyroConfig,
             );
         },
 
@@ -64,7 +62,6 @@ export function PoolController(tracer?: any) {
             const balancerQueriesAddress = config[chain].balancer.v2.balancerQueriesAddress;
             const yieldProtocolFeePercentage = config[chain].balancer.v2.defaultYieldFeePercentage;
             const swapProtocolFeePercentage = config[chain].balancer.v2.defaultSwapFeePercentage;
-            const gyroConfig = config[chain].gyro?.config;
 
             const viemClient = getViemClient(chain);
             const latestBlock = await viemClient.getBlockNumber();
@@ -76,7 +73,6 @@ export function PoolController(tracer?: any) {
                 balancerQueriesAddress,
                 yieldProtocolFeePercentage,
                 swapProtocolFeePercentage,
-                gyroConfig,
                 poolIds,
             );
         },
@@ -86,7 +82,6 @@ export function PoolController(tracer?: any) {
             const balancerQueriesAddress = config[chain].balancer.v2.balancerQueriesAddress;
             const yieldProtocolFeePercentage = config[chain].balancer.v2.defaultYieldFeePercentage;
             const swapProtocolFeePercentage = config[chain].balancer.v2.defaultSwapFeePercentage;
-            const gyroConfig = config[chain].gyro?.config;
 
             return syncChangedPoolsV2(
                 chain,
@@ -94,7 +89,6 @@ export function PoolController(tracer?: any) {
                 balancerQueriesAddress,
                 yieldProtocolFeePercentage,
                 swapProtocolFeePercentage,
-                gyroConfig,
             );
         },
 

@@ -10,7 +10,6 @@ export const syncOnchainDataForAllPools = async (
     balancerQueriesAddress: string,
     yieldProtocolFeePercentage: string,
     swapProtocolFeePercentage: string,
-    gyroConfig?: string,
 ) => {
     // Get all the pools
     return syncOnChainDataForPools(
@@ -20,7 +19,6 @@ export const syncOnchainDataForAllPools = async (
         balancerQueriesAddress,
         yieldProtocolFeePercentage,
         swapProtocolFeePercentage,
-        gyroConfig,
     );
 };
 
@@ -31,7 +29,6 @@ export const syncOnChainDataForPools = async (
     balancerQueriesAddress: string,
     yieldProtocolFeePercentage: string,
     swapProtocolFeePercentage: string,
-    gyroConfig?: string,
     poolIds?: string[],
 ) => {
     const poolOnChainDataService = new PoolOnChainDataService(() => ({
@@ -39,7 +36,6 @@ export const syncOnChainDataForPools = async (
         balancerQueriesAddress,
         yieldProtocolFeePercentage,
         swapProtocolFeePercentage,
-        gyroConfig,
     }));
 
     const tokenPrices = await prisma.prismaTokenCurrentPrice.findMany({

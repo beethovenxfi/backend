@@ -8,7 +8,7 @@ export function UserBalancesController() {
     return {
         async syncBalances(chain: Chain) {
             const {
-                subgraphs: { balancer, balancerV3, cowAmm },
+                subgraphs: { balancer, balancerV3 },
             } = config[chain];
 
             // Run all syncs in parallel

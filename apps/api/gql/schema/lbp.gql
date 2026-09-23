@@ -36,12 +36,12 @@ type LBPPriceChartData {
     cumulativeFees: Float!
 }
 
-type Query {
+extend type Query {
     lbpPriceChart(id: String!, chain: GqlChain!, dataPoints: Int): [LBPPriceChartData!]
     fixedLbpPriceChart(id: String!, chain: GqlChain!, dataPoints: Int): [LBPPriceChartData!]
 }
 
-type Mutation {
+extend type Mutation {
     createLBP(input: CreateLBPInput!, type: GqlPoolType): Boolean!
     lbpReloadLbps(chains: [GqlChain!]!): String!
     lbpReloadFixedLbps(chains: [GqlChain!]!): String!

@@ -30,12 +30,6 @@ export function mapAprItems(pool: PrismaPoolMinimal): GqlPoolAprItem[] {
 
         let type: GqlPoolAprItemType;
         switch (aprItem.type) {
-            case PrismaPoolAprType.NATIVE_REWARD:
-                type = 'MABEETS_EMISSIONS';
-                break;
-            case PrismaPoolAprType.THIRD_PARTY_REWARD:
-                type = 'STAKING';
-                break;
             case null:
                 type = 'NESTED';
                 break;

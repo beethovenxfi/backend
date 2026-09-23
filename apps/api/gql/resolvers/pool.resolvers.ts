@@ -1,6 +1,6 @@
 import { poolService } from '../../../../modules/pool/pool.service';
-import { PoolAggregatorLoader } from '../../../../modules/pool/lib/pool-aggregator-loader';
 import { GqlChain, Resolvers } from '../generated-schema';
+import { PoolAggregatorLoader } from '../../../../modules/pool/lib/pool-aggregator-loader';
 import { isAdminRoute } from '../../../../modules/auth/auth-context';
 import {
     EventsQueryController,
@@ -15,13 +15,6 @@ import { AprsController } from '../../../../modules/controllers/aprs-controller'
 
 const balancerResolvers: Resolvers = {
     Query: {
-        poolGetPool: async (parent, { id, chain, userAddress }, context, info) => {
-            const fields = graphqlFields(info);
-            return poolService.getGqlPool(fields, id, chain, userAddress ? userAddress : undefined);
-        },
-        poolGetPools: async (parent, args, context) => {
-            return poolService.getGqlPools(args);
-        },
         aggregatorPools: async (parent, args, context) => {
             const loader = new PoolAggregatorLoader();
             const pools = loader.aggregatorPools(args);
@@ -31,6 +24,13 @@ const balancerResolvers: Resolvers = {
             const loader = new PoolAggregatorLoader();
             const pools = loader.aggregatorPools(args);
             return pools;
+        },
+        poolGetPool: async (parent, { id, chain, userAddress }, context, info) => {
+            const fields = graphqlFields(info);
+            return poolService.getGqlPool(fields, id, chain, userAddress ? userAddress : undefined);
+        },
+        poolGetPools: async (parent, args, context) => {
+            return poolService.getGqlPools(args);
         },
         poolGetPoolsCount: async (parent, args, context) => {
             return poolService.getPoolsCount(args);
@@ -54,7 +54,6 @@ const balancerResolvers: Resolvers = {
                 sharePrice: `${snapshot.sharePrice}`,
                 volume24h: `${snapshot.volume24h}`,
                 fees24h: `${snapshot.fees24h}`,
-                surplus24h: `${snapshot.surplus24h}`,
                 swapsCount: `${snapshot.swapsCount}`,
                 // fill deprecated fields with empty arrays/strings
                 totalSwapVolume: `0`,

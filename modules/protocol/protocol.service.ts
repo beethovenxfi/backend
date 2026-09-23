@@ -30,7 +30,6 @@ export class ProtocolService {
         const swapVolume24h = _.sumBy(chainMetrics, (metrics) => parseFloat(metrics.swapVolume24h));
         const swapFee24h = _.sumBy(chainMetrics, (metrics) => parseFloat(metrics.swapFee24h));
         const yieldCapture24h = _.sumBy(chainMetrics, (metrics) => parseFloat(metrics.yieldCapture24h));
-        const surplus24h = _.sumBy(chainMetrics, (metrics) => parseFloat(metrics.surplus24h));
         const numLiquidityProviders = _.sumBy(chainMetrics, (metrics) => parseInt(metrics.numLiquidityProviders));
 
         return {
@@ -41,7 +40,6 @@ export class ProtocolService {
             swapVolume24h: `${swapVolume24h}`,
             swapFee24h: `${swapFee24h}`,
             yieldCapture24h: `${yieldCapture24h}`,
-            surplus24h: `${surplus24h}`,
             numLiquidityProviders: `${numLiquidityProviders}`,
             chains: chainMetrics,
         };
@@ -99,7 +97,6 @@ export class ProtocolService {
         const swapFee24h = _.sumBy(pools, (pool) => pool.dynamicData?.fees24h || 0);
 
         const yieldCapture24h = _.sumBy(pools, (pool) => (!pool.dynamicData ? 0 : pool.dynamicData.yieldCapture24h));
-        const surplus24 = _.sumBy(pools, (pool) => (!pool.dynamicData ? 0 : pool.dynamicData.surplus24h));
 
         const protocolSwapFees24h = _.sumBy(pools, (pool) =>
             !pool.dynamicData ? 0 : pool.dynamicData.protocolFees24h,
@@ -108,7 +105,6 @@ export class ProtocolService {
             !pool.dynamicData ? 0 : pool.dynamicData.protocolYieldCapture24h,
         );
 
-        const sftmxTvl = 0;
         const stsTVL = await this.getStsTVL(chain);
 
         const protocolData = {
@@ -120,7 +116,6 @@ export class ProtocolService {
             swapVolume24h: `${swapVolume24h}`,
             swapFee24h: `${swapFee24h}`,
             yieldCapture24h: `${yieldCapture24h}`,
-            surplus24h: `${surplus24}`,
             protocolSwapFee24h: `${protocolSwapFees24h}`,
             protocolYieldCapture24h: `${protocolYieldCapture24h}`,
             numLiquidityProviders: `${holdersQueryResponse._sum.holdersCount || '0'}`,

@@ -64,7 +64,6 @@ export const prismaPoolFactory = PrismaPoolFactory.define(({ params }) => {
         symbol: 'TEST-POOL',
         name: 'test pool',
         type: PrismaPoolType.WEIGHTED,
-        decimals: 18,
         swapFeeManager: createRandomAddress(),
         pauseManager: createRandomAddress(),
         poolCreator: createRandomAddress(),

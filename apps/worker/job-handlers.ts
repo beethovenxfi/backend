@@ -5,7 +5,6 @@ import { PricingService } from '../../modules/pricing/pricing-service';
 import { poolService } from '../../modules/pool/pool.service';
 import { cronsMetricPublisher } from '../../modules/metrics/metrics.client';
 import moment from 'moment';
-import { syncLatestFXPrices } from '../../modules/token/latest-fx-price';
 import { chainIdToChain } from '../../config/chain-id-to-chain';
 import { Chain } from '@prisma/client';
 import {
@@ -59,14 +58,12 @@ async function runIfNotAlreadyRunning(
         const durationSuccess = moment.duration(moment().diff(startJobTime)).asSeconds();
         if (process.env.AWS_ALERTS === 'true') {
             await cronsMetricPublisher.publish(`${jobId}-done`);
-            // await cronsDurationMetricPublisher.publish(`${jobId}-done`, durationSuccess);
         }
         console.log(`Successful job ${jobId}-done`, durationSuccess);
     } catch (error: any) {
         const durationError = moment.duration(moment().diff(startJobTime)).asSeconds();
         if (process.env.AWS_ALERTS === 'true') {
             await cronsMetricPublisher.publish(`${jobId}-error`);
-            // await cronsDurationMetricPublisher.publish(`${jobId}-error`, durationError);
         }
         const duration = moment.duration(moment().diff(startJobTime)).asSeconds();
         console.log(`Error job ${jobId}-error`, duration, error.message || error);
@@ -194,18 +191,6 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
             break;
         case 'update-fee-volume-yield-all-pools':
             await runIfNotAlreadyRunning(name, chainId, () => updateVolumeAndFees(chain), res, next);
-            break;
-        case 'sync-latest-fx-prices':
-            await runIfNotAlreadyRunning(
-                name,
-                chainId,
-                () => {
-                    const subgraphUrl = config[chain].subgraphs.balancer;
-                    return syncLatestFXPrices(subgraphUrl, chain);
-                },
-                res,
-                next,
-            );
             break;
         case 'sync-sts-staking-data':
             await runIfNotAlreadyRunning(

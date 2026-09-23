@@ -133,7 +133,6 @@ export class PricingRepository {
                     },
                     update: {
                         price: item.price,
-                        close: item.price,
                         updatedBy: item.updatedBy,
                         updatedAt: item.updatedAt,
                     },
@@ -142,10 +141,6 @@ export class PricingRepository {
                         chain: item.chain,
                         timestamp: hourlyTimestamp,
                         price: item.price,
-                        high: item.price,
-                        low: item.price,
-                        open: item.price,
-                        close: item.price,
                         updatedBy: item.updatedBy,
                         updatedAt: item.updatedAt,
                     },

@@ -32,7 +32,7 @@ export const syncTags = async (): Promise<void> => {
         select: { poolId: true },
         where: {
             type: {
-                in: ['NATIVE_REWARD', 'THIRD_PARTY_REWARD', 'MERKL', 'VOTING', 'STAKING'],
+                in: ['MERKL', 'VOTING', 'STAKING'],
             },
             apr: {
                 gt: 0,

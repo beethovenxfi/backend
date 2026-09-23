@@ -20,12 +20,10 @@ export const syncStaking = async (chains: Chain[]) => {
                 networkconfig.reliquary?.excludedFarmIds || [],
             );
         }
-        if (networkconfig.subgraphs.gauge && networkconfig.bal?.address) {
+        if (networkconfig.subgraphs.gauge) {
             await syncGaugeStakingForPools(
                 new GaugeSubgraphService(networkconfig.subgraphs.gauge),
-                networkconfig.bal.address,
                 chain,
-                networkconfig.gaugeControllerHelperAddress,
             );
         }
     }

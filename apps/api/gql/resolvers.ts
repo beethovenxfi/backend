@@ -23,6 +23,7 @@ export const resolvers = {
         ...loopsResolver.Query,
     },
     Mutation: {
+        ...beetsResolver.Mutation,
         ...poolResolver.Mutation,
         ...protocolResolver.Mutation,
         ...sorResolver.Mutation,

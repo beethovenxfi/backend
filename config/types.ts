@@ -46,10 +46,7 @@ export interface NetworkData {
         reliquary?: string;
         sts?: string;
         gauge?: string;
-        aura?: string;
-        cowAmm?: string;
     };
-    protocolToken: 'beets' | 'bal';
     beets?: {
         address: string;
     };
@@ -64,25 +61,11 @@ export interface NetworkData {
         aavePoolDataProvider: string;
         aavePoolAddressesProvider: string;
     };
-    bal?: {
-        address: string;
-    };
-    veBal?: {
-        address: string;
-        bptAddress: string;
-        delegationProxy: string;
-    };
-    gaugeControllerAddress?: string;
-    gaugeControllerHelperAddress?: string;
-    gyro?: {
-        config: string;
-    };
     balancer: {
         v2: {
             vaultAddress: string;
             defaultSwapFeePercentage: string;
             defaultYieldFeePercentage: string;
-            tokenAdmin?: string;
             balancerQueriesAddress: string;
         };
         v3: {
@@ -90,7 +73,6 @@ export interface NetworkData {
             routerAddress: string;
             defaultSwapFeePercentage: string;
             defaultYieldFeePercentage: string;
-            tokenAdmin?: string;
         };
     };
     hooks?: Record<string, GqlHookType>;
@@ -102,15 +84,6 @@ export interface NetworkData {
         excludedFarmIds: string[];
     };
     avgBlockSpeed: number;
-    datastudio?: {
-        [key in DeploymentEnv]: {
-            user: string;
-            sheetId: string;
-            compositionTabName: string;
-            databaseTabName: string;
-            emissionDataTabName: string;
-        };
-    };
     monitoring: {
         [key in DeploymentEnv]: {
             alarmTopicArn: string;

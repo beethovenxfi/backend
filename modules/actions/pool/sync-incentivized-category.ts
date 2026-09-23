@@ -7,7 +7,7 @@ export const syncIncentivizedCategory = async (chain: Chain) => {
         where: {
             chain,
             type: {
-                in: ['NATIVE_REWARD', 'THIRD_PARTY_REWARD', 'MERKL', 'VOTING', 'STAKING'],
+                in: ['MERKL', 'VOTING', 'STAKING'],
             },
             apr: {
                 gt: 0,

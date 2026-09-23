@@ -84,7 +84,6 @@ export const poolUpsertTransformerV3 = (
             chain: chain,
             protocolVersion: 3,
             address: poolData.id.toLowerCase(),
-            decimals: 18,
             symbol: poolData.symbol,
             name: poolData.name,
             swapFeeManager: poolData.swapFeeManager,

@@ -11,7 +11,6 @@ model PrismaPool {
     name                String
     type                PrismaPoolType
     version             Int                 @default(1)
-    decimals            Int                 @default(18)
     pauseManager        String?
     swapFeeManager      String
     poolCreator         String?
@@ -41,8 +40,6 @@ model PrismaPool {
 
     userWalletBalances  PrismaUserWalletBalance[]
     userStakedBalances  PrismaUserStakedBalance[]
-
-    userPoolBalanceSnapshots    PrismaUserPoolBalanceSnapshot[]
 
     hook                Json?
 
@@ -94,14 +91,12 @@ model PrismaPoolDynamicData {
     totalLiquidity          Float               @default(0)
     volume24h               Float               @default(0)
     fees24h                 Float               @default(0)
-    surplus24h              Float               @default(0)
     yieldCapture24h         Float               @default(0)
     protocolFees24h                 Float               @default(0)
     protocolYieldCapture24h         Float               @default(0)
     apr                     Float               @default(0)
     volume48h               Float               @default(0)
     fees48h                 Float               @default(0)
-    surplus48h              Float               @default(0)
     yieldCapture48h         Float               @default(0)
     protocolFees48h                 Float               @default(0)
     protocolYieldCapture48h         Float               @default(0)
@@ -139,7 +134,6 @@ model PrismaPoolToken {
     balanceUSD          Float   @default(0)
     weight              String?
     priceRate           String  @default("1.0")
-    latestFxPrice       Float?
     
     updatedAt           DateTime @updatedAt @default(now())
 
@@ -171,14 +165,9 @@ model PrismaPoolAprItem {
 enum PrismaPoolAprType {
     DYNAMIC_SWAP_FEE_24H
     SWAP_FEE_24H
-    SWAP_FEE_7D
-    SWAP_FEE_30D
-    NATIVE_REWARD
-    THIRD_PARTY_REWARD
     IB_YIELD
     VOTING
     MERKL
-    FUUL
     QUANT_AMM_UPLIFT
     STAKING
     STAKING_BOOST
@@ -258,7 +247,6 @@ model PrismaPoolStakingGaugeReward{
 
     tokenAddress        String
     rewardPerSecond     String
-    isVeBalemissions    Boolean                 @default(false)
 
     @@index([gaugeId, chain])
 }
@@ -279,7 +267,6 @@ model PrismaPoolStakingReliquaryFarm {
     totalWeightedBalance    String              @default("0")
     levels                  PrismaPoolStakingReliquaryFarmLevel[]
     snapshots               PrismaReliquaryFarmSnapshot[]
-    relicSnapshots          PrismaUserRelicSnapshot[]
 }
 
 model PrismaPoolStakingReliquaryFarmLevel {
@@ -308,19 +295,16 @@ model PrismaPoolSnapshot {
     pool                PrismaPool          @relation(fields:[poolId, chain], references: [id, chain], onDelete: Cascade)
     chain               Chain
     timestamp           Int
-    protocolVersion     Int @default(2)
 
     totalLiquidity      Float
     sharePrice          Float
     volume24h           Float
     fees24h             Float
-    surplus24h          Float @default(0)
     totalShares         String
     totalSharesNum      Float
     swapsCount          Int
     amounts             String[]
 
-    @@index([protocolVersion])
     @@index([timestamp(sort: Desc)])
     @@index([poolId, chain])
 }

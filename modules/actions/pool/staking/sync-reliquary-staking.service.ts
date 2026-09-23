@@ -129,7 +129,6 @@ export const deleteReliquaryStakingForAllPools = async (reloadStakingTypes: Pris
         // need to remove snapshots as well as they have a FK in reliquary staking
         await prisma.prismaReliquaryLevelSnapshot.deleteMany({ where: { chain: chain } });
         await prisma.prismaReliquaryFarmSnapshot.deleteMany({ where: { chain: chain } });
-        await prisma.prismaUserRelicSnapshot.deleteMany({});
 
         await prisma.prismaPoolStakingReliquaryFarmLevel.deleteMany({ where: { chain: chain } });
         await prisma.prismaPoolStakingReliquaryFarm.deleteMany({ where: { chain: chain } });

@@ -129,7 +129,6 @@ export const eventsRepository = {
             "poolId",
             SUM("valueUSD") AS volume24h,
             SUM((payload->'fee'->>'valueUSD')::numeric) AS fees24h,
-            SUM((payload->'surplus'->>'valueUSD')::numeric) AS surplus24h,
             MAX("blockNumber") AS "latestBlockNumber",
             count(*) AS "swapsCount"
           FROM "PartitionedPoolEvent"
@@ -148,7 +147,6 @@ export const eventsRepository = {
             poolId: string;
             volume24h: number;
             fees24h: number;
-            surplus24h: number;
             swapsCount: bigint;
             latestBlockNumber: number;
         }[];
@@ -176,7 +174,6 @@ export const eventsRepository = {
             SUM("valueUSD") AS volume,
             SUM((payload->'fee'->>'valueUSD')::numeric) AS fees,
             SUM((payload->'dynamicFee'->>'valueUSD')::numeric) AS "dynamicFees",
-            SUM((payload->'surplus'->>'valueUSD')::numeric) AS surplus,
             MAX("blockNumber") AS "latestBlockNumber",
             count(*) AS "swapsCount"
           FROM "PartitionedPoolEvent"

@@ -8,7 +8,6 @@ type PoolSwapFeeData = {
     chain: Chain;
     dynamic_fees_24h: number;
     fees_24h: number;
-    surplus_24h: number;
 };
 
 const query = (chain: Chain, timestamp: number) => `
@@ -16,8 +15,7 @@ const query = (chain: Chain, timestamp: number) => `
         "poolId",
         chain,
         SUM((payload->'dynamicFee'->>'valueUSD')::numeric) AS dynamic_fees_24h,
-        SUM((payload->'fee'->>'valueUSD')::numeric) AS fees_24h,
-        SUM((payload->'surplus'->>'valueUSD')::numeric) AS surplus_24h
+        SUM((payload->'fee'->>'valueUSD')::numeric) AS fees_24h
     FROM
         "PartitionedPoolEvent"
     WHERE

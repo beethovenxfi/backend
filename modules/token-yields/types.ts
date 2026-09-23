@@ -86,14 +86,5 @@ export interface TokenYieldConfig {
     contract?: {
         calls: TokenYieldContractFetchConfig[];
     };
-    hypurrfi?: {
-        markets: string[];
-    };
-    hypurrfiPrime?: {
-        vaults: string[];
-    };
-    morphoVaultHyperevm?: {
-        vaults: string[];
-    };
     rateProvider?: RateProviderYieldConfig;
 }

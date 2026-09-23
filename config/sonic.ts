@@ -47,12 +47,8 @@ export default <NetworkData>{
     rpcUrl: `https://prod.rpc.direct.dev/v1/${env.DIRECT_API_KEY}/sonic`,
     rpcMaxBlockRange: 5000,
     acceptableSGLag: 150, // ~1min
-    protocolToken: 'beets',
     beets: {
         address: '0x2d0e0814e62d80056181f5cd932274405966e4f0',
-    },
-    bal: {
-        address: '0x0000000000000000000000000000000000000000',
     },
     sts: {
         address: '0xe5da20f15420ad15de0fa650600afc998bbe3955',

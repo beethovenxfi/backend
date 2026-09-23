@@ -5,7 +5,6 @@ import { isStablePool } from './pool-utils';
 import { prismaBulkExecuteOperations } from '../../../prisma/prisma-util';
 import { fetchOnChainPoolState } from './pool-onchain-state';
 import { fetchOnChainPoolData } from './pool-onchain-data';
-import { fetchOnChainGyroFees } from './pool-onchain-gyro-fee';
 import { StableData } from '../subgraph-mapper';
 import { fetchTokenPairData } from './pool-on-chain-tokenpair-data';
 import _ from 'lodash';
@@ -25,7 +24,6 @@ export interface PoolOnChainDataServiceOptions {
     balancerQueriesAddress: string;
     yieldProtocolFeePercentage: string;
     swapProtocolFeePercentage: string;
-    gyroConfig?: string;
 }
 
 export class PoolOnChainDataService {
@@ -70,7 +68,7 @@ export class PoolOnChainDataService {
             // Filter needed for test pools on Sepolia
             .filter((pool) => pool.dynamicData);
 
-        const state = await fetchOnChainPoolState(filteredPools, ['ZKEVM', 'FANTOM'].includes(chain) ? 8192 : 32768);
+        const state = await fetchOnChainPoolState(filteredPools, 32768);
 
         const operations = [];
         for (const pool of filteredPools) {
@@ -138,26 +136,16 @@ export class PoolOnChainDataService {
             // Filter needed for test pools on Sepolia
             .filter((pool) => pool.dynamicData);
 
-        const gyroPools = filteredPools.filter((pool) => pool.type.includes('GYRO'));
-
         const onchainResults = await fetchOnChainPoolData(
             filteredPools,
             this.options.vaultAddress,
-            ['ZKEVM', 'FANTOM'].includes(chain) ? 8192 : 32768,
+            32768,
         );
         const tokenPairData = await fetchTokenPairData(
             filteredPools,
             this.options.balancerQueriesAddress,
-            ['ZKEVM', 'FANTOM'].includes(chain) ? 8192 : 32768,
+            32768,
         );
-        const gyroFees = await (this.options.gyroConfig
-            ? fetchOnChainGyroFees(
-                  gyroPools,
-                  this.options.gyroConfig,
-                  ['ZKEVM', 'FANTOM'].includes(chain) ? 8192 : 32768,
-              )
-            : Promise.resolve({} as { [address: string]: string }));
-
         const operations = [];
         for (const pool of filteredPools) {
             const onchainData = onchainResults[pool.id];
@@ -172,12 +160,10 @@ export class PoolOnChainDataService {
                         : pool.dynamicData?.swapEnabled;
 
                 const yieldProtocolFeePercentage =
-                    gyroFees[pool.id] ||
                     onchainData.protocolYieldFeePercentageCache ||
                     String(this.options.yieldProtocolFeePercentage);
 
                 const swapProtocolFeePercentage =
-                    gyroFees[pool.id] ||
                     onchainData.protocolSwapFeePercentageCache ||
                     String(this.options.swapProtocolFeePercentage);
 

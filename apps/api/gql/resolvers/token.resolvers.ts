@@ -1,8 +1,6 @@
-import { GqlChain, GqlHistoricalTokenPrice, Resolvers } from '../generated-schema';
-import _ from 'lodash';
+import { GqlChain, Resolvers } from '../generated-schema';
 import { isAdminRoute } from '../../../../modules/auth/auth-context';
 import { tokenService } from '../../../../modules/token/token.service';
-import { syncLatestFXPrices } from '../../../../modules/token/latest-fx-price';
 import moment from 'moment';
 import { TokenController } from '../../../../modules/controllers/token-controller';
 import config from '../../../../config';
@@ -25,59 +23,6 @@ const resolvers: Resolvers = {
                 updatedBy: price.updatedBy,
             }));
         },
-        tokenGetHistoricalPrices: async (parent, { addresses, chain, range }, context) => {
-            const data = await tokenService.getTokenPricesForRange(addresses, range, chain);
-
-            const grouped = _.groupBy(data, 'tokenAddress');
-
-            const result: GqlHistoricalTokenPrice[] = [];
-            for (const address in grouped) {
-                result.push({
-                    address: address,
-                    chain: grouped[address][0].chain,
-                    prices: grouped[address].map((entry) => ({
-                        timestamp: `${entry.timestamp}`,
-                        price: entry.price,
-                        updatedAt: moment(entry.updatedAt).unix(),
-                        updatedBy: entry.updatedBy,
-                    })),
-                });
-            }
-            return result;
-        },
-        tokenGetTokenDynamicData: async (parent, { address, chain }, context) => {
-            const data = await tokenService.getTokenDynamicData(address, chain);
-
-            return data
-                ? {
-                      ...data,
-                      id: data.coingeckoId,
-                      fdv: data.fdv ? `${data.fdv}` : null,
-                      marketCap: data.marketCap ? `${data.marketCap}` : null,
-                      updatedAt: data.updatedAt.toUTCString(),
-                  }
-                : null;
-        },
-        tokenGetTokensDynamicData: async (parent, { addresses, chain }, context) => {
-            const items = await tokenService.getTokensDynamicData(addresses, chain);
-
-            return items.map((item) => ({
-                ...item,
-                id: item.coingeckoId,
-                fdv: item.fdv ? `${item.fdv}` : null,
-                marketCap: item.marketCap ? `${item.marketCap}` : null,
-                updatedAt: item.updatedAt.toUTCString(),
-            }));
-        },
-        tokenGetRelativePriceChartData: async (parent, { tokenIn, tokenOut, range, chain }, context) => {
-            const data = await tokenService.getRelativeDataForRange(tokenIn, tokenOut, range, chain);
-
-            return data.map((item) => ({
-                id: `${tokenIn}-${tokenOut}-${item.timestamp}`,
-                timestamp: item.timestamp,
-                price: `${item.price}`,
-            }));
-        },
     },
     Mutation: {
         tokenReloadTokenPrices: async (parent, { chains }, context) => {
@@ -94,14 +39,6 @@ const resolvers: Resolvers = {
             isAdminRoute(context);
 
             await ContentController().syncTokenContentData();
-
-            return 'success';
-        },
-        tokenSyncLatestFxPrices: async (parent, { chain }, context) => {
-            isAdminRoute(context);
-            const subgraphUrl = config[chain].subgraphs.balancer;
-
-            await syncLatestFXPrices(subgraphUrl, chain);
 
             return 'success';
         },

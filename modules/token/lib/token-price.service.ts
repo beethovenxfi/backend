@@ -4,7 +4,6 @@ import _ from 'lodash';
 import { timestampRoundedUpToNearestHour } from '../../common/time';
 import { Chain, PrismaTokenCurrentPrice, PrismaTokenPrice } from '@prisma/client';
 import moment from 'moment-timezone';
-import { GqlTokenChartDataRange } from '../../../apps/api/gql/generated-schema';
 import { Cache, CacheClass } from 'memory-cache';
 import config from '../../../config';
 
@@ -58,92 +57,6 @@ export class TokenPriceService {
         return tokenPrice?.price || 0;
     }
 
-    public async getTokenPricesForRange(
-        tokenAddresses: string[],
-        range: GqlTokenChartDataRange,
-        chain: Chain,
-    ): Promise<PrismaTokenPrice[]> {
-        if (range === 'ALL') {
-            const rawRecords = await prisma.$queryRaw<
-                {
-                    tokenAddress: string;
-                    chain: Chain;
-                    daily_timestamp: number;
-                    price: number;
-                }[]
-            >`SELECT
-                "tokenAddress",
-                chain,
-                FLOOR("timestamp" / 86400) * 86400 AS daily_timestamp,
-                ROUND(AVG(price)::NUMERIC, 2) AS price
-            FROM "PrismaTokenPrice"
-            WHERE "tokenAddress" = ANY(${tokenAddresses})
-            AND "chain" = ${chain}::"Chain"
-            GROUP BY
-                "tokenAddress",
-                chain,
-                FLOOR("timestamp" / 86400) * 86400
-            ORDER BY
-                daily_timestamp DESC`;
-
-            const records = rawRecords.map((record) => ({
-                ...record,
-                timestamp: record.daily_timestamp,
-                updatedAt: new Date(record.daily_timestamp * 1000),
-                updatedBy: '',
-                low: record.price, // not returned by the graphql query
-                high: record.price, // not returned by the graphql query
-                open: record.price, // not returned by the graphql query
-                close: record.price, // not returned by the graphql query
-            }));
-
-            return records;
-        }
-
-        const startTimestamp = this.getStartTimestampFromRange(range);
-
-        return prisma.prismaTokenPrice.findMany({
-            where: { tokenAddress: { in: tokenAddresses }, timestamp: { gt: startTimestamp }, chain: chain },
-            orderBy: { timestamp: 'asc' },
-        });
-    }
-
-    public async getRelativeDataForRange(
-        tokenIn: string,
-        tokenOut: string,
-        range: GqlTokenChartDataRange,
-        chain: Chain,
-    ): Promise<TokenPriceItem[]> {
-        const startTimestamp = this.getStartTimestampFromRange(range);
-
-        const data = await prisma.prismaTokenPrice.findMany({
-            where: {
-                chain: chain,
-                tokenAddress: { in: [tokenIn, tokenOut] },
-                timestamp: { gt: startTimestamp },
-            },
-            orderBy: { timestamp: 'asc' },
-        });
-
-        const tokenInData = data.filter((item) => item.tokenAddress === tokenIn);
-        const tokenOutData = data.filter((item) => item.tokenAddress === tokenOut);
-        const items: TokenPriceItem[] = [];
-
-        for (const tokenInItem of tokenInData) {
-            const tokenOutItem = tokenOutData.find((tokenOutItem) => tokenOutItem.timestamp == tokenInItem.timestamp);
-
-            if (tokenOutItem) {
-                items.push({
-                    id: `${tokenIn}-${tokenOut}-${tokenInItem.timestamp}`,
-                    timestamp: tokenInItem.timestamp,
-                    price: tokenInItem.close / tokenOutItem.close,
-                });
-            }
-        }
-
-        return items;
-    }
-
     public async deleteTokenPrice({
         timestamp,
         tokenAddress,
@@ -160,57 +73,12 @@ export class TokenPriceService {
         return !!response;
     }
 
-    private getStartTimestampFromRange(range: GqlTokenChartDataRange): number {
-        switch (range) {
-            case 'SEVEN_DAY':
-                return moment().subtract(7, 'days').unix();
-            case 'THIRTY_DAY':
-                return moment().subtract(30, 'days').unix();
-            case 'NINETY_DAY':
-                return moment().subtract(90, 'days').unix();
-            case 'ONE_HUNDRED_EIGHTY_DAY':
-                return moment().subtract(180, 'days').unix();
-            case 'ONE_YEAR':
-                return moment().subtract(365, 'days').unix();
-            default:
-                return moment().subtract(7, 'days').unix();
-        }
-    }
-
     public async purgeOldTokenPricesForAllChains(): Promise<number> {
         // DATE(to_timestamp(timestamp)) will return the midnight timestamp. We'll delete all prices that are not midnight timestamps AND are older than 100 days.
         const deleted =
             await prisma.$executeRaw`DELETE FROM "PrismaTokenPrice" WHERE DATE(to_timestamp(timestamp)) != to_timestamp(timestamp) AND to_timestamp(timestamp) < CURRENT_DATE - INTERVAL '100 days'`;
 
         return deleted;
-    }
-
-    private async updateCandleStickData(chain: Chain) {
-        const timestamp = timestampRoundedUpToNearestHour();
-        const tokenPrices = await prisma.prismaTokenPrice.findMany({
-            where: { timestamp, chain: chain },
-        });
-        let operations: any[] = [];
-
-        for (const tokenPrice of tokenPrices) {
-            operations.push(
-                prisma.prismaTokenPrice.update({
-                    where: {
-                        tokenAddress_timestamp_chain: {
-                            tokenAddress: tokenPrice.tokenAddress,
-                            timestamp,
-                            chain: chain,
-                        },
-                    },
-                    data: {
-                        high: Math.max(tokenPrice.high, tokenPrice.price),
-                        low: Math.min(tokenPrice.low, tokenPrice.price),
-                    },
-                }),
-            );
-        }
-
-        await Promise.all(operations);
     }
 
     private addNativeEthPrice(chains: Chain[], tokenPrices: { tokenAddress: string; chain: Chain }[]) {

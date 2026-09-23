@@ -13,7 +13,6 @@ export const syncChangedPools = async (
     balancerQueriesAddress: string,
     yieldProtocolFeePercentage: string,
     swapProtocolFeePercentage: string,
-    gyroConfig?: string,
 ): Promise<string[]> => {
     const viemClient = getViemClient(chain);
     const latestBlock = await viemClient.getBlockNumber();
@@ -33,7 +32,6 @@ export const syncChangedPools = async (
         balancerQueriesAddress,
         yieldProtocolFeePercentage,
         swapProtocolFeePercentage,
-        gyroConfig,
     }));
 
     // Update status for all the pools

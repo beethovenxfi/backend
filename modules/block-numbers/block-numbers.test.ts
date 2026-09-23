@@ -1,34 +1,48 @@
-import { expect, test, describe, mock, beforeEach } from 'bun:test';
+import { expect, test, describe, vi, beforeEach } from 'vitest';
 import { blockNumbers } from './index';
 import { Chain } from '@prisma/client';
 
 describe('blockNumbers', () => {
-    const mockEvents = {
-        $queryRawUnsafe: mock(() => {}),
+    const repo = {
+        getLatestEvent: vi.fn(),
+        getDailyBlockNumbers: vi.fn(),
     };
 
     beforeEach(() => {
-        mockEvents.$queryRawUnsafe.mockReset();
+        repo.getLatestEvent.mockReset();
+        repo.getDailyBlockNumbers.mockReset();
     });
 
     describe('getBlock', () => {
         test('should return block number for given timestamp', async () => {
-            const mockEvent = [{ blockNumber: 12345 }];
-            mockEvents.$queryRawUnsafe.mockResolvedValue(mockEvent);
+            repo.getLatestEvent.mockResolvedValue({ blockNumber: 12345, blockTimestamp: 1000 });
 
-            const service = blockNumbers(mockEvents as any);
-            const result = await service.getBlock(Chain.MAINNET, 1000);
+            const service = blockNumbers(repo as any);
+            const result = await service.getBlock(Chain.SONIC, 1000);
 
+            expect(repo.getLatestEvent).toHaveBeenCalledWith({ chain: Chain.SONIC, timestamp: 1000 });
             expect(result).toBe(12345);
         });
 
         test('should return undefined if no event found', async () => {
-            mockEvents.$queryRawUnsafe.mockResolvedValue([]);
+            repo.getLatestEvent.mockResolvedValue(undefined);
 
-            const service = blockNumbers(mockEvents as any);
-            const result = await service.getBlock(Chain.MAINNET, 1000);
+            const service = blockNumbers(repo as any);
+            const result = await service.getBlock(Chain.SONIC, 1000);
 
             expect(result).toBeUndefined();
+        });
+    });
+
+    describe('getTimestamp', () => {
+        test('should return timestamp for given block', async () => {
+            repo.getLatestEvent.mockResolvedValue({ blockNumber: 12345, blockTimestamp: 1000 });
+
+            const service = blockNumbers(repo as any);
+            const result = await service.getTimestamp(Chain.SONIC, 12345);
+
+            expect(repo.getLatestEvent).toHaveBeenCalledWith({ chain: Chain.SONIC, block: 12345 });
+            expect(result).toBe(1000);
         });
     });
 
@@ -38,11 +52,12 @@ describe('blockNumbers', () => {
                 { timestamp: 1000, number: 12345 },
                 { timestamp: 2000, number: 12445 },
             ];
-            mockEvents.$queryRawUnsafe.mockResolvedValue(mockBlocks);
+            repo.getDailyBlockNumbers.mockResolvedValue(mockBlocks);
 
-            const service = blockNumbers(mockEvents as any);
-            const result = await service.getDailyBlocks(Chain.MAINNET, 2);
+            const service = blockNumbers(repo as any);
+            const result = await service.getDailyBlocks(Chain.SONIC, 2);
 
+            expect(repo.getDailyBlockNumbers).toHaveBeenCalledWith(Chain.SONIC, 2);
             expect(result).toEqual(mockBlocks);
         });
     });

@@ -315,8 +315,6 @@ export class PoolAggregatorLoader {
                 lifetimeVolume: '0',
                 protocolFees24h: '0',
                 protocolFees48h: '0',
-                surplus24h: '0',
-                surplus48h: '0',
                 volume24h: '0',
                 volume48h: '0',
                 yieldCapture24h: '0',

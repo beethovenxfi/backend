@@ -39,7 +39,6 @@ export async function swapsUsd(swaps: SwapEvent[], chain: Chain): Promise<SwapEv
             const tokenIn = tokenPrices.find((price) => price.tokenAddress === swap.payload.tokenIn.address);
             const tokenOut = tokenPrices.find((price) => price.tokenAddress === swap.payload.tokenOut.address);
             const feeToken = tokenPrices.find((price) => price.tokenAddress === swap.payload.fee.address);
-            const surplusToken = tokenPrices.find((price) => price.tokenAddress === swap.payload.surplus?.address);
             let feeValueUSD = parseFloat(swap.payload.fee.amount) * (feeToken?.price || 0);
             const dynamicFeeValueUSD = parseFloat(swap.payload.dynamicFee?.amount || '0') * (feeToken?.price || 0);
 
@@ -57,12 +56,6 @@ export async function swapsUsd(swaps: SwapEvent[], chain: Chain): Promise<SwapEv
                 tokenOut: {
                     ...swap.payload.tokenOut,
                 },
-                surplus: swap.payload.surplus
-                    ? {
-                          ...swap.payload.surplus,
-                          valueUSD: String((surplusToken?.price || 0) * parseFloat(swap.payload.surplus.amount)),
-                      }
-                    : undefined,
             };
 
             const valueUSD =

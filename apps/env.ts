@@ -6,12 +6,14 @@ type Env = EnvType<typeof schema>;
 export const schema = {
     PORT: Number,
     NODE_ENV: String,
-    DEFAULT_CHAIN_ID: String,
     DEPLOYMENT_ENV: String,
     ADMIN_API_KEY: String,
-    SANITY_API_TOKEN: String,
+    DATABASE_URL: String,
     SENTRY_DSN: String,
-    SENTRY_AUTH_TOKEN: String,
+    SENTRY_AUTH_TOKEN: {
+        optional: true,
+        type: String,
+    },
     SENTRY_TRACES_SAMPLE_RATE: {
         optional: true,
         type: String,
@@ -20,16 +22,11 @@ export const schema = {
         optional: true,
         type: String,
     },
-    AWS_REGION: String,
-    PROTOCOL: {
+    AWS_REGION: {
         optional: true,
         type: String,
     },
-    DRPC_API_KEY: {
-        optional: true,
-        type: String,
-    },
-    DRPC_BEETS_API_KEY: {
+    DIRECT_API_KEY: {
         optional: true,
         type: String,
     },
@@ -37,20 +34,11 @@ export const schema = {
         optional: true,
         type: String,
     },
-    THEGRAPH_API_KEY_FANTOM: {
-        optional: true,
+    MERKL_API_KEY: {
         type: String,
-    },
-    THEGRAPH_API_KEY_BALANCER: {
         optional: true,
-        type: String,
     },
     WORKER_QUEUE_URL: {
-        optional: true,
-        type: String,
-    },
-    DATABASE_URL: String,
-    SUPERFORM_API_KEY: {
         optional: true,
         type: String,
     },
@@ -60,31 +48,11 @@ export const schema = {
     },
     SOR_SERVICE_URL: {
         type: String,
-        default: 'http://sor-internal-75e33c0e4ea5363e.elb.eu-central-1.amazonaws.com/graphql',
+        default: 'http://localhost:4000/graphql',
     },
     SOR_INSTANCE: {
         type: Boolean,
         default: false,
-    },
-    PAXOS_APR_KEY: {
-        type: String,
-        optional: true,
-    },
-    TOKENLOGIC_API_KEY: {
-        type: String,
-        optional: true,
-    },
-    FUUL_HYPURR_API_KEY: {
-        type: String,
-        optional: true,
-    },
-    MERKL_API_KEY: {
-        type: String,
-        optional: true,
-    },
-    DIRECT_API_KEY: {
-        type: String,
-        optional: true,
     },
 };
 

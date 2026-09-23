@@ -105,6 +105,9 @@ Included on Pro: 1K build minutes, 14 d log retention, PITR 7 d, private network
 
 ## 4. Implementation phases
 
+### Phase 0 progress (2026-09-23)
+Done in the working tree (build green, not committed, DB not migrated): chains stripped to Sonic (user), veBAL/CoW/FX/datastudio/sftmx removed (user), dead code sweep + Prisma model trim + GQL trim + env/deps cleanup + migration squash to `prisma/migrations/0_init` (Claude). Still open from the list below: item 5 (AWS transport/metrics out), item 8 (Apollo response cache), item 9 (Dockerfile + render.yaml), item 10 (fix remaining test files that still use MAINNET/SEPOLIA/FANTOM literals). Frontend follow-ups are listed in section 7. Also removed on 2026-09-23 round 2: all `surplus*` fields (dynamic data, snapshots, protocol metrics, swap events); aggregator API kept.
+
 ### Phase 0: fork + strip (one PR each)
 1. **Chains.** Delete every `config/*.ts` except `sonic.ts`. Move `activeChainWorkerJobsGlobal` onto Sonic. Keep the Prisma and GQL `Chain` enums for now (they leak into UI enum guards and migrations); empty partitions for dead chains are harmless.
 2. **Squash migrations** to a single baseline with `prisma migrate diff`. Fresh DB anyway.

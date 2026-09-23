@@ -78,14 +78,12 @@ export async function reloadSnapshots(chain: Chain, poolId: string): Promise<voi
             },
             id: `${poolId}-${currentTimestamp}`,
             timestamp: currentTimestamp,
-            protocolVersion: pool.protocolVersion,
             totalLiquidity: totalLiquidity,
             totalShares: totalShares || '0',
             totalSharesNum: parseFloat(totalShares || '0'),
             swapsCount: parseFloat(swapsDataMap[currentTimestamp]?.swapsCount?.toString()) || 0,
             volume24h: swapsDataMap[currentTimestamp]?.volume24h || 0,
             fees24h: swapsDataMap[currentTimestamp]?.fees24h || 0,
-            surplus24h: swapsDataMap[currentTimestamp]?.surplus24h || 0,
             sharePrice:
                 totalLiquidity > 0 && parseFloat(totalShares || '0') > 0
                     ? totalLiquidity / parseFloat(totalShares || '0')
@@ -245,14 +243,12 @@ async function calculatePoolSnapshots(
             },
             id: `${poolId}-${since}`,
             timestamp: since,
-            protocolVersion: poolsDynamicDataMap[poolId].pool.protocolVersion || 2,
             totalLiquidity: poolsDynamicDataMap[poolId].totalLiquidity || 0,
             totalShares: poolsDynamicDataMap[poolId].totalShares || '0',
             totalSharesNum: parseFloat(poolsDynamicDataMap[poolId].totalShares || '0'),
             swapsCount: parseFloat(statsMap[poolId]?.swapsCount?.toString()) || 0,
             volume24h: statsMap[poolId]?.volume24h || 0,
             fees24h: statsMap[poolId]?.fees24h || 0,
-            surplus24h: statsMap[poolId]?.surplus24h || 0,
             sharePrice:
                 (poolsDynamicDataMap[poolId].totalLiquidity || 0) > 0 &&
                 parseFloat(poolsDynamicDataMap[poolId].totalShares || '0') > 0

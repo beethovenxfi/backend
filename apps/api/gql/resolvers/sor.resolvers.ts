@@ -26,7 +26,6 @@ const handleSorCall = async (args: QuerySorGetSwapPathsArgs, abortController: Ab
 };
 
 const handleProxyRequest = async (
-    args: QuerySorGetSwapPathsArgs,
     info: GraphQLResolveInfo,
     abortController: AbortController,
 ) => {
@@ -57,7 +56,8 @@ const handleProxyRequest = async (
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 query,
-                variables: args,
+                // the forwarded document is the client's own operation, so it must be paired with the client's variables
+                variables: info.variableValues,
                 operationName: info.operation.name?.value,
             }),
             signal: abortController.signal,
@@ -93,7 +93,7 @@ const balancerSdkResolvers: Resolvers = {
                 return handleSorCall(args, abortController);
             }
 
-            return handleProxyRequest(args, info, abortController);
+            return handleProxyRequest(info, abortController);
         },
     },
 };

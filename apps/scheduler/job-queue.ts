@@ -59,9 +59,16 @@ class WokerQueue {
 
 const workerQueue = new WokerQueue(new SQSClient({}), env.WORKER_QUEUE_URL);
 
+const MAX_INITIAL_DELAY_MS = 5 * 60 * 1000;
+
 export async function scheduleJobs(chainId: string): Promise<void> {
     for (const job of config[chainIdToChain[chainId]].workerJobs) {
-        console.log(`Initializing job ${job.name}-${chainId}-init`);
-        await workerQueue.sendWithInterval(JSON.stringify({ name: job.name, chain: chainId }), job.interval);
+        // Stagger the first run of each job over [0, min(interval, 5 min)) so a cold boot does not fire
+        // every job at once. After the first run each job keeps its own interval.
+        const initialDelay = Math.floor(Math.random() * Math.min(job.interval, MAX_INITIAL_DELAY_MS));
+        console.log(`Initializing job ${job.name}-${chainId}-init, first run in ${Math.round(initialDelay / 1000)}s`);
+        setTimeout(() => {
+            workerQueue.sendWithInterval(JSON.stringify({ name: job.name, chain: chainId }), job.interval);
+        }, initialDelay);
     }
 }

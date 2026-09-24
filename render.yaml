@@ -90,7 +90,7 @@ services:
       name: beets-worker
       runtime: docker
       region: frankfurt
-      plan: standard
+      plan: starter
       dockerfilePath: ./Dockerfile
       autoDeploy: true
       envVars:
@@ -108,4 +108,4 @@ services:
           - key: SOR_INSTANCE
             value: 'false'
           - key: NODE_OPTIONS
-            value: --max-old-space-size=1536
+            value: --max-old-space-size=384

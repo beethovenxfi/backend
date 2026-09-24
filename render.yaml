@@ -10,100 +10,102 @@
 # Secrets (marked sync: false) are entered once in the dashboard when the blueprint is first applied.
 
 databases:
-  - name: beets-db
-    plan: basic-1gb
-    region: frankfurt
-    postgresMajorVersion: '16'
-    databaseName: beets
-    user: beets
+    - name: beets-db
+      plan: basic-1gb
+      region: frankfurt
+      postgresMajorVersion: '16'
+      databaseName: beets
+      user: beets
 
 envVarGroups:
-  - name: beets-shared
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: DEPLOYMENT_ENV
-        value: main
-      - key: PORT
-        value: '4000'
-      - key: SENTRY_TRACES_SAMPLE_RATE
-        value: '0.001'
-      - key: SENTRY_PROFILES_SAMPLE_RATE
-        value: '0.001'
-      - key: SENTRY_DSN
-        sync: false
-      - key: SENTRY_AUTH_TOKEN
-        sync: false
-      - key: ADMIN_API_KEY
-        sync: false
-      - key: DIRECT_API_KEY
-        sync: false
-      - key: COINGECKO_API_KEY
-        sync: false
-      - key: MERKL_API_KEY
-        sync: false
+    - name: beets-shared
+      envVars:
+          - key: NODE_ENV
+            value: production
+          - key: DEPLOYMENT_ENV
+            value: main
+          - key: PORT
+            value: '4000'
+          - key: SENTRY_TRACES_SAMPLE_RATE
+            value: '0.001'
+          - key: SENTRY_PROFILES_SAMPLE_RATE
+            value: '0.001'
+          - key: SENTRY_DSN
+            sync: false
+          - key: SENTRY_AUTH_TOKEN
+            sync: false
+          - key: ADMIN_API_KEY
+            sync: false
+          - key: DIRECT_API_KEY
+            sync: false
+          - key: COINGECKO_API_KEY
+            sync: false
+          - key: MERKL_API_KEY
+            sync: false
 
 services:
-  - type: web
-    name: beets-api
-    runtime: docker
-    region: frankfurt
-    plan: standard
-    dockerfilePath: ./Dockerfile
-    healthCheckPath: /health
-    preDeployCommand: npx prisma migrate deploy
-    autoDeploy: true
-    envVars:
-      - fromGroup: beets-shared
-      - key: DATABASE_URL
-        fromDatabase:
-          name: beets-db
-          property: connectionString
-      - key: SOR_INSTANCE
-        value: 'false'
-      - key: SOR_SERVICE_URL
-        fromService:
-          type: pserv
-          name: beets-sor
-          envVarKey: SOR_SERVICE_URL_INTERNAL
+    - type: web
+      name: beets-api
+      runtime: docker
+      region: frankfurt
+      plan: standard
+      dockerfilePath: ./Dockerfile
+      healthCheckPath: /health
+      preDeployCommand: npx prisma migrate deploy
+      autoDeploy: true
+      envVars:
+          - fromGroup: beets-shared
+          - key: DATABASE_URL
+            fromDatabase:
+                name: beets-db
+                property: connectionString
+          - key: SOR_INSTANCE
+            value: 'false'
+          - key: SOR_SERVICE_URL
+            fromService:
+                type: pserv
+                name: beets-sor
+                envVarKey: SOR_SERVICE_URL_INTERNAL
 
-  - type: pserv
-    name: beets-sor
-    runtime: docker
-    region: frankfurt
-    plan: starter
-    dockerfilePath: ./Dockerfile
-    autoDeploy: true
-    envVars:
-      - fromGroup: beets-shared
-      - key: DATABASE_URL
-        fromDatabase:
-          name: beets-db
-          property: connectionString
-      - key: SOR_INSTANCE
-        value: 'true'
-      # exported so beets-api can reference it; private services are reachable as http://<name>:<port>
-      - key: SOR_SERVICE_URL_INTERNAL
-        value: http://beets-sor:4000/graphql
+    - type: pserv
+      name: beets-sor
+      runtime: docker
+      region: frankfurt
+      plan: starter
+      dockerfilePath: ./Dockerfile
+      autoDeploy: true
+      envVars:
+          - fromGroup: beets-shared
+          - key: DATABASE_URL
+            fromDatabase:
+                name: beets-db
+                property: connectionString
+          - key: SOR_INSTANCE
+            value: 'true'
+          # exported so beets-api can reference it; private services are reachable as http://<name>:<port>
+          - key: SOR_SERVICE_URL_INTERNAL
+            value: http://beets-sor:4000/graphql
 
-  - type: worker
-    name: beets-worker
-    runtime: docker
-    region: frankfurt
-    plan: standard
-    dockerfilePath: ./Dockerfile
-    autoDeploy: true
-    envVars:
-      - fromGroup: beets-shared
-      - key: DATABASE_URL
-        fromDatabase:
-          name: beets-db
-          property: connectionString
-      - key: WORKER
-        value: 'true'
-      - key: SCHEDULER
-        value: 'true'
-      - key: WORKER_QUEUE_URL
-        value: http://localhost:4000
-      - key: SOR_INSTANCE
-        value: 'false'
+    - type: worker
+      name: beets-worker
+      runtime: docker
+      region: frankfurt
+      plan: standard
+      dockerfilePath: ./Dockerfile
+      autoDeploy: true
+      envVars:
+          - fromGroup: beets-shared
+          - key: DATABASE_URL
+            fromDatabase:
+                name: beets-db
+                property: connectionString
+          - key: WORKER
+            value: 'true'
+          - key: SCHEDULER
+            value: 'true'
+          - key: WORKER_QUEUE_URL
+            value: http://localhost:4000
+          - key: SOR_INSTANCE
+            value: 'false'
+          - key: NODE_OPTIONS
+            value: --max-old-space-size=1536

@@ -1,11 +1,10 @@
-import { TokenPriceItem } from '../token-types';
 import { prisma } from '../../../prisma/prisma-client';
 import _ from 'lodash';
-import { timestampRoundedUpToNearestHour } from '../../common/time';
-import { Chain, PrismaTokenCurrentPrice, PrismaTokenPrice } from '@prisma/client';
+import { daysAgo } from '../../common/time';
+import { Chain, PrismaTokenCurrentPrice } from '@prisma/client';
 import moment from 'moment-timezone';
 import { Cache, CacheClass } from 'memory-cache';
-import config from '../../../config';
+import config, { DAYS_OF_DAILY_PRICES, DAYS_OF_HOURLY_PRICES } from '../../../config';
 
 export class TokenPriceService {
     cache: CacheClass<string, any> = new Cache<string, any>();
@@ -74,11 +73,14 @@ export class TokenPriceService {
     }
 
     public async purgeOldTokenPricesForAllChains(): Promise<number> {
-        // DATE(to_timestamp(timestamp)) will return the midnight timestamp. We'll delete all prices that are not midnight timestamps AND are older than 100 days.
-        const deleted =
-            await prisma.$executeRaw`DELETE FROM "PrismaTokenPrice" WHERE DATE(to_timestamp(timestamp)) != to_timestamp(timestamp) AND to_timestamp(timestamp) < CURRENT_DATE - INTERVAL '100 days'`;
+        const hourlyCutoff = daysAgo(DAYS_OF_HOURLY_PRICES);
+        const dailyCutoff = daysAgo(DAYS_OF_DAILY_PRICES);
 
-        return deleted;
+        const deletedHourly =
+            await prisma.$executeRaw`DELETE FROM "PrismaTokenPrice" WHERE timestamp < ${hourlyCutoff} AND DATE(to_timestamp(timestamp)) != to_timestamp(timestamp)`;
+        const deletedDaily = await prisma.$executeRaw`DELETE FROM "PrismaTokenPrice" WHERE timestamp < ${dailyCutoff}`;
+
+        return deletedHourly + deletedDaily;
     }
 
     private addNativeEthPrice(chains: Chain[], tokenPrices: { tokenAddress: string; chain: Chain }[]) {

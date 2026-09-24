@@ -366,6 +366,12 @@ export const eventsRepository = {
 
         return events;
     },
+    deleteEventsOlderThan: async (chain: Chain, days: number) => {
+        const { count } = await prisma.prismaPoolEvent.deleteMany({
+            where: { chain, blockTimestamp: { lt: daysAgo(days) } },
+        });
+        return count;
+    },
     storeEvents: async (events: (SwapEvent | JoinExitEvent)[]) => {
         await prisma.prismaPoolEvent.createMany({
             skipDuplicates: true,

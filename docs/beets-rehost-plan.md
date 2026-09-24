@@ -114,7 +114,7 @@ Done in the working tree (build green, not committed, DB not migrated): chains s
 3. **veBAL out.** `modules/vebal`, `apps/api/gql/schema/vebal.gql` + `vebal.resolvers.ts`, `sync-vebal-*` jobs, `modules/aprs/handlers/vebal-apr`, models `PrismaVeBalUserBalance`, `PrismaVeBalTotalSupply`, `PrismaVotingGauge`, `PrismaVeBalUserBalanceSnapshot`, `PrismaPoolStakingVebal`. Keep `liquidity-gauge-apr`, gauge staking sync, `beetswars-gauge-voting-apr-handler`.
 4. **Dead weight.** CoW AMM module + jobs, fx jobs, sftmx/fbeets/pool-filter/user-snapshot models, datastudio module, Sanity dependency and env var, `user-snapshot-subgraph`.
 5. **AWS out.** SQS SDK; `apps/main.ts` starts scheduler + worker together when both flags set; delete CloudWatch clients and `apps/scheduler/create-alerts.ts`; Secrets Manager; `.platform/`, `.ebextensions/`, `buildspec.yml`. Add Sentry cron check-ins in `job-handlers.ts`. Make `AWS_REGION` optional in `apps/env.ts`.
-6. **Retention.** Daily jobs: delete `events_sonic` rows older than 90 d, delete `PrismaTokenPrice` rows older than 100 d (replace the current hourly-to-daily purge).
+6. **Retention.** DONE 2026-09-25: daily job `global-purge-old-data` deletes events older than 90 d, hourly token prices older than 30 d (midnight row kept) and all token prices older than 90 d. Constants in `config/index.ts` (`DAYS_OF_EVENTS`, `DAYS_OF_HOURLY_PRICES`, `DAYS_OF_DAILY_PRICES`).
 7. **Cadence.** `config/worker-jobs.ts` main intervals: balances 120 s, pool sync 60 s, APRs 10 m.
 8. **Cache.** `@apollo/server-plugin-response-cache`, port maxAge/scope rules from `stellate/backend/stellate.js`.
 9. **Deploy files.** Dockerfile (bun install, prisma generate, tsc) and `render.yaml` blueprint for the four services + preview envs.

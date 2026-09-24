@@ -17,13 +17,14 @@ import {
 import { updateVolumeAndFees } from '../../modules/actions/pool/update-volume-and-fees';
 import { TokenController } from '../../modules/controllers/token-controller';
 import { SubgraphMonitorController } from '../../modules/controllers/subgraph-monitor-controller';
-import config from '../../config';
+import config, { DAYS_OF_EVENTS } from '../../config';
 import { LBPController } from '../../modules/controllers/lbp-controller';
 import { AprsController } from '../../modules/controllers/aprs-controller';
 import { LoopsService } from '../../modules/loops/service';
 import { ContentController } from '../../modules/content/content-controller';
 import { StakedSonicController } from '../../modules/sts/sts-controller';
 import { UserBalancesController } from '../../modules/user/user-balances-controller';
+import { eventsRepository } from '../../modules/repositories/events';
 
 const runningJobs: Set<string> = new Set();
 
@@ -169,11 +170,14 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                 next,
             );
             break;
-        case 'global-purge-old-tokenprices':
+        case 'global-purge-old-data':
             await runIfNotAlreadyRunning(
                 name,
                 chainId,
-                () => tokenService.purgeOldTokenPricesForAllChains(),
+                async () => {
+                    await tokenService.purgeOldTokenPricesForAllChains();
+                    await eventsRepository.deleteEventsOlderThan(chain, DAYS_OF_EVENTS);
+                },
                 res,
                 next,
             );

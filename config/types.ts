@@ -84,11 +84,6 @@ export interface NetworkData {
         excludedFarmIds: string[];
     };
     avgBlockSpeed: number;
-    monitoring: {
-        [key in DeploymentEnv]: {
-            alarmTopicArn: string;
-        };
-    };
     stakingServices: StakingServiceType[];
     workerJobs: WorkerJob[];
 }

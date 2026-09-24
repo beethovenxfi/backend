@@ -3,7 +3,6 @@ import { Express, NextFunction } from 'express';
 import { tokenService } from '../../modules/token/token.service';
 import { PricingService } from '../../modules/pricing/pricing-service';
 import { poolService } from '../../modules/pool/pool.service';
-import { cronsMetricPublisher } from '../../modules/metrics/metrics.client';
 import moment from 'moment';
 import { chainIdToChain } from '../../config/chain-id-to-chain';
 import { Chain } from '@prisma/client';
@@ -38,9 +37,6 @@ async function runIfNotAlreadyRunning(
     const jobId = `${id}-${chainId}`;
 
     if (runningJobs.has(jobId)) {
-        if (process.env.AWS_ALERTS === 'true') {
-            await cronsMetricPublisher.publish(`${jobId}-skip`);
-        }
         console.log(`Skip job ${jobId}-skip`);
         res.sendStatus(200);
         return;
@@ -56,17 +52,10 @@ async function runIfNotAlreadyRunning(
         await fn();
 
         const durationSuccess = moment.duration(moment().diff(startJobTime)).asSeconds();
-        if (process.env.AWS_ALERTS === 'true') {
-            await cronsMetricPublisher.publish(`${jobId}-done`);
-        }
         console.log(`Successful job ${jobId}-done`, durationSuccess);
     } catch (error: any) {
-        const durationError = moment.duration(moment().diff(startJobTime)).asSeconds();
-        if (process.env.AWS_ALERTS === 'true') {
-            await cronsMetricPublisher.publish(`${jobId}-error`);
-        }
         const duration = moment.duration(moment().diff(startJobTime)).asSeconds();
-        console.log(`Error job ${jobId}-error`, duration, error.message || error);
+        console.log(`Error job ${jobId}-error`, duration, error.stack || error.message || error);
         next(error);
     } finally {
         runningJobs.delete(jobId);
@@ -297,7 +286,7 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
             await runIfNotAlreadyRunning(
                 name,
                 chainId,
-                () => SubgraphMonitorController().postSubgraphLagMetrics(),
+                () => SubgraphMonitorController().checkSubgraphLag(),
                 res,
                 next,
             );

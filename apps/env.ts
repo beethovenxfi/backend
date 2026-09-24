@@ -22,10 +22,6 @@ export const schema = {
         optional: true,
         type: String,
     },
-    AWS_REGION: {
-        optional: true,
-        type: String,
-    },
     DIRECT_API_KEY: {
         optional: true,
         type: String,

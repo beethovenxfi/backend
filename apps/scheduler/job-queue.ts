@@ -1,63 +1,47 @@
 import config from '../../config';
 import { chainIdToChain } from '../../config/chain-id-to-chain';
-import { SendMessageCommand, SendMessageCommandInput, SQSClient } from '@aws-sdk/client-sqs';
 import { env } from '../env';
 
-class WokerQueue {
-    constructor(private readonly client: SQSClient, private readonly queueUrl?: string) {}
+/**
+ * Posts job messages to the worker over HTTP (WORKER_QUEUE_URL, e.g. http://localhost:4000 when the worker
+ * runs in the same process) and re-schedules itself with the job's interval.
+ */
+class WorkerQueue {
+    constructor(private readonly workerUrl?: string) {}
 
-    public async sendWithInterval(json: string, intervalMs: number, deDuplicationId?: string): Promise<void> {
+    public async sendWithInterval(json: string, intervalMs: number): Promise<void> {
         try {
-            if (this.queueUrl === undefined) {
+            if (this.workerUrl === undefined) {
                 return;
             }
 
-            if (this.queueUrl.startsWith('http') && !this.queueUrl.includes('sqs.')) {
-                await this.sendLocalMessage(json);
-            } else {
-                await this.sendMessage(json, deDuplicationId);
-            }
-            console.log(`Sent message to schedule job on queue ${this.queueUrl}: ${json}`);
+            await this.send(json);
+            console.log(`Sent message to schedule job on ${this.workerUrl}: ${json}`);
         } catch (error) {
             console.error(error);
         } finally {
             setTimeout(() => {
-                this.sendWithInterval(json, intervalMs, deDuplicationId);
+                this.sendWithInterval(json, intervalMs);
             }, intervalMs);
         }
     }
 
-    public async sendLocalMessage(json: string): Promise<void> {
-        if (this.queueUrl === undefined) {
-            throw new Error('WORKER_QUEUE_URL is undefined');
-        }
-
-        const response = await fetch(this.queueUrl, {
+    private async send(json: string): Promise<void> {
+        const response = await fetch(this.workerUrl!, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: json,
         });
-        
+
         if (!response.ok) {
             throw new Error(`Failed to send message: ${response.status} ${response.statusText}`);
         }
     }
-
-    public async sendMessage(json: string, deDuplicationId?: string, delaySeconds?: number): Promise<void> {
-        const input: SendMessageCommandInput = {
-            QueueUrl: this.queueUrl,
-            MessageBody: json,
-            MessageDeduplicationId: deDuplicationId,
-            DelaySeconds: delaySeconds,
-        };
-        const command = new SendMessageCommand(input);
-        await this.client.send(command);
-    }
 }
 
-const workerQueue = new WokerQueue(new SQSClient({}), env.WORKER_QUEUE_URL);
+const workerQueue = new WorkerQueue(env.WORKER_QUEUE_URL);
 
 const MAX_INITIAL_DELAY_MS = 5 * 60 * 1000;
 

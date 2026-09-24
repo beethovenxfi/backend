@@ -1,47 +1,41 @@
-import { subgraphMetricPublisher } from '../metrics/metrics.client';
+import * as Sentry from '@sentry/node';
 import networkConfigs from '../../config';
 import { chainIdToChain } from '../../config/chain-id-to-chain';
 import { GaugeSubgraphService } from '../subgraphs/gauge-subgraph/gauge-subgraph.service';
 import { getViemClient } from '../sources/viem-client';
 
-export function SubgraphMonitorController(tracer?: any) {
+export function SubgraphMonitorController() {
     return {
-        async postSubgraphLagMetrics() {
-            for (const [id, chain] of Object.entries(chainIdToChain)) {
+        /**
+         * Compares every configured subgraph's head block with the chain head and reports to Sentry when the
+         * lag exceeds the chain's acceptableSGLag.
+         */
+        async checkSubgraphLag() {
+            for (const chain of Object.values(chainIdToChain)) {
                 const networkData = networkConfigs[chain];
-
                 const viemClient = getViemClient(networkData.chain.prismaId);
+                const latestBlock = Number(await viemClient.getBlockNumber());
 
                 for (const [subgraphName, subgraphUrl] of Object.entries(networkData.subgraphs)) {
-                    if (
-                        !subgraphUrl.includes('thegraph') &&
-                        !subgraphUrl.includes('goldsky') &&
-                        !subgraphUrl.includes('ormi')
-                    ) {
+                    if (!subgraphUrl.startsWith('http')) {
                         continue;
                     }
 
-                    const latestBlock = await viemClient.getBlockNumber();
-                    let lag = 0;
                     try {
-                        const subgraph = new GaugeSubgraphService(subgraphUrl as string);
-
+                        const subgraph = new GaugeSubgraphService(subgraphUrl);
                         const blockNumber = await subgraph.lastSyncedBlock();
-                        lag = Math.max(Number(latestBlock) - blockNumber, 0);
+                        const lag = Math.max(latestBlock - blockNumber, 0);
 
-                        let subgraphUrlClean = subgraphUrl;
-                        if (subgraphUrl.includes('gateway')) {
-                            const parts = subgraphUrl.split('/');
-                            parts.splice(4, 1);
-                            subgraphUrlClean = parts.join('/');
+                        console.log(`Subgraph lag ${networkData.chain.slug}-${subgraphName}: ${lag} blocks`);
+
+                        if (lag > networkData.acceptableSGLag) {
+                            Sentry.captureMessage(
+                                `Subgraph ${subgraphName} on ${networkData.chain.slug} is lagging by ${lag} blocks`,
+                                'warning',
+                            );
                         }
-
-                        subgraphMetricPublisher.publish(
-                            `${networkData.chain.slug}-${subgraphName}-lag-${subgraphUrlClean}`,
-                            lag,
-                        );
                     } catch (e) {
-                        console.log(`Error fetching subgraph lag for ${subgraphName} on ${networkData.chain.slug}`);
+                        console.log(`Error fetching subgraph lag for ${subgraphName} on ${networkData.chain.slug}`, e);
                     }
                 }
             }

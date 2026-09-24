@@ -46,13 +46,15 @@ const getErc4626Reviews = async () => {
     const list = (await response.json()) as Erc4626Review;
 
     // Flatten the list by adding the chain and erc4626 address to the object
-    const erc4626Tokens = Object.keys(list).flatMap((chain) =>
-        Object.keys(list[chain]).map((erc4626Address) => ({
-            ...list[chain][erc4626Address],
-            chain: githubChainToChain[chain],
-            erc4626Address,
-        })),
-    );
+    const erc4626Tokens = Object.keys(list)
+        .filter((chain) => githubChainToChain[chain] !== undefined)
+        .flatMap((chain) =>
+            Object.keys(list[chain]).map((erc4626Address) => ({
+                ...list[chain][erc4626Address],
+                chain: githubChainToChain[chain],
+                erc4626Address,
+            })),
+        );
 
     return erc4626Tokens;
 };

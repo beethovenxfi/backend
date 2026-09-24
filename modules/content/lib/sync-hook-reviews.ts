@@ -66,13 +66,15 @@ const getHookReviews = async () => {
     const list = (await response.json()) as HookReview;
 
     // Flatten the list by adding the chain and hook address to the object
-    const hooks = Object.keys(list).flatMap((chain) =>
-        Object.keys(list[chain]).map((hookAddress) => ({
-            ...list[chain][hookAddress],
-            chain: githubChainToChain[chain],
-            hookAddress,
-        })),
-    );
+    const hooks = Object.keys(list)
+        .filter((chain) => githubChainToChain[chain] !== undefined)
+        .flatMap((chain) =>
+            Object.keys(list[chain]).map((hookAddress) => ({
+                ...list[chain][hookAddress],
+                chain: githubChainToChain[chain],
+                hookAddress,
+            })),
+        );
 
     return hooks;
 };

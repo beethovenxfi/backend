@@ -50,13 +50,15 @@ const getRateProviderReviews = async () => {
     const list = (await response.json()) as RateProviderReview;
 
     // Flatten the list by adding the chain and rate provider address to the object
-    const rateProviders = Object.keys(list).flatMap((chain) =>
-        Object.keys(list[chain]).map((rateProviderAddress) => ({
-            ...list[chain][rateProviderAddress],
-            chain: githubChainToChain[chain],
-            rateProviderAddress,
-        })),
-    );
+    const rateProviders = Object.keys(list)
+        .filter((chain) => githubChainToChain[chain] !== undefined)
+        .flatMap((chain) =>
+            Object.keys(list[chain]).map((rateProviderAddress) => ({
+                ...list[chain][rateProviderAddress],
+                chain: githubChainToChain[chain],
+                rateProviderAddress,
+            })),
+        );
 
     return rateProviders;
 };

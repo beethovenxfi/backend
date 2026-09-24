@@ -161,3 +161,9 @@ Effort: phase 0 about 3–5 focused days; whole thing about 2 weeks wall-clock i
   FROM pg_class c JOIN pg_stat_user_tables s USING (relname)
   WHERE relkind='r' ORDER BY pg_total_relation_size(oid) DESC LIMIT 25;
   ```
+
+## 8. Render preparation (2026-09-24)
+
+In repo: `Dockerfile` (bun build, node 22 runtime, prisma CLI kept), `.dockerignore`, `render.yaml` (beets-db basic-1gb PG16, beets-api web standard, beets-sor private starter, beets-worker background standard, env group `beets-shared`). `apps/main.ts` runs worker+scheduler in one process when both flags set; `job-queue.ts` posts jobs over HTTP for any non-SQS URL. `slice/` git-ignored. `zod` added to dependencies (was missing, only worked from leftover node_modules).
+
+Steps: (1) fork to Beets org, commit all but `.env`/`slice/`, decide on the test-DB URL default in `scripts/copy-sonic-slice.ps1`. (2) Render workspace on Pro, connect repo, region frankfurt. (3) New > Blueprint, enter the `sync: false` secrets (SENTRY_DSN, SENTRY_AUTH_TOKEN, ADMIN_API_KEY, DIRECT_API_KEY, COINGECKO_API_KEY, MERKL_API_KEY), apply; `beets-api` pre-deploy runs `npx prisma migrate deploy` (0_init). (4) Allow-list your IP on the DB, copy the external URL, suspend `beets-worker`, run `scripts/copy-sonic-slice.ps1` with DST = Render (or `-Mode import` from existing CSVs), resume worker. (5) Verify /health, diff `poolGetPools` + `sorGetSwapPaths` against the current API, check worker logs. (6) Custom domain on beets-api, Cloudflare CNAME proxied + rate-limit rule on /graphql. (7) Later: preview envs (`previews.generation: automatic`, basic-256mb DB), replace `SOR_SERVICE_URL_INTERNAL` indirection with Render `hostPort` property.

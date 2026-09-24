@@ -81,6 +81,8 @@ export class CoingeckoDataService {
         this.apiKeyParam = env.COINGECKO_API_KEY ? `&x_cg_pro_api_key=${env.COINGECKO_API_KEY}` : '';
     }
 
+    private readonly checkedTokens = new Set<string>();
+
     public async syncCoingeckoIds() {
         // Q: Do coingecko IDs change?
         const allTokens = await prisma.prismaToken.findMany({
@@ -88,6 +90,12 @@ export class CoingeckoDataService {
                 OR: [{ coingeckoTokenId: null }, { coingeckoPlatformId: null }],
             },
         });
+
+        const unchecked = allTokens.filter((token) => !this.checkedTokens.has(`${token.address}-${token.chain}`));
+        if (unchecked.length === 0) {
+            return;
+        }
+        unchecked.forEach((token) => this.checkedTokens.add(`${token.address}-${token.chain}`));
 
         const coinIds = await this.getCoinIdList();
         const platformToChain = Object.fromEntries(

@@ -1,6 +1,6 @@
 import { Chain } from '@prisma/client';
 import config from '../../config';
-import { CoingeckoDataService } from '../token/lib/coingecko-data.service';
+import { coingeckoDataService } from '../token/lib/coingecko-data.service';
 import { syncBlockedBuffers } from './lib/sync-erc4626-blocked-buffers';
 import { syncErc4626Reviews } from './lib/sync-erc4626-reviews';
 import { syncHookReviews } from './lib/sync-hook-reviews';
@@ -33,7 +33,7 @@ export function ContentController() {
             ) as Chain[];
 
             //sync coingecko Ids first, then override Ids from the content service
-            await new CoingeckoDataService().syncCoingeckoIds();
+            await coingeckoDataService.syncCoingeckoIds();
             await syncTokenContentData(chains);
         },
         async reloadAllTokenTypes(chain: Chain) {

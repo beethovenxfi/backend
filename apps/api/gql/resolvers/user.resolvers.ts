@@ -15,7 +15,7 @@ const resolvers: Resolvers = {
         userInitWalletBalancesForAllPools: async (parent, { chain }, context) => {
             isAdminRoute(context);
 
-            await UserBalancesController().syncBalances(chain);
+            await UserBalancesController().initBalances(chain);
 
             return 'success';
         },

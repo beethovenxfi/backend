@@ -12,7 +12,7 @@ class WokerQueue {
                 return;
             }
 
-            if (this.queueUrl.match(/localhost/)) {
+            if (this.queueUrl.startsWith('http') && !this.queueUrl.includes('sqs.')) {
                 await this.sendLocalMessage(json);
             } else {
                 await this.sendMessage(json, deDuplicationId);

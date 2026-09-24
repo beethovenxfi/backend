@@ -3,10 +3,17 @@ import { startApiServer } from './api/server';
 import { startWorkerServer } from './worker/server';
 import { startSchedulerServer } from './scheduler/server';
 
-if (process.env.WORKER === 'true') {
+const isWorker = process.env.WORKER === 'true';
+const isScheduler = process.env.SCHEDULER === 'true';
+
+if (isWorker) {
+    // The worker exposes the job endpoint. With SCHEDULER=true as well, the scheduler runs in the same
+    // process and posts jobs to it over localhost (WORKER_QUEUE_URL=http://localhost:<PORT>).
     startWorkerServer();
-} else if (process.env.SCHEDULER === 'true') {
+}
+if (isScheduler) {
     startSchedulerServer();
-} else {
+}
+if (!isWorker && !isScheduler) {
     startApiServer();
 }

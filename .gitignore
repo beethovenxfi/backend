@@ -24,3 +24,6 @@ dist
 .env*
 
 profiles
+
+# local data slice copied from prod/test (scripts/copy-sonic-slice.ps1)
+slice/

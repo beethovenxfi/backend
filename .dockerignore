@@ -1,0 +1,13 @@
+node_modules
+dist
+slice
+.git
+.env
+.env.*
+!.env.example
+docs
+stellate
+.platform
+.ebextensions
+buildspec.yml
+*.log

@@ -41,7 +41,7 @@ export class PoolOnChainDataService {
 
         const where = {
             chain,
-            type: { notIn: ['UNKNOWN', 'ELEMENT'] as PrismaPoolType[] },
+            type: { notIn: ['UNKNOWN'] satisfies PrismaPoolType[] },
             NOT: { categories: { has: 'BLACK_LISTED' } },
             protocolVersion: 2,
             ...(poolIds ? { id: { in: poolIds } } : {}),

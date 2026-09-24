@@ -67,15 +67,6 @@ const abi: JsonFragment[] = Object.values(
     ),
 );
 
-const getSwapFeeFn = (type: string) => {
-    if (type === 'ELEMENT') {
-        return 'percentFee';
-    } else if (type === 'FX') {
-        return 'protocolPercentFee';
-    } else {
-        return 'getSwapFeePercentage';
-    }
-};
 
 const getTotalSupplyFn = (type: PoolInput['type'], version: number) => {
     if (type === 'COMPOSABLE_STABLE' && version === 0) {
@@ -98,7 +89,7 @@ const addDefaultCallsToMulticaller = (
 ) => {
     multicaller.call(`${id}.poolTokens`, vaultAddress, 'getPoolTokens', [id]);
     multicaller.call(`${id}.totalSupply`, address, getTotalSupplyFn(type, version));
-    multicaller.call(`${id}.swapFee`, address, getSwapFeeFn(type));
+    multicaller.call(`${id}.swapFee`, address, 'getSwapFeePercentage');
     multicaller.call(`${id}.rate`, address, 'getRate');
     multicaller.call(`${id}.protocolSwapFeePercentageCache`, address, 'getProtocolFeePercentageCache', [0]);
     multicaller.call(`${id}.protocolYieldFeePercentageCache`, address, 'getProtocolFeePercentageCache', [2]);

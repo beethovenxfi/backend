@@ -4,9 +4,9 @@ import _ from 'lodash';
 import { chainIdToChain } from '../../../config/chain-id-to-chain';
 import { HookData } from '../../../prisma/prisma-types';
 
-const POOL_TAGS_URL = 'https://raw.githubusercontent.com/balancer/metadata/refs/heads/main/pools/tags/index.json';
-const HOOKS_TAGS_URL = 'https://raw.githubusercontent.com/balancer/metadata/refs/heads/main/hooks/index.json';
-const ERC4626_TAGS_URL = 'https://raw.githubusercontent.com/balancer/metadata/refs/heads/main/erc4626/index.json';
+const POOL_TAGS_URL = 'https://raw.githubusercontent.com/beethovenxfi/metadata/refs/heads/main/pools/tags/index.json';
+const HOOKS_TAGS_URL = 'https://raw.githubusercontent.com/beethovenxfi/metadata/refs/heads/main/hooks/index.json';
+const ERC4626_TAGS_URL = 'https://raw.githubusercontent.com/beethovenxfi/metadata/refs/heads/main/erc4626/index.json';
 
 type TagItem = {
     id: string;

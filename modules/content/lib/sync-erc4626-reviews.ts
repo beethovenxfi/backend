@@ -24,7 +24,7 @@ export const syncErc4626Reviews = async (): Promise<void> => {
 };
 
 const ERC4626_REVIEW_URL =
-    'https://raw.githubusercontent.com/balancer/code-review/refs/heads/main/erc4626/registry.json';
+    'https://raw.githubusercontent.com/beethovenxfi/code-review/refs/heads/main/erc4626/registry.json';
 
 interface Erc4626Review {
     [chain: string]: {

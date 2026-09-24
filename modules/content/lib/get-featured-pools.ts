@@ -2,7 +2,7 @@ import { chainIdToChain } from '../../../config/chain-id-to-chain';
 import { Chain } from '@prisma/client';
 import { GqlChain } from '../../../apps/api/gql/generated-schema';
 
-const POOLS_METADATA_URL = 'https://raw.githubusercontent.com/balancer/metadata/main/pools/featured.json';
+const POOLS_METADATA_URL = 'https://raw.githubusercontent.com/beethovenxfi/metadata/main/pools/featured.json';
 
 interface FeaturedPoolMetadata {
     id: string;

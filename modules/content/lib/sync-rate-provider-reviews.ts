@@ -2,7 +2,7 @@ import { prisma } from '../../../prisma/prisma-client';
 import { githubChainToChain } from './github-helper';
 
 const RATEPROVIDER_REVIEW_URL =
-    'https://raw.githubusercontent.com/balancer/code-review/main/rate-providers/registry.json';
+    'https://raw.githubusercontent.com/beethovenxfi/code-review/main/rate-providers/registry.json';
 
 export const syncRateProviderReviews = async (): Promise<void> => {
     const rateProviders = await getRateProviderReviews();

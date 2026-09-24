@@ -26,7 +26,7 @@ export const syncBlockedBuffers = async (): Promise<void> => {
 };
 
 const ERC4626TAGS_URL =
-    'https://raw.githubusercontent.com/balancer/metadata/refs/heads/main/erc4626/bufferblocklist.json';
+    'https://raw.githubusercontent.com/beethovenxfi/metadata/refs/heads/main/erc4626/bufferblocklist.json';
 
 type BufferBlocklist = {
     [chainId: string]: string[];

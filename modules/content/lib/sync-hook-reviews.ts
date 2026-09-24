@@ -47,7 +47,7 @@ export const syncHookReviews = async (): Promise<void> => {
     await prismaBulkExecuteOperations(operations, false);
 };
 
-const HOOK_REVIEW_URL = 'https://raw.githubusercontent.com/balancer/code-review/refs/heads/main/hooks/registry.json';
+const HOOK_REVIEW_URL = 'https://raw.githubusercontent.com/beethovenxfi/code-review/refs/heads/main/hooks/registry.json';
 
 interface HookReview {
     [chain: string]: {

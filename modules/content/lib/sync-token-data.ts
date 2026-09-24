@@ -2,9 +2,9 @@ import { prisma } from '../../../prisma/prisma-client';
 import { chainIdToChain, chainToChainId as chainToIdMap } from '../../../config/chain-id-to-chain';
 import { Chain, PrismaTokenTypeOption } from '@prisma/client';
 
-const TOKEN_LIST_URL = 'https://raw.githubusercontent.com/balancer/tokenlists/main/generated/balancer.tokenlist.json';
+const TOKEN_LIST_URL = 'https://raw.githubusercontent.com/beethovenxfi/tokenlists/main/generated/balancer.tokenlist.json';
 
-const BLOCKED_TOKENS_URL = 'https://raw.githubusercontent.com/balancer/blocklist/refs/heads/main/tokens/blocked.csv';
+const BLOCKED_TOKENS_URL = 'https://raw.githubusercontent.com/beethovenxfi/blocklist/refs/heads/main/tokens/blocked.csv';
 
 interface WhitelistedTokenList {
     name: string;

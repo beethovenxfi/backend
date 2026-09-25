@@ -37,3 +37,17 @@ enum PrismaLastBlockSyncedCategory {
     JOIN_EXITS_V3
     SWAPS_V3
 }
+
+model PrismaJobStatus {
+    @@id([name, chain])
+
+    name                String
+    chain               Chain
+    intervalMs          Int
+    lastStart           DateTime?
+    lastSuccess         DateTime?
+    lastDurationMs      Int?
+    lastError           DateTime?
+    lastErrorMessage    String?
+
+}

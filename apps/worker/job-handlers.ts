@@ -25,6 +25,7 @@ import { ContentController } from '../../modules/content/content-controller';
 import { StakedSonicController } from '../../modules/sts/sts-controller';
 import { UserBalancesController } from '../../modules/user/user-balances-controller';
 import { eventsRepository } from '../../modules/repositories/events';
+import { jobStatusService } from '../../modules/job-status/job-status.service';
 
 const runningJobs: Set<string> = new Set();
 
@@ -49,14 +50,17 @@ async function runIfNotAlreadyRunning(
         runningJobs.add(jobId);
 
         console.log(`Start job ${jobId}-start`);
+        await jobStatusService.recordStart(id, chainId);
 
         await fn();
 
-        const durationSuccess = moment.duration(moment().diff(startJobTime)).asSeconds();
-        console.log(`Successful job ${jobId}-done`, durationSuccess);
+        const durationMs = moment().diff(startJobTime);
+        console.log(`Successful job ${jobId}-done`, durationMs / 1000);
+        await jobStatusService.recordSuccess(id, chainId, durationMs);
     } catch (error: any) {
-        const duration = moment.duration(moment().diff(startJobTime)).asSeconds();
-        console.log(`Error job ${jobId}-error`, duration, error.stack || error.message || error);
+        const durationMs = moment().diff(startJobTime);
+        console.log(`Error job ${jobId}-error`, durationMs / 1000, error.stack || error.message || error);
+        await jobStatusService.recordError(id, chainId, error.message || String(error));
         next(error);
     } finally {
         runningJobs.delete(jobId);

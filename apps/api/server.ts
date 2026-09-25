@@ -58,13 +58,13 @@ const configureApolloServer = async (httpServer: http.Server, app: express.Expre
 
     await server.start();
 
-    app.use(
-        '/graphql',
-        express.json(),
-        expressMiddleware(server, {
-            context: async ({ req }) => resolverContext(req),
-        }),
-    );
+    const graphqlMiddleware = expressMiddleware(server, {
+        context: async ({ req }) => resolverContext(req),
+    });
+
+    app.use('/graphql', express.json(), graphqlMiddleware);
+    app.get('/', graphqlMiddleware);
+    app.post('/', express.json(), graphqlMiddleware);
 
     return server;
 };

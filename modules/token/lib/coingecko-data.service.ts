@@ -1,19 +1,7 @@
 import { prisma } from '../../../prisma/prisma-client';
-import _ from 'lodash';
 import { env } from '../../../apps/env';
 import { RateLimiter } from 'limiter';
 import config from '../../../config';
-import { Chain } from '@prisma/client';
-
-type Price = { usd: number };
-interface HistoricalPriceResponse {
-    market_caps: number[][];
-    prices: number[][];
-    total_volumes: number[][];
-}
-
-type HistoricalPrice = { timestamp: number; price: number };
-export type TokenHistoricalPrices = { [address: string]: HistoricalPrice[] };
 
 interface CoingeckoTokenMarketData {
     id: string;
@@ -56,29 +44,21 @@ interface CoinId {
     platforms: Record<string, string>;
 }
 
-/* coingecko has a rate limit of 10-50req/minute
-   https://www.coingecko.com/en/api/pricing:
-   Our free API has a rate limit of 10-50 calls per minute,
-   if you exceed that limit you will be blocked until the next 1 minute window.
-   Do revise your queries to ensure that you do not exceed our limits should
-   that happen.
-
+/* CoinGecko Demo plan (free, keyed): 30 calls/min, 10k calls/month. Without a key the public API applies
+   a shared limit of roughly 5-15 calls/min and answers 429 unpredictably, so we stay well below both.
+   https://docs.coingecko.com/reference/common-errors-rate-limit
 */
-const tokensPerMinute = env.COINGECKO_API_KEY ? 10 : 3;
+const tokensPerMinute = env.COINGECKO_API_KEY ? 25 : 3;
 const requestRateLimiter = new RateLimiter({ tokensPerInterval: tokensPerMinute, interval: 'minute' });
-//max 10 addresses per request because of URI size limit, pro is max 180 because of URI limit
-const addressChunkSize = env.COINGECKO_API_KEY ? 180 : 20;
 export class CoingeckoDataService {
     private readonly baseUrl: string;
     private readonly fiatParam: string;
     private readonly apiKeyParam: string;
 
     constructor() {
-        this.baseUrl = env.COINGECKO_API_KEY
-            ? 'https://pro-api.coingecko.com/api/v3'
-            : 'https://api.coingecko.com/api/v3';
+        this.baseUrl = 'https://api.coingecko.com/api/v3';
         this.fiatParam = 'usd';
-        this.apiKeyParam = env.COINGECKO_API_KEY ? `&x_cg_pro_api_key=${env.COINGECKO_API_KEY}` : '';
+        this.apiKeyParam = env.COINGECKO_API_KEY ? `&x_cg_demo_api_key=${env.COINGECKO_API_KEY}` : '';
     }
 
     private readonly checkedTokens = new Set<string>();
@@ -133,13 +113,6 @@ export class CoingeckoDataService {
             .filter((update): update is NonNullable<typeof update> => !!update);
 
         await prisma.$transaction(updates);
-    }
-
-    async tokenPrice(chain: Chain, tokens: string[]) {
-        const platformId = config[chain].coingecko.platformId;
-        const endpoint = `/simple/token_price/${platformId}?vs_currencies=usd&contract_addresses=${tokens.join(',')}`;
-
-        return this.get<{ [token: string]: { usd: number } }>(endpoint);
     }
 
     public async getMarketDataForTokenIds(tokenIds: string[]): Promise<CoingeckoTokenMarketData[]> {

@@ -84,6 +84,7 @@ export default {
             } catch (error) {
                 console.error(error);
                 throw new GraphQLError('Error saving data', {
+                    originalError: error instanceof Error ? error : undefined,
                     extensions: {
                         code: 'INTERNAL_SERVER_ERROR',
                     },

@@ -10,18 +10,6 @@ export const schema = {
     ADMIN_API_KEY: String,
     DATABASE_URL: String,
     SENTRY_DSN: String,
-    SENTRY_AUTH_TOKEN: {
-        optional: true,
-        type: String,
-    },
-    SENTRY_TRACES_SAMPLE_RATE: {
-        optional: true,
-        type: String,
-    },
-    SENTRY_PROFILES_SAMPLE_RATE: {
-        optional: true,
-        type: String,
-    },
     DIRECT_API_KEY: {
         optional: true,
         type: String,

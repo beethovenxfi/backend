@@ -2,7 +2,7 @@ import { Chain } from '@prisma/client';
 import { daysAgo, hoursAgo, roundToHour, roundToMidnight } from '../../common/time';
 import { prisma } from '../../../prisma/prisma-client';
 import { isSupportedInt } from '../../../prisma/prisma-util';
-import * as Sentry from '@sentry/node';
+import { reportFailure } from '../../common/failure-reporter';
 import { getPriceForToken } from '../../helper/get-price-for-token';
 import { multicallViem } from '../../web3/multicaller-viem';
 import { ViemClient } from '../../sources/viem-client';
@@ -206,16 +206,11 @@ export const updateLiquidityValuesForPools = async (chain: Chain, poolIds?: stri
 
         for (const item of balanceUSDs) {
             if (!isSupportedInt(item.balanceUSD)) {
-                Sentry.captureException(
-                    `Skipping unsupported int size for prismaPoolToken.balanceUSD: ${item.balanceUSD}`,
-                    {
-                        tags: {
-                            tokenId: item.id,
-                            poolId: pool.id,
-                            poolName: pool.name,
-                            chain: pool.chain,
-                        },
-                    },
+                console.error(`Skipping unsupported int size for prismaPoolToken.balanceUSD: ${item.balanceUSD}`, item.id);
+                reportFailure(
+                    `unsupported-int-balanceUSD-${pool.chain}-${pool.id}`,
+                    new Error('Unsupported int size for prismaPoolToken.balanceUSD'),
+                    { tokenId: item.id, poolId: pool.id, chain: pool.chain, balanceUSD: String(item.balanceUSD) },
                 );
                 continue;
             }
@@ -230,15 +225,11 @@ export const updateLiquidityValuesForPools = async (chain: Chain, poolIds?: stri
             }
         }
         if (!isSupportedInt(totalLiquidity)) {
-            Sentry.captureException(
-                `Skipping unsupported int size for prismaPoolDynamicData.totalLiquidity: ${totalLiquidity} `,
-                {
-                    tags: {
-                        poolId: pool.id,
-                        poolName: pool.name,
-                        chain: pool.chain,
-                    },
-                },
+            console.error(`Skipping unsupported int size for prismaPoolDynamicData.totalLiquidity: ${totalLiquidity}`, pool.id);
+            reportFailure(
+                `unsupported-int-totalLiquidity-${pool.chain}-${pool.id}`,
+                new Error('Unsupported int size for prismaPoolDynamicData.totalLiquidity'),
+                { poolId: pool.id, chain: pool.chain, totalLiquidity: String(totalLiquidity) },
             );
             continue;
         }

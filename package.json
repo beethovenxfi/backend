@@ -28,7 +28,6 @@
         "@ethersproject/bignumber": "^5.7.0",
         "@ethersproject/constants": "^5.7.0",
         "@prisma/client": "6.3.0",
-        "@prisma/instrumentation": "6.3.0",
         "@sentry/node": "^9.0.1",
         "abitype": "^1.0.8",
         "bignumber.js": "^9.1.2",

@@ -45,7 +45,6 @@ export const activeChainWorkerJobsGlobal: WorkerJob[] = [
     { name: 'sync-erc4626-data', interval: interval(every(30, 'minutes'), every(15, 'minutes')) },
     { name: 'fetch-token-yields', interval: interval(every(40, 'minutes'), every(20, 'minutes')) },
     { name: 'sync-categories', interval: interval(every(30, 'minutes'), every(10, 'minutes')) },
-    { name: 'post-subgraph-lag-metrics', interval: every(15, 'minutes') },
     { name: 'sync-token-tvl', interval: interval(every(60, 'minutes'), every(30, 'minutes')) },
     { name: 'sync-token-content-data', interval: interval(every(10, 'minutes'), every(5, 'minutes')) },
 ];

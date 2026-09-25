@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/node';
 import { Address, formatUnits } from 'viem';
 
 import { GqlSorGetSwapPaths, QuerySorGetSwapPathsArgs } from '../../apps/api/gql/generated-schema';
@@ -198,17 +197,6 @@ export class SorService {
             swapAmount: input.swapAmount.amount,
             swapType: input.swapType,
             chain: input.chain,
-        });
-
-        Sentry.captureException(err.message, {
-            tags: {
-                service: 'sorV2',
-                tokenIn: input.tokenIn,
-                tokenOut: input.tokenOut,
-                swapAmount: input.swapAmount.amount,
-                swapType: input.swapType,
-                chain: input.chain,
-            },
         });
     }
 }

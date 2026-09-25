@@ -2,6 +2,7 @@ import { Chain, PrismaPoolAprItem } from '@prisma/client';
 import { AprHandler } from './types';
 import { AprRepository } from './apr-repository';
 import _ from 'lodash';
+import { reportFailure, reportRecovery } from '../common/failure-reporter';
 
 export class AprManager {
     constructor(private readonly aprRepository: AprRepository, private readonly aprHandlers: AprHandler[]) {}
@@ -24,11 +25,14 @@ export class AprManager {
         const failedHandlers: string[] = [];
 
         for (const handler of this.aprHandlers) {
+            const key = `apr-handler-${handler.getAprServiceName()}-${chain}`;
             try {
                 const items = await handler.calculateAprForPools(pools);
+                reportRecovery(key);
                 allAprItems.push(...items);
             } catch (e: any) {
                 console.error(e);
+                reportFailure(key, e, { handler: handler.getAprServiceName(), chain });
                 failedHandlers.push(handler.getAprServiceName());
             }
         }

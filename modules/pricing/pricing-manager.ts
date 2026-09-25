@@ -1,4 +1,5 @@
 import { PriceHandler, PriceItem, TokenPriceData } from './types';
+import { reportFailure, reportRecovery } from '../common/failure-reporter';
 
 export class PricingManager {
     constructor(private readonly handlers: PriceHandler[]) {}
@@ -29,6 +30,7 @@ export class PricingManager {
 
             try {
                 const priceItems = await handler.calculatePricesForTokens(remainingTokens, allPrices);
+                reportRecovery(`price-handler-${handler.id}`);
                 allPriceItems.push(...priceItems);
 
                 // Update allPrices map with new prices from this handler
@@ -41,6 +43,7 @@ export class PricingManager {
                 remainingTokens = remainingTokens.filter((token) => !pricedAddresses.has(token.address));
             } catch (error) {
                 console.error(`Price handler ${handler.id} failed:`, error);
+                reportFailure(`price-handler-${handler.id}`, error, { handler: handler.id });
 
                 if (handler.exitIfFails) {
                     throw error;

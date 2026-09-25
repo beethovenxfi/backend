@@ -1,4 +1,3 @@
-import { setupExpressErrorHandler } from '@sentry/node';
 import express from 'express';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
@@ -73,7 +72,6 @@ export const startApiServer = async () => {
     const app = express();
 
     loadRestRoutes(app);
-    setupExpressErrorHandler(app);
     configureHelmet(app);
     configureMiddlewares(app);
 

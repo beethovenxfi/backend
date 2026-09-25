@@ -1,6 +1,7 @@
 import * as sources from './sources';
 import { TokenYieldConfig, YieldToken } from '../types';
 import { Chain } from '@prisma/client';
+import { reportFailure, reportRecovery } from '../../common/failure-reporter';
 
 const sourceToHandler = {
     aave: sources.aaveOnchainHandler,
@@ -54,10 +55,17 @@ export class TokenYieldAprHandlers {
         const handler = sourceToHandler[source as keyof typeof sourceToHandler];
 
         if (!handler) {
-            throw `no handler ${source}`;
+            throw new Error(`no handler ${source}`);
         }
 
-        const value = await handler(config);
-        return value.map((item) => ({ source, chain: this.chain, ...item }));
+        const key = `token-yield-${source}-${this.chain}`;
+        try {
+            const value = await handler(config);
+            reportRecovery(key);
+            return value.map((item) => ({ source, chain: this.chain, ...item }));
+        } catch (e) {
+            reportFailure(key, e, { handler: source, chain: this.chain });
+            throw e;
+        }
     };
 }

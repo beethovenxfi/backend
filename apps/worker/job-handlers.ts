@@ -176,14 +176,6 @@ const setupJobHandlers = async (name: string, chainId: string, res: any) => {
                 res,
             );
             break;
-        case 'sync-sts-staking-snapshots':
-            await runIfNotAlreadyRunning(
-                name,
-                chainId,
-                () => StakedSonicController().syncSonicStakingSnapshots(),
-                res,
-            );
-            break;
         case 'sync-loops-data':
             await runIfNotAlreadyRunning(
                 name,

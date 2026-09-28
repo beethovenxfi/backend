@@ -1,19 +1,17 @@
 import config from '../../config';
 import { Chain } from '@prisma/client';
 import { syncGaugeStakingForPools, syncReliquaryStakingForPools } from '../actions/pool/staking';
-import { ReliquarySubgraphService } from '../subgraphs/reliquary-subgraph/reliquary.service';
 import { GaugeSubgraphService } from '../subgraphs/gauge-subgraph/gauge-subgraph.service';
 
 export function StakingController() {
     return {
         async syncStaking(chain: Chain) {
             const networkconfig = config[chain];
-            if (networkconfig.subgraphs.reliquary) {
+            if (networkconfig.reliquary) {
                 await syncReliquaryStakingForPools(
                     chain,
-                    new ReliquarySubgraphService(networkconfig.subgraphs.reliquary),
-                    networkconfig.reliquary?.address || '',
-                    networkconfig.reliquary?.excludedFarmIds || [],
+                    networkconfig.reliquary.address,
+                    networkconfig.reliquary.excludedFarmIds,
                 );
             }
             if (networkconfig.subgraphs.gauge) {

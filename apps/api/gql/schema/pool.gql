@@ -1261,16 +1261,7 @@ type GqlReliquaryFarmSnapshot {
     relicCount: String!
     userCount: String!
     totalBalance: String!
-    dailyDeposited: String!
-    dailyWithdrawn: String!
     totalLiquidity: String!
-    levelBalances: [GqlReliquaryFarmLevelSnapshot!]!
-}
-
-type GqlReliquaryFarmLevelSnapshot {
-    id: ID!
-    level: String!
-    balance: String!
 }
 
 enum GqlPoolEventType {

@@ -2079,18 +2079,9 @@ export const schema = gql`
         yieldCapture24h: BigDecimal!
     }
 
-    type GqlReliquaryFarmLevelSnapshot {
-        balance: String!
-        id: ID!
-        level: String!
-    }
-
     type GqlReliquaryFarmSnapshot {
-        dailyDeposited: String!
-        dailyWithdrawn: String!
         farmId: String!
         id: ID!
-        levelBalances: [GqlReliquaryFarmLevelSnapshot!]!
         relicCount: String!
         timestamp: Int!
         totalBalance: String!
@@ -2661,7 +2652,6 @@ export const schema = gql`
     }
 
     type Mutation {
-        beetsPoolLoadReliquarySnapshotsForAllFarms(chain: GqlChain!): String!
         createLBP(input: CreateLBPInput!, type: GqlPoolType): Boolean!
         lbpReloadFixedLbps(chains: [GqlChain!]!): String!
         lbpReloadLbps(chains: [GqlChain!]!): String!

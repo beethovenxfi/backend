@@ -1,6 +1,6 @@
 import { addressesMatch } from '../../web3/addresses';
 import { formatFixed } from '@ethersproject/bignumber';
-import { zeroAddress as ZERO_ADDRESS } from 'viem';
+import { Address, zeroAddress as ZERO_ADDRESS } from 'viem';
 import { Chain, PrismaPoolStakingType } from '@prisma/client';
 import { Event } from 'ethers';
 import _ from 'lodash';
@@ -9,13 +9,13 @@ import { prismaBulkExecuteOperations } from '../../../prisma/prisma-util';
 import { AmountHumanReadable } from '../../common/global-types';
 import ReliquaryAbi from '../../web3/abi/Reliquary';
 import { UserStakedBalanceService } from '../user-types';
-import { ReliquarySubgraphService } from '../../subgraphs/reliquary-subgraph/reliquary.service';
 import { BALANCES_SYNC_BLOCKS_MARGIN } from '../../../config';
 import { floatToExactString } from '../../common/numbers';
 import config from '../../../config';
 import { getEvents } from '../../web3/events';
 import { getViemClient } from '../../sources/viem-client';
 import { Multicaller3Viem } from '../../web3/multicaller-viem';
+import { fetchAllRelics } from '../../sources/contracts/fetch-reliquary-data';
 
 type ReliquaryPosition = {
     amount: bigint;
@@ -56,7 +56,6 @@ export class UserSyncReliquaryFarmBalanceService implements UserStakedBalanceSer
 
     public async syncChangedStakedBalances(chain: Chain): Promise<void> {
         const networkData = config[chain];
-        const reliquarySubgraphService = new ReliquarySubgraphService(networkData.subgraphs.reliquary!);
         const viemClient = getViemClient(chain);
 
         const status = await prisma.prismaUserBalanceSyncStatus.findUnique({
@@ -79,10 +78,6 @@ export class UserSyncReliquaryFarmBalanceService implements UserStakedBalanceSer
             include: { staking: true },
         });
         const latestBlock = (await viemClient.getBlockNumber()).toString();
-        const farms = await reliquarySubgraphService.getAllFarms({});
-        const filteredFarms = farms.filter(
-            (farm) => !networkData.reliquary!.excludedFarmIds.includes(farm.pid.toString()),
-        );
 
         const startBlock = status.blockNumber - BALANCES_SYNC_BLOCKS_MARGIN;
         const endBlock =
@@ -127,7 +122,6 @@ export class UserSyncReliquaryFarmBalanceService implements UserStakedBalanceSer
                     const pool = pools.find((pool) =>
                         pool.staking.some((stake) => stake.id === `reliquary-${update.farmId}`),
                     );
-                    const farm = filteredFarms.find((farm) => farm.pid.toString() === update.farmId);
 
                     return prisma.prismaUserStakedBalance.upsert({
                         where: {
@@ -148,7 +142,7 @@ export class UserSyncReliquaryFarmBalanceService implements UserStakedBalanceSer
                             balanceNum: parseFloat(update.amount),
                             userAddress: userAddress,
                             poolId: pool!.id,
-                            tokenAddress: farm!.poolTokenAddress,
+                            tokenAddress: pool!.address,
                             stakingId: `reliquary-${update.farmId}`,
                         },
                     });
@@ -168,26 +162,26 @@ export class UserSyncReliquaryFarmBalanceService implements UserStakedBalanceSer
         }
 
         const networkData = config[chain];
-        const reliquarySubgraphService = new ReliquarySubgraphService(networkData.subgraphs.reliquary!);
+        const viemClient = getViemClient(chain);
 
-        const blockNumber = await reliquarySubgraphService.lastSyncedBlock();
-        console.log('initStakedReliquaryBalances: loading subgraph relics...');
-        const relics = await reliquarySubgraphService.getAllRelicsWithPaging({});
+        const blockNumber = await viemClient.getBlockNumber();
+        console.log('initStakedReliquaryBalances: loading relics...');
+        const relics = await fetchAllRelics(chain, this.reliquaryAddress as Address, viemClient, blockNumber);
         const filteredRelics = relics.filter(
             (relic) => !networkData.reliquary?.excludedFarmIds.includes(`${relic.pid}`),
         );
-        console.log('initStakedReliquaryBalances: finished loading subgraph relics...');
+        console.log('initStakedReliquaryBalances: finished loading relics...');
         console.log('initStakedReliquaryBalances: loading pools...');
         const pools = await prisma.prismaPool.findMany({
-            select: { id: true, address: true },
-            where: { chain },
+            select: { id: true, address: true, staking: { select: { id: true } } },
+            where: { chain, staking: { some: { type: 'RELIQUARY' } } },
         });
         console.log('initStakedReliquaryBalances: finished loading pools...');
         // we have to group all relics for the same pool
-        const userRelicsByPoolId = _.groupBy(filteredRelics, (relic) => relic.userAddress + relic.pid);
+        const userRelicsByPoolId = _.groupBy(filteredRelics, (relic) => relic.owner + relic.pid);
 
         // we need to make sure all users exist
-        const userAddresses = _.uniq(filteredRelics.map((relic) => relic.userAddress.toLowerCase()));
+        const userAddresses = _.uniq(filteredRelics.map((relic) => relic.owner));
 
         console.log('initStakedReliquaryBalances: performing db operations...');
 
@@ -202,12 +196,17 @@ export class UserSyncReliquaryFarmBalanceService implements UserStakedBalanceSer
                 }),
 
                 prisma.prismaUserStakedBalance.createMany({
-                    data: Object.values(userRelicsByPoolId).map((relics) => {
-                        const totalBalance = relics.reduce((total, relic) => total + parseFloat(relic.balance), 0);
+                    data: Object.values(userRelicsByPoolId).flatMap((relics) => {
+                        const totalBalance = relics.reduce((total, relic) => total + parseFloat(relic.amount), 0);
                         // there has to be at least 1 relic in there
                         const relic = relics[0];
-                        const userAddress = relic.userAddress.toLowerCase();
-                        const pool = pools.find((pool) => addressesMatch(pool.address, relic.pool.poolTokenAddress));
+                        const userAddress = relic.owner;
+                        const pool = pools.find((pool) =>
+                            pool.staking.some((stake) => stake.id === `reliquary-${relic.pid}`),
+                        );
+                        if (!pool) {
+                            return [];
+                        }
 
                         return {
                             id: `reliquary-${relic.pid}-${userAddress}`,
@@ -215,16 +214,16 @@ export class UserSyncReliquaryFarmBalanceService implements UserStakedBalanceSer
                             balance: totalBalance.toFixed(18).replace(/(?:\.0+|(\.\d*?)0+)$/, '$1'),
                             balanceNum: totalBalance,
                             userAddress: userAddress,
-                            poolId: pool?.id,
-                            tokenAddress: relic.pool.poolTokenAddress,
+                            poolId: pool.id,
+                            tokenAddress: pool.address,
                             stakingId: `reliquary-${relic.pid}`,
                         };
                     }),
                 }),
                 prisma.prismaUserBalanceSyncStatus.upsert({
                     where: { type_chain: { type: 'RELIQUARY', chain } },
-                    create: { type: 'RELIQUARY', chain, blockNumber },
-                    update: { blockNumber },
+                    create: { type: 'RELIQUARY', chain, blockNumber: Number(blockNumber) },
+                    update: { blockNumber: Number(blockNumber) },
                 }),
             ],
             true,

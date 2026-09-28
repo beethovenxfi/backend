@@ -1,10 +1,9 @@
-import { addressesMatch } from '../../../web3/addresses';
 import { PrismaPoolAprItem, PrismaPoolAprType } from '@prisma/client';
+import _ from 'lodash';
 import { prisma } from '../../../../prisma/prisma-client';
 import { prismaBulkExecuteOperations } from '../../../../prisma/prisma-util';
 import { secondsPerYear } from '../../../common/time';
 import { TokenService } from '../../../token/token.service';
-import { ReliquarySubgraphService } from '../../../subgraphs/reliquary-subgraph/reliquary.service';
 import { AprHandler, PoolAPRData } from '../../types';
 import config from '../../../../config';
 
@@ -19,16 +18,7 @@ export class MaBeetsAprHandler implements AprHandler {
         pools: PoolAPRData[],
     ): Promise<Omit<PrismaPoolAprItem, 'createdAt' | 'updatedAt'>[]> {
         const chain = pools[0].chain;
-        if (!config[chain].subgraphs.reliquary) {
-            throw new Error(`Reliquary subgraph not configured for chain ${chain}`);
-        }
-
-        const reliquarySubgraphService = new ReliquarySubgraphService(config[chain].subgraphs.reliquary);
-        const allSubgraphFarms = await reliquarySubgraphService.getAllFarms({});
-
         const excludedFarmIds = config[chain].reliquary?.excludedFarmIds || [];
-
-        const filteredFarms = allSubgraphFarms.filter((farm) => !excludedFarmIds.includes(farm.pid.toString()));
 
         const tokenPrices = await this.tokenService.getTokenPrices(chain);
         const operations: any[] = [];
@@ -36,13 +26,12 @@ export class MaBeetsAprHandler implements AprHandler {
         const aprItems: Omit<PrismaPoolAprItem, 'createdAt' | 'updatedAt'>[] = [];
 
         for (const pool of pools) {
-            const subgraphFarm = filteredFarms.find((farm) => addressesMatch(pool.address, farm.poolTokenAddress));
             let farm;
             for (const stake of pool.staking) {
                 farm = stake.reliquary;
             }
 
-            if (!subgraphFarm || !pool.dynamicData || !farm || subgraphFarm.totalBalance === '0') {
+            if (!pool.dynamicData || !farm || excludedFarmIds.includes(farm.id) || parseFloat(farm.totalBalance) === 0) {
                 continue;
             }
 
@@ -54,7 +43,8 @@ export class MaBeetsAprHandler implements AprHandler {
             const farmBeetsPerYear = parseFloat(farm.beetsPerSecond) * secondsPerYear;
             const beetsValuePerYear = beetsPrice * farmBeetsPerYear;
 
-            const totalWeightedSupply = subgraphFarm.levels.reduce(
+            const levels = _.sortBy(farm.levels, (level) => level.level);
+            const totalWeightedSupply = levels.reduce(
                 (total, level) => total + level.allocationPoints * parseFloat(level.balance),
                 0,
             );
@@ -67,7 +57,7 @@ export class MaBeetsAprHandler implements AprHandler {
             let minApr = 0;
             let maxApr = 0;
 
-            for (let farmLevel of subgraphFarm.levels) {
+            for (let farmLevel of levels) {
                 const levelSupply = parseFloat(farmLevel.balance);
                 const aprShare = (farmLevel.allocationPoints * levelSupply) / totalWeightedSupply;
                 const apr = levelSupply !== 0 ? (beetsValuePerYear * aprShare) / (levelSupply * pricePerShare) : 0;
@@ -84,7 +74,7 @@ export class MaBeetsAprHandler implements AprHandler {
                     prisma.prismaPoolStakingReliquaryFarmLevel.update({
                         where: {
                             id_chain: {
-                                id: `${subgraphFarm.pid}-${farmLevel.level}`,
+                                id: `${farm.id}-${farmLevel.level}`,
                                 chain: chain,
                             },
                         },

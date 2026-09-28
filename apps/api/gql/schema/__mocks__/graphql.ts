@@ -46,7 +46,6 @@ import {
     GqlPriceRateProviderUpgradeableComponent,
     GqlProtocolMetricsAggregated,
     GqlProtocolMetricsChain,
-    GqlReliquaryFarmLevelSnapshot,
     GqlReliquaryFarmSnapshot,
     GqlSorGetSwapPaths,
     GqlSorPath,
@@ -1268,26 +1267,10 @@ export const aGqlProtocolMetricsChain = (overrides?: Partial<GqlProtocolMetricsC
     };
 };
 
-export const aGqlReliquaryFarmLevelSnapshot = (
-    overrides?: Partial<GqlReliquaryFarmLevelSnapshot>,
-): GqlReliquaryFarmLevelSnapshot => {
-    return {
-        balance: overrides && overrides.hasOwnProperty('balance') ? overrides.balance! : 'laborum',
-        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '81ac945c-8237-4277-9860-c4eba842026b',
-        level: overrides && overrides.hasOwnProperty('level') ? overrides.level! : 'confugo',
-    };
-};
-
 export const aGqlReliquaryFarmSnapshot = (overrides?: Partial<GqlReliquaryFarmSnapshot>): GqlReliquaryFarmSnapshot => {
     return {
-        dailyDeposited: overrides && overrides.hasOwnProperty('dailyDeposited') ? overrides.dailyDeposited! : 'depulso',
-        dailyWithdrawn: overrides && overrides.hasOwnProperty('dailyWithdrawn') ? overrides.dailyWithdrawn! : 'quam',
         farmId: overrides && overrides.hasOwnProperty('farmId') ? overrides.farmId! : 'arca',
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '2bbe0f78-8fc7-4c93-a195-b52a873f3c17',
-        levelBalances:
-            overrides && overrides.hasOwnProperty('levelBalances')
-                ? overrides.levelBalances!
-                : [aGqlReliquaryFarmLevelSnapshot()],
         relicCount: overrides && overrides.hasOwnProperty('relicCount') ? overrides.relicCount! : 'aetas',
         timestamp: overrides && overrides.hasOwnProperty('timestamp') ? overrides.timestamp! : 6195,
         totalBalance: overrides && overrides.hasOwnProperty('totalBalance') ? overrides.totalBalance! : 'carpo',
@@ -1602,10 +1585,6 @@ export const aMevTaxHookParams = (overrides?: Partial<MevTaxHookParams>): MevTax
 
 export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
     return {
-        beetsPoolLoadReliquarySnapshotsForAllFarms:
-            overrides && overrides.hasOwnProperty('beetsPoolLoadReliquarySnapshotsForAllFarms')
-                ? overrides.beetsPoolLoadReliquarySnapshotsForAllFarms!
-                : 'culpo',
         createLBP: overrides && overrides.hasOwnProperty('createLBP') ? overrides.createLBP! : true,
         lbpReloadFixedLbps:
             overrides && overrides.hasOwnProperty('lbpReloadFixedLbps') ? overrides.lbpReloadFixedLbps! : 'clamo',

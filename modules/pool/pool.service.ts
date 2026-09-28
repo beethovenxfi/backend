@@ -10,12 +10,10 @@ import {
 } from '../../apps/api/gql/generated-schema';
 import { PoolGqlLoaderService } from './lib/pool-gql-loader.service';
 import { PoolSnapshotService } from './lib/pool-snapshot.service';
-import { ReliquarySubgraphService } from '../subgraphs/reliquary-subgraph/reliquary.service';
-import { ReliquarySnapshotService } from './lib/reliquary-snapshot.service';
+import { reliquarySnapshotService } from './lib/reliquary-snapshot.service';
 import {
     deleteGaugeStakingForAllPools,
     deleteReliquaryStakingForAllPools,
-    loadReliquarySnapshotsForAllFarms,
     syncGaugeStakingForPools,
     syncReliquaryStakingForPools,
 } from '../actions/pool/staking';
@@ -49,24 +47,12 @@ export class PoolService {
     }
 
     public async getSnapshotsForReliquaryFarm(id: number, range: GqlPoolSnapshotDataRange, chain: Chain) {
-        if (config[chain].subgraphs.reliquary) {
-            const reliquarySnapshotService = new ReliquarySnapshotService(
-                new ReliquarySubgraphService(config[chain].subgraphs.reliquary),
-            );
-
-            return reliquarySnapshotService.getSnapshotsForFarm(id, range, chain);
-        }
-        return [];
+        return reliquarySnapshotService.getSnapshotsForFarm(id, range, chain);
     }
 
     public async reloadStakingForAllPools(stakingTypes: PrismaPoolStakingType[], chain: Chain): Promise<void> {
         await deleteReliquaryStakingForAllPools(stakingTypes, chain);
         await deleteGaugeStakingForAllPools(stakingTypes, chain);
-
-        // if we reload staking for reliquary, we also need to reload the snapshots because they are deleted while reloading
-        if (stakingTypes.includes('RELIQUARY')) {
-            this.loadReliquarySnapshotsForAllFarms(chain);
-        }
         // reload it for all pools
         await this.syncStakingForPools([chain]);
     }
@@ -77,12 +63,11 @@ export class PoolService {
     public async syncStakingForPools(chains: Chain[]) {
         for (const chain of chains) {
             const networkconfig = config[chain];
-            if (networkconfig.subgraphs.reliquary) {
+            if (networkconfig.reliquary) {
                 await syncReliquaryStakingForPools(
                     chain,
-                    new ReliquarySubgraphService(networkconfig.subgraphs.reliquary),
-                    networkconfig.reliquary?.address || '',
-                    networkconfig.reliquary?.excludedFarmIds || [],
+                    networkconfig.reliquary.address,
+                    networkconfig.reliquary.excludedFarmIds,
                 );
             }
             if (networkconfig.subgraphs.gauge) {
@@ -95,20 +80,7 @@ export class PoolService {
     }
 
     public async syncLatestReliquarySnapshotsForAllFarms(chain: Chain) {
-        if (config[chain].subgraphs.reliquary) {
-            const reliquarySnapshotService = new ReliquarySnapshotService(
-                new ReliquarySubgraphService(config[chain].subgraphs.reliquary),
-            );
-            await reliquarySnapshotService.syncLatestSnapshotsForAllFarms(chain);
-        }
-    }
-
-    public async loadReliquarySnapshotsForAllFarms(chain: Chain) {
-        loadReliquarySnapshotsForAllFarms(
-            chain,
-            config[chain].subgraphs.reliquary,
-            config[chain].reliquary?.excludedFarmIds,
-        );
+        await reliquarySnapshotService.syncLatestSnapshotsForAllFarms(chain);
     }
 }
 

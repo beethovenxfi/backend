@@ -1,5 +1,4 @@
 import { Resolvers } from '../generated-schema';
-import { isAdminRoute } from '../../../../modules/auth/auth-context';
 import { poolService } from '../../../../modules/pool/pool.service';
 
 const beetsResolvers: Resolvers = {
@@ -15,19 +14,7 @@ const beetsResolvers: Resolvers = {
                 userCount: `${snapshot.userCount}`,
                 totalBalance: snapshot.totalBalance,
                 totalLiquidity: snapshot.totalLiquidity,
-                dailyDeposited: snapshot.dailyDeposited,
-                dailyWithdrawn: snapshot.dailyWithdrawn,
-                levelBalances: snapshot.levelBalances,
             }));
-        },
-    },
-    Mutation: {
-        beetsPoolLoadReliquarySnapshotsForAllFarms: async (parent, { chain }, context) => {
-            isAdminRoute(context);
-
-            await poolService.loadReliquarySnapshotsForAllFarms(chain);
-
-            return 'success';
         },
     },
 };

@@ -3,12 +3,12 @@ import { Chain, PrismaPoolStakingType } from '@prisma/client';
 import _ from 'lodash';
 import { prisma } from '../../../../prisma/prisma-client';
 import { prismaBulkExecuteOperations } from '../../../../prisma/prisma-util';
-import { ReliquarySubgraphService } from '../../../subgraphs/reliquary-subgraph/reliquary.service';
-import { ReliquarySnapshotService } from '../../../pool/lib/reliquary-snapshot.service';
+import { Address } from 'viem';
+import { fetchReliquaryData } from '../../../sources/contracts/fetch-reliquary-data';
+import { getViemClient } from '../../../sources/viem-client';
 
 export const syncReliquaryStakingForPools = async (
     chain: Chain,
-    reliquarySubgraphService: ReliquarySubgraphService,
     reliquaryAddress: string,
     excludedFarmIds: string[],
 ): Promise<void> => {
@@ -16,12 +16,8 @@ export const syncReliquaryStakingForPools = async (
         return;
     }
 
-    const { reliquary } = await reliquarySubgraphService.getReliquary({ id: reliquaryAddress });
-    if (!reliquary) {
-        throw new Error(`Reliquary with id ${reliquaryAddress} not found in subgraph`);
-    }
-    const farms = await reliquarySubgraphService.getAllFarms({});
-    const filteredFarms = farms.filter((farm) => !excludedFarmIds.includes(farm.pid.toString()));
+    const reliquary = await fetchReliquaryData(chain, reliquaryAddress as Address, getViemClient(chain));
+    const filteredFarms = reliquary.farms.filter((farm) => !excludedFarmIds.includes(farm.pid.toString()));
     const pools = await prisma.prismaPool.findMany({
         where: { chain: chain },
         include: { staking: { include: { reliquary: true } } },
@@ -44,7 +40,7 @@ export const syncReliquaryStakingForPools = async (
         const reliquaryTotalAllocationPoints = reliquary.totalAllocPoint;
 
         const beetsPerSecond = (
-            parseFloat(reliquary.emissionCurve.rewardPerSecond) *
+            parseFloat(reliquary.rewardPerSecond) *
             (farmAllocationPoints / reliquaryTotalAllocationPoints)
         ).toString();
 
@@ -87,7 +83,9 @@ export const syncReliquaryStakingForPools = async (
                         apr: 0,
                     },
                     update: {
+                        allocationPoints,
                         balance,
+                        requiredMaturity,
                     },
                 }),
             );
@@ -118,6 +116,7 @@ export const syncReliquaryStakingForPools = async (
     await prismaBulkExecuteOperations(operations, true);
 };
 
+// Farms stay: snapshots reference them and can't be rebuilt without the subgraph
 export const deleteReliquaryStakingForAllPools = async (reloadStakingTypes: PrismaPoolStakingType[], chain: Chain) => {
     if (chain !== 'SONIC') {
         return;
@@ -126,32 +125,5 @@ export const deleteReliquaryStakingForAllPools = async (reloadStakingTypes: Pris
         await prisma.prismaUserStakedBalance.deleteMany({
             where: { staking: { type: 'RELIQUARY' }, chain: chain },
         });
-        // need to remove snapshots as well as they have a FK in reliquary staking
-        await prisma.prismaReliquaryLevelSnapshot.deleteMany({ where: { chain: chain } });
-        await prisma.prismaReliquaryFarmSnapshot.deleteMany({ where: { chain: chain } });
-
-        await prisma.prismaPoolStakingReliquaryFarmLevel.deleteMany({ where: { chain: chain } });
-        await prisma.prismaPoolStakingReliquaryFarm.deleteMany({ where: { chain: chain } });
-        await prisma.prismaPoolStaking.deleteMany({ where: { type: 'RELIQUARY', chain: chain } });
-    }
-};
-
-export const loadReliquarySnapshotsForAllFarms = async (
-    chain: Chain,
-    reliquarySubgraphUrl?: string,
-    excludedFarmIds: string[] = [],
-) => {
-    if (reliquarySubgraphUrl) {
-        const reliquarySnapshotService = new ReliquarySnapshotService(
-            new ReliquarySubgraphService(reliquarySubgraphUrl),
-        );
-        await prisma.prismaReliquaryLevelSnapshot.deleteMany({ where: { chain } });
-        await prisma.prismaReliquaryFarmSnapshot.deleteMany({ where: { chain } });
-
-        const farms = await prisma.prismaPoolStakingReliquaryFarm.findMany({ where: { chain } });
-        const farmIds = farms.map((farm) => parseFloat(farm.id));
-        for (const farmId of farmIds) {
-            await reliquarySnapshotService.loadAllSnapshotsForFarm(farmId, excludedFarmIds, chain);
-        }
     }
 };

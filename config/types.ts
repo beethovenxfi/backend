@@ -43,7 +43,6 @@ export interface NetworkData {
         balancer: string;
         balancerV3?: string;
         balancerPoolsV3?: string;
-        reliquary?: string;
         sts?: string;
         gauge?: string;
     };

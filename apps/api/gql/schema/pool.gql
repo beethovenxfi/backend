@@ -1261,8 +1261,6 @@ type GqlReliquaryFarmSnapshot {
     relicCount: String!
     userCount: String!
     totalBalance: String!
-    dailyDeposited: String!
-    dailyWithdrawn: String!
     totalLiquidity: String!
     levelBalances: [GqlReliquaryFarmLevelSnapshot!]!
 }

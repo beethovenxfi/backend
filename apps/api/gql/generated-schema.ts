@@ -1252,8 +1252,6 @@ export interface GqlReliquaryFarmLevelSnapshot {
 
 export interface GqlReliquaryFarmSnapshot {
     __typename?: 'GqlReliquaryFarmSnapshot';
-    dailyDeposited: Scalars['String'];
-    dailyWithdrawn: Scalars['String'];
     farmId: Scalars['String'];
     id: Scalars['ID'];
     levelBalances: Array<GqlReliquaryFarmLevelSnapshot>;
@@ -1598,7 +1596,6 @@ export interface MevTaxHookParams {
 
 export interface Mutation {
     __typename?: 'Mutation';
-    beetsPoolLoadReliquarySnapshotsForAllFarms: Scalars['String'];
     createLBP: Scalars['Boolean'];
     lbpReloadFixedLbps: Scalars['String'];
     lbpReloadLbps: Scalars['String'];
@@ -1619,10 +1616,6 @@ export interface Mutation {
     userInitWalletBalancesForAllPools: Scalars['String'];
     userSyncChangedStakedBalances: Scalars['String'];
     userSyncChangedWalletBalancesForAllPools: Scalars['String'];
-}
-
-export interface MutationBeetsPoolLoadReliquarySnapshotsForAllFarmsArgs {
-    chain: GqlChain;
 }
 
 export interface MutationCreateLbpArgs {
@@ -3199,8 +3192,6 @@ export type GqlReliquaryFarmSnapshotResolvers<
     ContextType = ResolverContext,
     ParentType extends ResolversParentTypes['GqlReliquaryFarmSnapshot'] = ResolversParentTypes['GqlReliquaryFarmSnapshot'],
 > = ResolversObject<{
-    dailyDeposited?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    dailyWithdrawn?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     farmId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     levelBalances?: Resolver<Array<ResolversTypes['GqlReliquaryFarmLevelSnapshot']>, ParentType, ContextType>;
@@ -3473,12 +3464,6 @@ export type MutationResolvers<
     ContextType = ResolverContext,
     ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation'],
 > = ResolversObject<{
-    beetsPoolLoadReliquarySnapshotsForAllFarms?: Resolver<
-        ResolversTypes['String'],
-        ParentType,
-        ContextType,
-        RequireFields<MutationBeetsPoolLoadReliquarySnapshotsForAllFarmsArgs, 'chain'>
-    >;
     createLBP?: Resolver<
         ResolversTypes['Boolean'],
         ParentType,

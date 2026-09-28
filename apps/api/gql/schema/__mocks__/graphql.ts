@@ -1282,8 +1282,6 @@ export const aGqlReliquaryFarmLevelSnapshot = (
 
 export const aGqlReliquaryFarmSnapshot = (overrides?: Partial<GqlReliquaryFarmSnapshot>): GqlReliquaryFarmSnapshot => {
     return {
-        dailyDeposited: overrides && overrides.hasOwnProperty('dailyDeposited') ? overrides.dailyDeposited! : 'depulso',
-        dailyWithdrawn: overrides && overrides.hasOwnProperty('dailyWithdrawn') ? overrides.dailyWithdrawn! : 'quam',
         farmId: overrides && overrides.hasOwnProperty('farmId') ? overrides.farmId! : 'arca',
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '2bbe0f78-8fc7-4c93-a195-b52a873f3c17',
         levelBalances:
@@ -1622,10 +1620,6 @@ export const aMevTaxHookParams = (overrides?: Partial<MevTaxHookParams>): MevTax
 
 export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
     return {
-        beetsPoolLoadReliquarySnapshotsForAllFarms:
-            overrides && overrides.hasOwnProperty('beetsPoolLoadReliquarySnapshotsForAllFarms')
-                ? overrides.beetsPoolLoadReliquarySnapshotsForAllFarms!
-                : 'culpo',
         createLBP: overrides && overrides.hasOwnProperty('createLBP') ? overrides.createLBP! : true,
         lbpReloadFixedLbps:
             overrides && overrides.hasOwnProperty('lbpReloadFixedLbps') ? overrides.lbpReloadFixedLbps! : 'clamo',

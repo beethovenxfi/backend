@@ -1271,8 +1271,6 @@ export type GqlReliquaryFarmLevelSnapshot = {
 
 export type GqlReliquaryFarmSnapshot = {
     __typename?: 'GqlReliquaryFarmSnapshot';
-    dailyDeposited: Scalars['String'];
-    dailyWithdrawn: Scalars['String'];
     farmId: Scalars['String'];
     id: Scalars['ID'];
     levelBalances: Array<GqlReliquaryFarmLevelSnapshot>;
@@ -1627,7 +1625,6 @@ export type MevTaxHookParams = {
 
 export type Mutation = {
     __typename?: 'Mutation';
-    beetsPoolLoadReliquarySnapshotsForAllFarms: Scalars['String'];
     createLBP: Scalars['Boolean'];
     lbpReloadFixedLbps: Scalars['String'];
     lbpReloadLbps: Scalars['String'];
@@ -1648,10 +1645,6 @@ export type Mutation = {
     userInitWalletBalancesForAllPools: Scalars['String'];
     userSyncChangedStakedBalances: Scalars['String'];
     userSyncChangedWalletBalancesForAllPools: Scalars['String'];
-};
-
-export type MutationBeetsPoolLoadReliquarySnapshotsForAllFarmsArgs = {
-    chain: GqlChain;
 };
 
 export type MutationCreateLbpArgs = {

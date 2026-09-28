@@ -5,7 +5,3 @@ extend type Query {
         chain: GqlChain!
     ): [GqlReliquaryFarmSnapshot!]!
 }
-
-extend type Mutation {
-    beetsPoolLoadReliquarySnapshotsForAllFarms(chain: GqlChain!): String!
-}

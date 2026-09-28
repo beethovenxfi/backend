@@ -55,7 +55,6 @@ import {
     GqlSorSwapRouteHop,
     GqlStakedSonicData,
     GqlStakedSonicDelegatedValidator,
-    GqlStakedSonicSnapshot,
     GqlToken,
     GqlTokenAmountHumanReadable,
     GqlTokenFilter,
@@ -88,7 +87,6 @@ import {
     GqlPoolStakingType,
     GqlPoolType,
     GqlSorSwapType,
-    GqlStakedSonicSnapshotDataRange,
     GqlTokenType,
 } from './types';
 
@@ -1399,24 +1397,6 @@ export const aGqlStakedSonicDelegatedValidator = (
     };
 };
 
-export const aGqlStakedSonicSnapshot = (overrides?: Partial<GqlStakedSonicSnapshot>): GqlStakedSonicSnapshot => {
-    return {
-        exchangeRate: overrides && overrides.hasOwnProperty('exchangeRate') ? overrides.exchangeRate! : 'uter',
-        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '1fe70cba-de86-490a-b4a3-3b9a185faeab',
-        protocolFee24h: overrides && overrides.hasOwnProperty('protocolFee24h') ? overrides.protocolFee24h! : 'quis',
-        rewardsClaimed24h:
-            overrides && overrides.hasOwnProperty('rewardsClaimed24h') ? overrides.rewardsClaimed24h! : 'eligendi',
-        timestamp: overrides && overrides.hasOwnProperty('timestamp') ? overrides.timestamp! : 2290,
-        totalAssets: overrides && overrides.hasOwnProperty('totalAssets') ? overrides.totalAssets! : 'aperte',
-        totalAssetsDelegated:
-            overrides && overrides.hasOwnProperty('totalAssetsDelegated')
-                ? overrides.totalAssetsDelegated!
-                : 'tripudio',
-        totalAssetsPool:
-            overrides && overrides.hasOwnProperty('totalAssetsPool') ? overrides.totalAssetsPool! : 'stella',
-    };
-};
-
 export const aGqlToken = (overrides?: Partial<GqlToken>): GqlToken => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'vinculum',
@@ -1794,10 +1774,6 @@ export const aQuery = (overrides?: Partial<Query>): Query => {
             overrides && overrides.hasOwnProperty('stsGetGqlStakedSonicData')
                 ? overrides.stsGetGqlStakedSonicData!
                 : aGqlStakedSonicData(),
-        stsGetStakedSonicSnapshots:
-            overrides && overrides.hasOwnProperty('stsGetStakedSonicSnapshots')
-                ? overrides.stsGetStakedSonicSnapshots!
-                : [aGqlStakedSonicSnapshot()],
         tokenGetCurrentPrices:
             overrides && overrides.hasOwnProperty('tokenGetCurrentPrices')
                 ? overrides.tokenGetCurrentPrices!

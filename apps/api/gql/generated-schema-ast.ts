@@ -2377,52 +2377,6 @@ export const schema = gql`
         validatorId: String!
     }
 
-    type GqlStakedSonicSnapshot {
-        """
-        Current exchange rate for stS -> S
-        """
-        exchangeRate: String!
-        id: ID!
-
-        """
-        The total protocol fee collected during that day.
-        """
-        protocolFee24h: String!
-
-        """
-        The total rewards claimed during that day.
-        """
-        rewardsClaimed24h: String!
-
-        """
-        The timestamp of the snapshot. Timestamp is end of day midnight.
-        """
-        timestamp: Int!
-
-        """
-        Total amount of S in custody of stS. Delegated S plus pool S.
-        """
-        totalAssets: AmountHumanReadable!
-
-        """
-        Total amount of S delegated to validators.
-        """
-        totalAssetsDelegated: AmountHumanReadable!
-
-        """
-        Total amount of S in the pool.
-        """
-        totalAssetsPool: AmountHumanReadable!
-    }
-
-    enum GqlStakedSonicSnapshotDataRange {
-        ALL_TIME
-        NINETY_DAYS
-        ONE_HUNDRED_EIGHTY_DAYS
-        ONE_YEAR
-        THIRTY_DAYS
-    }
-
     """
     Represents a token in the system
     """
@@ -2876,11 +2830,6 @@ export const schema = gql`
         Get the staking data and status for stS
         """
         stsGetGqlStakedSonicData: GqlStakedSonicData!
-
-        """
-        Get snapshots for sftmx staking for a specific range
-        """
-        stsGetStakedSonicSnapshots(range: GqlStakedSonicSnapshotDataRange!): [GqlStakedSonicSnapshot!]!
 
         """
         Returns all current prices for allowed tokens for a given chain or chains

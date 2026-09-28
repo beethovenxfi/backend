@@ -2079,16 +2079,9 @@ export const schema = gql`
         yieldCapture24h: BigDecimal!
     }
 
-    type GqlReliquaryFarmLevelSnapshot {
-        balance: String!
-        id: ID!
-        level: String!
-    }
-
     type GqlReliquaryFarmSnapshot {
         farmId: String!
         id: ID!
-        levelBalances: [GqlReliquaryFarmLevelSnapshot!]!
         relicCount: String!
         timestamp: Int!
         totalBalance: String!

@@ -1243,18 +1243,10 @@ export interface GqlProtocolMetricsChain {
     yieldCapture24h: Scalars['BigDecimal'];
 }
 
-export interface GqlReliquaryFarmLevelSnapshot {
-    __typename?: 'GqlReliquaryFarmLevelSnapshot';
-    balance: Scalars['String'];
-    id: Scalars['ID'];
-    level: Scalars['String'];
-}
-
 export interface GqlReliquaryFarmSnapshot {
     __typename?: 'GqlReliquaryFarmSnapshot';
     farmId: Scalars['String'];
     id: Scalars['ID'];
-    levelBalances: Array<GqlReliquaryFarmLevelSnapshot>;
     relicCount: Scalars['String'];
     timestamp: Scalars['Int'];
     totalBalance: Scalars['String'];
@@ -2008,7 +2000,6 @@ export type ResolversTypes = ResolversObject<{
     GqlPriceRateProviderUpgradeableComponent: ResolverTypeWrapper<GqlPriceRateProviderUpgradeableComponent>;
     GqlProtocolMetricsAggregated: ResolverTypeWrapper<GqlProtocolMetricsAggregated>;
     GqlProtocolMetricsChain: ResolverTypeWrapper<GqlProtocolMetricsChain>;
-    GqlReliquaryFarmLevelSnapshot: ResolverTypeWrapper<GqlReliquaryFarmLevelSnapshot>;
     GqlReliquaryFarmSnapshot: ResolverTypeWrapper<GqlReliquaryFarmSnapshot>;
     GqlSorGetSwapPaths: ResolverTypeWrapper<GqlSorGetSwapPaths>;
     GqlSorPath: ResolverTypeWrapper<GqlSorPath>;
@@ -2129,7 +2120,6 @@ export type ResolversParentTypes = ResolversObject<{
     GqlPriceRateProviderUpgradeableComponent: GqlPriceRateProviderUpgradeableComponent;
     GqlProtocolMetricsAggregated: GqlProtocolMetricsAggregated;
     GqlProtocolMetricsChain: GqlProtocolMetricsChain;
-    GqlReliquaryFarmLevelSnapshot: GqlReliquaryFarmLevelSnapshot;
     GqlReliquaryFarmSnapshot: GqlReliquaryFarmSnapshot;
     GqlSorGetSwapPaths: GqlSorGetSwapPaths;
     GqlSorPath: GqlSorPath;
@@ -3143,23 +3133,12 @@ export type GqlProtocolMetricsChainResolvers<
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type GqlReliquaryFarmLevelSnapshotResolvers<
-    ContextType = ResolverContext,
-    ParentType extends ResolversParentTypes['GqlReliquaryFarmLevelSnapshot'] = ResolversParentTypes['GqlReliquaryFarmLevelSnapshot'],
-> = ResolversObject<{
-    balance?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-    level?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type GqlReliquaryFarmSnapshotResolvers<
     ContextType = ResolverContext,
     ParentType extends ResolversParentTypes['GqlReliquaryFarmSnapshot'] = ResolversParentTypes['GqlReliquaryFarmSnapshot'],
 > = ResolversObject<{
     farmId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-    levelBalances?: Resolver<Array<ResolversTypes['GqlReliquaryFarmLevelSnapshot']>, ParentType, ContextType>;
     relicCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     timestamp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     totalBalance?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -3736,7 +3715,6 @@ export type Resolvers<ContextType = ResolverContext> = ResolversObject<{
     GqlPriceRateProviderUpgradeableComponent?: GqlPriceRateProviderUpgradeableComponentResolvers<ContextType>;
     GqlProtocolMetricsAggregated?: GqlProtocolMetricsAggregatedResolvers<ContextType>;
     GqlProtocolMetricsChain?: GqlProtocolMetricsChainResolvers<ContextType>;
-    GqlReliquaryFarmLevelSnapshot?: GqlReliquaryFarmLevelSnapshotResolvers<ContextType>;
     GqlReliquaryFarmSnapshot?: GqlReliquaryFarmSnapshotResolvers<ContextType>;
     GqlSorGetSwapPaths?: GqlSorGetSwapPathsResolvers<ContextType>;
     GqlSorPath?: GqlSorPathResolvers<ContextType>;

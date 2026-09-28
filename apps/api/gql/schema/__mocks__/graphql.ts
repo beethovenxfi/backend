@@ -46,7 +46,6 @@ import {
     GqlPriceRateProviderUpgradeableComponent,
     GqlProtocolMetricsAggregated,
     GqlProtocolMetricsChain,
-    GqlReliquaryFarmLevelSnapshot,
     GqlReliquaryFarmSnapshot,
     GqlSorGetSwapPaths,
     GqlSorPath,
@@ -1268,24 +1267,10 @@ export const aGqlProtocolMetricsChain = (overrides?: Partial<GqlProtocolMetricsC
     };
 };
 
-export const aGqlReliquaryFarmLevelSnapshot = (
-    overrides?: Partial<GqlReliquaryFarmLevelSnapshot>,
-): GqlReliquaryFarmLevelSnapshot => {
-    return {
-        balance: overrides && overrides.hasOwnProperty('balance') ? overrides.balance! : 'laborum',
-        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '81ac945c-8237-4277-9860-c4eba842026b',
-        level: overrides && overrides.hasOwnProperty('level') ? overrides.level! : 'confugo',
-    };
-};
-
 export const aGqlReliquaryFarmSnapshot = (overrides?: Partial<GqlReliquaryFarmSnapshot>): GqlReliquaryFarmSnapshot => {
     return {
         farmId: overrides && overrides.hasOwnProperty('farmId') ? overrides.farmId! : 'arca',
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '2bbe0f78-8fc7-4c93-a195-b52a873f3c17',
-        levelBalances:
-            overrides && overrides.hasOwnProperty('levelBalances')
-                ? overrides.levelBalances!
-                : [aGqlReliquaryFarmLevelSnapshot()],
         relicCount: overrides && overrides.hasOwnProperty('relicCount') ? overrides.relicCount! : 'aetas',
         timestamp: overrides && overrides.hasOwnProperty('timestamp') ? overrides.timestamp! : 6195,
         totalBalance: overrides && overrides.hasOwnProperty('totalBalance') ? overrides.totalBalance! : 'carpo',

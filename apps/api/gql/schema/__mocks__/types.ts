@@ -1262,18 +1262,10 @@ export type GqlProtocolMetricsChain = {
     yieldCapture24h: Scalars['BigDecimal'];
 };
 
-export type GqlReliquaryFarmLevelSnapshot = {
-    __typename?: 'GqlReliquaryFarmLevelSnapshot';
-    balance: Scalars['String'];
-    id: Scalars['ID'];
-    level: Scalars['String'];
-};
-
 export type GqlReliquaryFarmSnapshot = {
     __typename?: 'GqlReliquaryFarmSnapshot';
     farmId: Scalars['String'];
     id: Scalars['ID'];
-    levelBalances: Array<GqlReliquaryFarmLevelSnapshot>;
     relicCount: Scalars['String'];
     timestamp: Scalars['Int'];
     totalBalance: Scalars['String'];

@@ -14,7 +14,6 @@ const beetsResolvers: Resolvers = {
                 userCount: `${snapshot.userCount}`,
                 totalBalance: snapshot.totalBalance,
                 totalLiquidity: snapshot.totalLiquidity,
-                levelBalances: snapshot.levelBalances,
             }));
         },
     },

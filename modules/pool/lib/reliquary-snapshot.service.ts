@@ -14,7 +14,6 @@ export class ReliquarySnapshotService {
         const timestamp = this.getTimestampForRange(range);
         return prisma.prismaReliquaryFarmSnapshot.findMany({
             where: { farmId: `${farmId}`, timestamp: { gte: timestamp }, chain: chain },
-            include: { levelBalances: true },
             orderBy: { timestamp: 'asc' },
         });
     }
@@ -80,16 +79,6 @@ export class ReliquarySnapshotService {
                     where: { id_chain: { id, chain } },
                     create: data,
                     update: data,
-                }),
-                prisma.prismaReliquaryLevelSnapshot.deleteMany({ where: { farmSnapshotId: id, chain } }),
-                prisma.prismaReliquaryLevelSnapshot.createMany({
-                    data: farm.levels.map((level) => ({
-                        id: `${id}-${level.level}`,
-                        chain,
-                        farmSnapshotId: id,
-                        level: `${level.level}`,
-                        balance: level.balance,
-                    })),
                 }),
             );
         }

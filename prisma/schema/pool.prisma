@@ -300,23 +300,8 @@ model PrismaReliquaryFarmSnapshot {
     userCount           Int
     totalBalance        String
     totalLiquidity      String                          @default("0")
-    levelBalances       PrismaReliquaryLevelSnapshot[]
 
     @@index([farmId, chain])
-}
-
-model PrismaReliquaryLevelSnapshot {
-    @@id([id, chain])
-
-    id                  String
-    farmSnapshotId      String
-    farmSnapshot        PrismaReliquaryFarmSnapshot @relation(fields:[farmSnapshotId, chain], references: [id, chain])
-    chain               Chain
-
-    level               String
-    balance             String
-
-    @@index([farmSnapshotId, chain])
 }
 
 enum PoolEventType {

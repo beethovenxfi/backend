@@ -1417,33 +1417,6 @@ export type GqlStakedSonicDelegatedValidator = {
     validatorId: Scalars['String'];
 };
 
-export type GqlStakedSonicSnapshot = {
-    __typename?: 'GqlStakedSonicSnapshot';
-    /** Current exchange rate for stS -> S */
-    exchangeRate: Scalars['String'];
-    id: Scalars['ID'];
-    /** The total protocol fee collected during that day. */
-    protocolFee24h: Scalars['String'];
-    /** The total rewards claimed during that day. */
-    rewardsClaimed24h: Scalars['String'];
-    /** The timestamp of the snapshot. Timestamp is end of day midnight. */
-    timestamp: Scalars['Int'];
-    /** Total amount of S in custody of stS. Delegated S plus pool S. */
-    totalAssets: Scalars['AmountHumanReadable'];
-    /** Total amount of S delegated to validators. */
-    totalAssetsDelegated: Scalars['AmountHumanReadable'];
-    /** Total amount of S in the pool. */
-    totalAssetsPool: Scalars['AmountHumanReadable'];
-};
-
-export enum GqlStakedSonicSnapshotDataRange {
-    ALL_TIME = 'ALL_TIME',
-    NINETY_DAYS = 'NINETY_DAYS',
-    ONE_HUNDRED_EIGHTY_DAYS = 'ONE_HUNDRED_EIGHTY_DAYS',
-    ONE_YEAR = 'ONE_YEAR',
-    THIRTY_DAYS = 'THIRTY_DAYS',
-}
-
 /** Represents a token in the system */
 export type GqlToken = {
     __typename?: 'GqlToken';
@@ -1787,8 +1760,6 @@ export type Query = {
     sorGetSwapPaths: GqlSorGetSwapPaths;
     /** Get the staking data and status for stS */
     stsGetGqlStakedSonicData: GqlStakedSonicData;
-    /** Get snapshots for sftmx staking for a specific range */
-    stsGetStakedSonicSnapshots: Array<GqlStakedSonicSnapshot>;
     /** Returns all current prices for allowed tokens for a given chain or chains */
     tokenGetCurrentPrices: Array<GqlTokenPrice>;
     /** Returns all allowed tokens for a given chain or chains */
@@ -1878,10 +1849,6 @@ export type QuerySorGetSwapPathsArgs = {
     tokenIn: Scalars['String'];
     tokenOut: Scalars['String'];
     useProtocolVersion?: InputMaybe<Scalars['Int']>;
-};
-
-export type QueryStsGetStakedSonicSnapshotsArgs = {
-    range: GqlStakedSonicSnapshotDataRange;
 };
 
 export type QueryTokenGetCurrentPricesArgs = {

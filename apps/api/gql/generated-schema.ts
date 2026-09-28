@@ -1395,32 +1395,6 @@ export interface GqlStakedSonicDelegatedValidator {
     validatorId: Scalars['String'];
 }
 
-export interface GqlStakedSonicSnapshot {
-    __typename?: 'GqlStakedSonicSnapshot';
-    /** Current exchange rate for stS -> S */
-    exchangeRate: Scalars['String'];
-    id: Scalars['ID'];
-    /** The total protocol fee collected during that day. */
-    protocolFee24h: Scalars['String'];
-    /** The total rewards claimed during that day. */
-    rewardsClaimed24h: Scalars['String'];
-    /** The timestamp of the snapshot. Timestamp is end of day midnight. */
-    timestamp: Scalars['Int'];
-    /** Total amount of S in custody of stS. Delegated S plus pool S. */
-    totalAssets: Scalars['AmountHumanReadable'];
-    /** Total amount of S delegated to validators. */
-    totalAssetsDelegated: Scalars['AmountHumanReadable'];
-    /** Total amount of S in the pool. */
-    totalAssetsPool: Scalars['AmountHumanReadable'];
-}
-
-export type GqlStakedSonicSnapshotDataRange =
-    | 'ALL_TIME'
-    | 'NINETY_DAYS'
-    | 'ONE_HUNDRED_EIGHTY_DAYS'
-    | 'ONE_YEAR'
-    | 'THIRTY_DAYS';
-
 /** Represents a token in the system */
 export interface GqlToken {
     __typename?: 'GqlToken';
@@ -1758,8 +1732,6 @@ export interface Query {
     sorGetSwapPaths: GqlSorGetSwapPaths;
     /** Get the staking data and status for stS */
     stsGetGqlStakedSonicData: GqlStakedSonicData;
-    /** Get snapshots for sftmx staking for a specific range */
-    stsGetStakedSonicSnapshots: Array<GqlStakedSonicSnapshot>;
     /** Returns all current prices for allowed tokens for a given chain or chains */
     tokenGetCurrentPrices: Array<GqlTokenPrice>;
     /** Returns all allowed tokens for a given chain or chains */
@@ -1849,10 +1821,6 @@ export interface QuerySorGetSwapPathsArgs {
     tokenIn: Scalars['String'];
     tokenOut: Scalars['String'];
     useProtocolVersion?: InputMaybe<Scalars['Int']>;
-}
-
-export interface QueryStsGetStakedSonicSnapshotsArgs {
-    range: GqlStakedSonicSnapshotDataRange;
 }
 
 export interface QueryTokenGetCurrentPricesArgs {
@@ -2050,8 +2018,6 @@ export type ResolversTypes = ResolversObject<{
     GqlSorSwapType: GqlSorSwapType;
     GqlStakedSonicData: ResolverTypeWrapper<GqlStakedSonicData>;
     GqlStakedSonicDelegatedValidator: ResolverTypeWrapper<GqlStakedSonicDelegatedValidator>;
-    GqlStakedSonicSnapshot: ResolverTypeWrapper<GqlStakedSonicSnapshot>;
-    GqlStakedSonicSnapshotDataRange: GqlStakedSonicSnapshotDataRange;
     GqlToken: ResolverTypeWrapper<GqlToken>;
     GqlTokenAmountHumanReadable: GqlTokenAmountHumanReadable;
     GqlTokenFilter: GqlTokenFilter;
@@ -2172,7 +2138,6 @@ export type ResolversParentTypes = ResolversObject<{
     GqlSorSwapRouteHop: GqlSorSwapRouteHop;
     GqlStakedSonicData: GqlStakedSonicData;
     GqlStakedSonicDelegatedValidator: GqlStakedSonicDelegatedValidator;
-    GqlStakedSonicSnapshot: GqlStakedSonicSnapshot;
     GqlToken: GqlToken;
     GqlTokenAmountHumanReadable: GqlTokenAmountHumanReadable;
     GqlTokenFilter: GqlTokenFilter;
@@ -3301,21 +3266,6 @@ export type GqlStakedSonicDelegatedValidatorResolvers<
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type GqlStakedSonicSnapshotResolvers<
-    ContextType = ResolverContext,
-    ParentType extends ResolversParentTypes['GqlStakedSonicSnapshot'] = ResolversParentTypes['GqlStakedSonicSnapshot'],
-> = ResolversObject<{
-    exchangeRate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-    protocolFee24h?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    rewardsClaimed24h?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    timestamp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-    totalAssets?: Resolver<ResolversTypes['AmountHumanReadable'], ParentType, ContextType>;
-    totalAssetsDelegated?: Resolver<ResolversTypes['AmountHumanReadable'], ParentType, ContextType>;
-    totalAssetsPool?: Resolver<ResolversTypes['AmountHumanReadable'], ParentType, ContextType>;
-    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type GqlTokenResolvers<
     ContextType = ResolverContext,
     ParentType extends ResolversParentTypes['GqlToken'] = ResolversParentTypes['GqlToken'],
@@ -3704,12 +3654,6 @@ export type QueryResolvers<
         RequireFields<QuerySorGetSwapPathsArgs, 'chain' | 'swapAmount' | 'swapType' | 'tokenIn' | 'tokenOut'>
     >;
     stsGetGqlStakedSonicData?: Resolver<ResolversTypes['GqlStakedSonicData'], ParentType, ContextType>;
-    stsGetStakedSonicSnapshots?: Resolver<
-        Array<ResolversTypes['GqlStakedSonicSnapshot']>,
-        ParentType,
-        ContextType,
-        RequireFields<QueryStsGetStakedSonicSnapshotsArgs, 'range'>
-    >;
     tokenGetCurrentPrices?: Resolver<
         Array<ResolversTypes['GqlTokenPrice']>,
         ParentType,
@@ -3801,7 +3745,6 @@ export type Resolvers<ContextType = ResolverContext> = ResolversObject<{
     GqlSorSwapRouteHop?: GqlSorSwapRouteHopResolvers<ContextType>;
     GqlStakedSonicData?: GqlStakedSonicDataResolvers<ContextType>;
     GqlStakedSonicDelegatedValidator?: GqlStakedSonicDelegatedValidatorResolvers<ContextType>;
-    GqlStakedSonicSnapshot?: GqlStakedSonicSnapshotResolvers<ContextType>;
     GqlToken?: GqlTokenResolvers<ContextType>;
     GqlTokenMutationResult?: GqlTokenMutationResultResolvers<ContextType>;
     GqlTokenPrice?: GqlTokenPriceResolvers<ContextType>;

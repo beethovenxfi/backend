@@ -35,17 +35,6 @@ const files = {
         documents: 'modules/subgraphs/balancer-subgraph/balancer-subgraph-queries.graphql',
         ...defaults.types,
     },
-    ['modules/sources/subgraphs/sts-subgraph/generated/sts-subgraph-types.ts']: {
-        schema: config.SONIC.subgraphs.sts,
-        documents: 'modules/sources/subgraphs/sts-subgraph/sts-subgraph-queries.graphql',
-        ...defaults.types,
-        config: {
-            ...defaults.types.config,
-            namingConvention: {
-                enumValues: 'keep',
-            },
-        },
-    },
     ['modules/subgraphs/gauge-subgraph/generated/gauge-subgraph-types.ts']: {
         schema: config.SONIC.subgraphs.gauge,
         documents: 'modules/subgraphs/gauge-subgraph/gauge-subgraph-queries.graphql',

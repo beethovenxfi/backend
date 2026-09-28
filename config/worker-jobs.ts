@@ -59,7 +59,6 @@ export const loopsWorkerJobs: WorkerJob[] = [
 
 export const stsWorkerJobs: WorkerJob[] = [
     { name: 'sync-sts-staking-data', interval: interval(every(20, 'minutes'), every(1, 'minutes')) },
-    { name: 'sync-sts-staking-snapshots', interval: interval(every(30, 'minutes'), every(10, 'minutes')) },
 ];
 
 export const reliquaryWorkerJobs: WorkerJob[] = [

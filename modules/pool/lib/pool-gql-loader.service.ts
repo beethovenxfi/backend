@@ -29,7 +29,7 @@ import { ZERO_ADDRESS } from '@balancer/sdk';
 import { mapHookToGqlHook } from '../../sources/transformers';
 import { GraphQLError } from 'graphql';
 import { getWeightSnapshots } from '../../actions/quant-amm/get-weight-snapshots';
-import { mapPoolToken, enrichWithErc4626Data, mapAprItems } from './pool-gql-mapper-helper';
+import { mapPoolToken, enrichPoolTokens, mapAprItems } from './pool-gql-mapper-helper';
 import { ContentController } from '../../content/content-controller';
 
 const isToken = (text: string) => text.match(/^0x[0-9a-fA-F]{40}$/);
@@ -65,41 +65,9 @@ export class PoolGqlLoaderService {
             quantWeightSnapshots,
         );
 
-        // load rate provider data into PoolTokenDetail model
-        await this.enrichWithRateproviderData(mappedPool);
-
-        // load underlying token info into PoolTokenDetail
-        await enrichWithErc4626Data(mappedPool.poolTokens, mappedPool.chain);
+        await enrichPoolTokens([mappedPool]);
 
         return mappedPool;
-    }
-
-    private async enrichWithRateproviderData(mappedPool: GqlPoolMinimal | GqlPoolUnion) {
-        for (const token of mappedPool.poolTokens) {
-            if (token.priceRateProvider && token.priceRateProvider !== ZERO_ADDRESS) {
-                const rateproviderData = await prisma.prismaPriceRateProviderData.findUnique({
-                    where: {
-                        chain_rateProviderAddress: {
-                            chain: mappedPool.chain,
-                            rateProviderAddress: token.priceRateProvider,
-                        },
-                    },
-                });
-                if (rateproviderData) {
-                    token.priceRateProviderData = {
-                        ...rateproviderData,
-                        warnings: rateproviderData.warnings?.split(',') || [],
-                        upgradeableComponents:
-                            (rateproviderData.upgradableComponents as {
-                                implementationReviewed: string;
-                                entryPoint: string;
-                            }[]) || [],
-                        address: rateproviderData.rateProviderAddress,
-                        reviewFile: rateproviderData.reviewUrl,
-                    };
-                }
-            }
-        }
     }
 
     public async getPools(args: QueryPoolGetPoolsArgs): Promise<GqlPoolMinimal[]> {
@@ -130,13 +98,7 @@ export class PoolGqlLoaderService {
                 ),
             );
 
-            for (const mappedPool of gqlPools) {
-                // load rate provider data into PoolTokenDetail model
-                await this.enrichWithRateproviderData(mappedPool);
-
-                // load underlying token info into PoolTokenDetail
-                await enrichWithErc4626Data(mappedPool.poolTokens, mappedPool.chain);
-            }
+            await enrichPoolTokens(gqlPools);
 
             if (args.orderBy === 'userbalanceUsd') {
                 let sortedPools = [];
@@ -208,13 +170,7 @@ export class PoolGqlLoaderService {
 
         const gqlPools = pools.map((pool) => this.mapToMinimalGqlPool(pool));
 
-        for (const mappedPool of gqlPools) {
-            // load rate provider data into PoolTokenDetail model
-            await this.enrichWithRateproviderData(mappedPool);
-
-            // load underlying token info into PoolTokenDetail
-            await enrichWithErc4626Data(mappedPool.poolTokens, mappedPool.chain);
-        }
+        await enrichPoolTokens(gqlPools);
 
         if (reviewedOnly) {
             // if a pool has a rateprovider that is non-zero address, it needs to have a review to be included in the results

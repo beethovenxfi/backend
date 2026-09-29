@@ -18,7 +18,7 @@ import {
     MutationTokenDeleteTokenTypeArgs,
     QueryTokenGetTokensArgs,
 } from '../../apps/api/gql/generated-schema';
-import { Dictionary } from 'lodash';
+import { Dictionary, uniq } from 'lodash';
 import config from '../../config';
 import murmurhash from 'murmurhash';
 
@@ -67,19 +67,35 @@ export class TokenService {
     }
 
     public async getTokenDefinition(address: string, chain: Chain): Promise<GqlToken | undefined> {
-        const token = await prisma.prismaToken.findUnique({
-            where: { address_chain: { address: address, chain: chain } },
+        const definitions = await this.getTokenDefinitionsByAddress([{ address, chain }]);
+        return definitions[`${address}-${chain}`];
+    }
+
+    /**
+     * Batched getTokenDefinition, keyed by `${address}-${chain}`.
+     */
+    public async getTokenDefinitionsByAddress(
+        refs: { address: string; chain: Chain }[],
+    ): Promise<Record<string, GqlToken>> {
+        if (refs.length === 0) return {};
+
+        const tokens = await prisma.prismaToken.findMany({
+            where: { OR: refs.map(({ address, chain }) => ({ address, chain })) },
             include: { types: true },
         });
 
-        if (token) {
-            const rateProviderData = await this.getPriceRateProviderData([token]);
-            const erc4626Data = await this.getErc4626Data([token]);
-            return {
+        const [rateProviderData, erc4626Data] = await Promise.all([
+            this.getPriceRateProviderData(tokens, uniq(tokens.map((token) => token.chain))),
+            this.getErc4626Data(tokens),
+        ]);
+
+        const definitions: Record<string, GqlToken> = {};
+        for (const token of tokens) {
+            definitions[`${token.address}-${token.chain}`] = {
                 ...token,
                 types: token.types.map((type) => type.type).filter((type): type is GqlTokenType => type !== 'WHITE_LISTED'),
                 isBufferAllowed: token.isBufferAllowed,
-                chainId: config[chain].chain.id,
+                chainId: config[token.chain].chain.id,
                 tradable: !token.types.find((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT'),
                 priceRateProviderData: rateProviderData[token.address],
                 coingeckoId: token.coingeckoTokenId,
@@ -88,7 +104,7 @@ export class TokenService {
             };
         }
 
-        return undefined;
+        return definitions;
     }
 
     public async getTokenDefinitions(args: QueryTokenGetTokensArgs): Promise<GqlToken[]> {

@@ -8,16 +8,16 @@ const interval = (canary: number, main: number) => (isCanary ? canary : main);
 export const activeChainWorkerJobsV2: WorkerJob[] = [
     { name: 'sync-new-pools-from-subgraph', interval: interval(every(10, 'minutes'), every(2, 'minutes')) },
     { name: 'sync-changed-pools', interval: interval(every(5, 'minutes'), every(1, 'minutes')) },
-    { name: 'sync-join-exits-v2', interval: interval(every(15, 'minutes'), every(1, 'minutes')) },
-    { name: 'sync-swaps-v2', interval: interval(every(15, 'minutes'), every(1, 'minutes')) },
+    { name: 'sync-join-exits-v2', interval: interval(every(15, 'minutes'), every(5, 'minutes')) },
+    { name: 'sync-swaps-v2', interval: interval(every(15, 'minutes'), every(5, 'minutes')) },
     { name: 'update-liquidity-24h-ago-v2', interval: interval(every(20, 'minutes'), every(5, 'minutes')) },
 ];
 
 export const activeChainWorkerJobsV3: WorkerJob[] = [
     { name: 'add-pools-v3', interval: interval(every(5, 'minutes'), every(1, 'minutes')) },
     { name: 'sync-pools-v3', interval: interval(every(5, 'minutes'), every(1, 'minutes')) },
-    { name: 'sync-join-exits-v3', interval: interval(every(15, 'minutes'), every(1, 'minutes')) },
-    { name: 'sync-swaps-v3', interval: interval(every(15, 'minutes'), every(1, 'minutes')) },
+    { name: 'sync-join-exits-v3', interval: interval(every(15, 'minutes'), every(5, 'minutes')) },
+    { name: 'sync-swaps-v3', interval: interval(every(15, 'minutes'), every(5, 'minutes')) },
     { name: 'sync-hook-data', interval: interval(every(20, 'minutes'), every(1, 'hours')) },
     { name: 'update-liquidity-24h-ago-v3', interval: interval(every(20, 'minutes'), every(5, 'minutes')) },
     { name: 'sync-lbps', interval: interval(every(5, 'minutes'), every(2, 'minutes')) },
@@ -40,13 +40,13 @@ export const activeChainWorkerJobsGeneric: WorkerJob[] = [
 export const activeChainWorkerJobsGlobal: WorkerJob[] = [
     { name: 'update-token-prices', interval: every(15, 'minutes') },
     { name: 'global-purge-old-data', interval: every(1, 'days') },
-    { name: 'sync-rate-provider-reviews', interval: interval(every(30, 'minutes'), every(15, 'minutes')) },
-    { name: 'sync-hook-reviews', interval: interval(every(30, 'minutes'), every(15, 'minutes')) },
-    { name: 'sync-erc4626-data', interval: interval(every(30, 'minutes'), every(15, 'minutes')) },
+    { name: 'sync-rate-provider-reviews', interval: every(1, 'hours') },
+    { name: 'sync-hook-reviews', interval: every(1, 'hours') },
+    { name: 'sync-erc4626-data', interval: every(1, 'hours') },
     { name: 'fetch-token-yields', interval: interval(every(40, 'minutes'), every(20, 'minutes')) },
-    { name: 'sync-categories', interval: interval(every(30, 'minutes'), every(10, 'minutes')) },
+    { name: 'sync-categories', interval: every(1, 'hours') },
     { name: 'sync-token-tvl', interval: interval(every(60, 'minutes'), every(30, 'minutes')) },
-    { name: 'sync-token-content-data', interval: interval(every(10, 'minutes'), every(5, 'minutes')) },
+    { name: 'sync-token-content-data', interval: every(1, 'hours') },
 ];
 
 export const quantAmmWorkerJobs: WorkerJob[] = [

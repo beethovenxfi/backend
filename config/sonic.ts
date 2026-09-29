@@ -42,7 +42,7 @@ export default <NetworkData>{
         platformId: 'sonic-mainnet',
         excludedTokenAddresses: [],
     },
-    rpcUrl: `https://prod.rpc.direct.dev/v1/${env.DIRECT_API_KEY}/sonic`,
+    rpcUrl: `https://lb.drpc.live/sonic/${env.DRPC_API_KEY}`,
     rpcMaxBlockRange: 5000,
     acceptableSGLag: 150, // ~1min
     beets: {

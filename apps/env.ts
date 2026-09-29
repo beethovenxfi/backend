@@ -10,7 +10,7 @@ export const schema = {
     ADMIN_API_KEY: String,
     DATABASE_URL: String,
     SENTRY_DSN: String,
-    DIRECT_API_KEY: {
+    DRPC_API_KEY: {
         optional: true,
         type: String,
     },

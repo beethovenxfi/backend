@@ -38,7 +38,7 @@ export const activeChainWorkerJobsGeneric: WorkerJob[] = [
 
 // Jobs that are not chain specific. Attached to the single configured chain.
 export const activeChainWorkerJobsGlobal: WorkerJob[] = [
-    { name: 'update-token-prices', interval: every(15, 'minutes') },
+    { name: 'update-token-prices', interval: every(5, 'minutes') },
     { name: 'global-purge-old-data', interval: every(1, 'days') },
     { name: 'sync-rate-provider-reviews', interval: every(1, 'hours') },
     { name: 'sync-hook-reviews', interval: every(1, 'hours') },

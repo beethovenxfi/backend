@@ -5,7 +5,7 @@ export function corsMiddleware(req: Request, res: Response, next: NextFunction) 
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader(
         'Access-Control-Allow-Headers',
-        'X-Requested-With,Authorization,Content-Type,AccountAddress,AdminApiKey',
+        'X-Requested-With,Authorization,Content-Type,AccountAddress,AdminApiKey,x-graphql-client-name,x-graphql-client-version',
     );
 
     // Preflight must not reach Apollo, its CSRF guard rejects it with 400

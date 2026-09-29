@@ -7,7 +7,6 @@ function getHeader(req: Request, key: string): string | undefined {
 
 export interface ResolverContext {
     adminApiKey: string | null;
-    chainId: string | null;
     accountAddress: string | null;
     req: Request;
 }
@@ -15,13 +14,11 @@ export interface ResolverContext {
 export async function resolverContext(req: Request) {
     const accountAddress = getHeader(req, 'AccountAddress');
     const adminApiKey = getHeader(req, 'AdminApiKey');
-    const chainId = getHeader(req, 'ChainId');
 
     // Initialize context if it doesn't exist
     return {
         accountAddress: accountAddress ? accountAddress.toLowerCase() : null,
         adminApiKey: adminApiKey ?? null,
-        chainId: chainId ?? null,
         req,
     };
 }

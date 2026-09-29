@@ -16,6 +16,8 @@ export async function fetchRewardsClaimed(
 ): Promise<RewardsClaimedTotals> {
     let rewardsClaimed = 0n;
     let protocolFee = 0n;
+    // Some RPCs return the same log more than once; count each log once.
+    const seen = new Set<string>();
 
     for (let from = fromBlock; from <= toBlock; from += rpcMaxBlockRange + 1) {
         const to = Math.min(from + rpcMaxBlockRange, toBlock);
@@ -30,6 +32,10 @@ export async function fetchRewardsClaimed(
         });
 
         for (const log of logs) {
+            const key = `${log.transactionHash}:${log.logIndex}`;
+            if (seen.has(key)) continue;
+            seen.add(key);
+
             rewardsClaimed += log.args.amountClaimed;
             protocolFee += log.args.protocolFee;
         }

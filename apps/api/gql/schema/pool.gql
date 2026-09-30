@@ -160,10 +160,6 @@ type GqlPoolMinimal {
     """
     userBalance: GqlPoolUserBalance
     """
-    List of categories assigned by the team based on external factors
-    """
-    categories: [GqlPoolFilterCategory]
-    """
     List of tags assigned by the team based on external factors
     """
     tags: [String]
@@ -353,10 +349,6 @@ interface GqlPoolBase {
     """
     userBalance: GqlPoolUserBalance
     """
-    List of categories assigned by the team based on external factors
-    """
-    categories: [GqlPoolFilterCategory]
-    """
     List of tags assigned by the team based on external factors
     """
     tags: [String]
@@ -480,7 +472,6 @@ type GqlPoolQuantAmmWeighted implements GqlPoolBase {
     createTime: Int!
     dynamicData: GqlPoolDynamicData!
     poolTokens: [GqlPoolTokenDetail!]!
-    categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
@@ -521,7 +512,6 @@ type GqlPoolWeighted implements GqlPoolBase {
     createTime: Int!
     dynamicData: GqlPoolDynamicData!
     poolTokens: [GqlPoolTokenDetail!]!
-    categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
@@ -559,7 +549,6 @@ type GqlPoolGyro implements GqlPoolBase {
     createTime: Int!
     dynamicData: GqlPoolDynamicData!
     poolTokens: [GqlPoolTokenDetail!]!
-    categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
@@ -614,7 +603,6 @@ type GqlPoolLiquidityBootstrapping implements GqlPoolBase {
     createTime: Int!
     dynamicData: GqlPoolDynamicData!
     poolTokens: [GqlPoolTokenDetail!]!
-    categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
@@ -658,7 +646,6 @@ type GqlPoolLiquidityBootstrappingV3 implements GqlPoolBase {
     createTime: Int!
     dynamicData: GqlPoolDynamicData!
     poolTokens: [GqlPoolTokenDetail!]!
-    categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
@@ -723,7 +710,6 @@ type GqlPoolFixedPriceLBP implements GqlPoolBase {
     createTime: Int!
     dynamicData: GqlPoolDynamicData!
     poolTokens: [GqlPoolTokenDetail!]!
-    categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
@@ -783,7 +769,6 @@ type GqlPoolStable implements GqlPoolBase {
     createTime: Int!
     dynamicData: GqlPoolDynamicData!
     poolTokens: [GqlPoolTokenDetail!]!
-    categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
@@ -823,7 +808,6 @@ type GqlPoolComposableStable implements GqlPoolBase {
     createTime: Int!
     dynamicData: GqlPoolDynamicData!
     poolTokens: [GqlPoolTokenDetail!]!
-    categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
@@ -864,7 +848,6 @@ type GqlPoolReClamm implements GqlPoolBase {
     createTime: Int!
     dynamicData: GqlPoolDynamicData!
     poolTokens: [GqlPoolTokenDetail!]!
-    categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
@@ -1050,19 +1033,6 @@ enum GqlPoolOrderBy {
 enum GqlPoolOrderDirection {
     asc
     desc
-}
-
-enum GqlPoolFilterCategory {
-    INCENTIVIZED
-    BLACK_LISTED
-    LRT
-    POINTS
-    POINTS_EIGENLAYER
-    POINTS_SWELL
-    POINTS_GYRO
-    POINTS_RENZO
-    POINTS_KELP
-    SUPERFEST
 }
 
 input GqlPoolFilter {

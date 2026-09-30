@@ -320,8 +320,6 @@ export type GqlPoolAprItemType =
 export interface GqlPoolBase {
     /** The contract address of the pool. */
     address: Scalars['Bytes'];
-    /** List of categories assigned by the team based on external factors */
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     /** The chain on which the pool is deployed */
     chain: GqlChain;
     /** The timestamp the pool was created. */
@@ -373,7 +371,6 @@ export interface GqlPoolComposableStable extends GqlPoolBase {
     address: Scalars['Bytes'];
     amp: Scalars['BigInt'];
     bptPriceRate: Scalars['BigDecimal'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
@@ -514,22 +511,9 @@ export interface GqlPoolFilter {
     userAddress?: InputMaybe<Scalars['String']>;
 }
 
-export type GqlPoolFilterCategory =
-    | 'BLACK_LISTED'
-    | 'INCENTIVIZED'
-    | 'LRT'
-    | 'POINTS'
-    | 'POINTS_EIGENLAYER'
-    | 'POINTS_GYRO'
-    | 'POINTS_KELP'
-    | 'POINTS_RENZO'
-    | 'POINTS_SWELL'
-    | 'SUPERFEST';
-
 export interface GqlPoolFixedPriceLbp extends GqlPoolBase {
     __typename?: 'GqlPoolFixedPriceLBP';
     address: Scalars['Bytes'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
@@ -581,7 +565,6 @@ export interface GqlPoolGyro extends GqlPoolBase {
     alpha: Scalars['String'];
     beta: Scalars['String'];
     c: Scalars['String'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     dSq: Scalars['String'];
@@ -626,7 +609,6 @@ export interface GqlPoolGyro extends GqlPoolBase {
 export interface GqlPoolLiquidityBootstrapping extends GqlPoolBase {
     __typename?: 'GqlPoolLiquidityBootstrapping';
     address: Scalars['Bytes'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
@@ -657,7 +639,6 @@ export interface GqlPoolLiquidityBootstrapping extends GqlPoolBase {
 export interface GqlPoolLiquidityBootstrappingV3 extends GqlPoolBase {
     __typename?: 'GqlPoolLiquidityBootstrappingV3';
     address: Scalars['Bytes'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
@@ -713,8 +694,6 @@ export interface GqlPoolMinimal {
     __typename?: 'GqlPoolMinimal';
     /** The contract address of the pool. */
     address: Scalars['Bytes'];
-    /** List of categories assigned by the team based on external factors */
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     /** The chain on which the pool is deployed */
     chain: GqlChain;
     /** The timestamp the pool was created. */
@@ -785,7 +764,6 @@ export type GqlPoolOrderDirection = 'asc' | 'desc';
 export interface GqlPoolQuantAmmWeighted extends GqlPoolBase {
     __typename?: 'GqlPoolQuantAmmWeighted';
     address: Scalars['Bytes'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
@@ -818,7 +796,6 @@ export interface GqlPoolQuantAmmWeighted extends GqlPoolBase {
 export interface GqlPoolReClamm extends GqlPoolBase {
     __typename?: 'GqlPoolReClamm';
     address: Scalars['Bytes'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     /** The centeredness margin of the pool */
     centerednessMargin: Scalars['BigDecimal'];
     chain: GqlChain;
@@ -891,7 +868,6 @@ export interface GqlPoolStable extends GqlPoolBase {
     address: Scalars['Bytes'];
     amp: Scalars['BigInt'];
     bptPriceRate: Scalars['BigDecimal'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
@@ -1154,7 +1130,6 @@ export interface GqlPoolUserBalance {
 export interface GqlPoolWeighted extends GqlPoolBase {
     __typename?: 'GqlPoolWeighted';
     address: Scalars['Bytes'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
@@ -1956,7 +1931,6 @@ export type ResolversTypes = ResolversObject<{
     GqlPoolEventsFilter: GqlPoolEventsFilter;
     GqlPoolFeaturedPool: ResolverTypeWrapper<GqlPoolFeaturedPool>;
     GqlPoolFilter: GqlPoolFilter;
-    GqlPoolFilterCategory: GqlPoolFilterCategory;
     GqlPoolFixedPriceLBP: ResolverTypeWrapper<GqlPoolFixedPriceLbp>;
     GqlPoolGyro: ResolverTypeWrapper<GqlPoolGyro>;
     GqlPoolLiquidityBootstrapping: ResolverTypeWrapper<GqlPoolLiquidityBootstrapping>;
@@ -2371,7 +2345,6 @@ export type GqlPoolBaseResolvers<
         ContextType
     >;
     address?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-    categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['GqlPoolFilterCategory']>>>, ParentType, ContextType>;
     chain?: Resolver<ResolversTypes['GqlChain'], ParentType, ContextType>;
     createTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -2403,7 +2376,6 @@ export type GqlPoolComposableStableResolvers<
     address?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
     amp?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
     bptPriceRate?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
-    categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['GqlPoolFilterCategory']>>>, ParentType, ContextType>;
     chain?: Resolver<ResolversTypes['GqlChain'], ParentType, ContextType>;
     createTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -2511,7 +2483,6 @@ export type GqlPoolFixedPriceLbpResolvers<
     ParentType extends ResolversParentTypes['GqlPoolFixedPriceLBP'] = ResolversParentTypes['GqlPoolFixedPriceLBP'],
 > = ResolversObject<{
     address?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-    categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['GqlPoolFilterCategory']>>>, ParentType, ContextType>;
     chain?: Resolver<ResolversTypes['GqlChain'], ParentType, ContextType>;
     createTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -2562,7 +2533,6 @@ export type GqlPoolGyroResolvers<
     alpha?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     beta?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     c?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['GqlPoolFilterCategory']>>>, ParentType, ContextType>;
     chain?: Resolver<ResolversTypes['GqlChain'], ParentType, ContextType>;
     createTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     dSq?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -2607,7 +2577,6 @@ export type GqlPoolLiquidityBootstrappingResolvers<
     ParentType extends ResolversParentTypes['GqlPoolLiquidityBootstrapping'] = ResolversParentTypes['GqlPoolLiquidityBootstrapping'],
 > = ResolversObject<{
     address?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-    categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['GqlPoolFilterCategory']>>>, ParentType, ContextType>;
     chain?: Resolver<ResolversTypes['GqlChain'], ParentType, ContextType>;
     createTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -2638,7 +2607,6 @@ export type GqlPoolLiquidityBootstrappingV3Resolvers<
     ParentType extends ResolversParentTypes['GqlPoolLiquidityBootstrappingV3'] = ResolversParentTypes['GqlPoolLiquidityBootstrappingV3'],
 > = ResolversObject<{
     address?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-    categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['GqlPoolFilterCategory']>>>, ParentType, ContextType>;
     chain?: Resolver<ResolversTypes['GqlChain'], ParentType, ContextType>;
     createTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -2691,7 +2659,6 @@ export type GqlPoolMinimalResolvers<
     ParentType extends ResolversParentTypes['GqlPoolMinimal'] = ResolversParentTypes['GqlPoolMinimal'],
 > = ResolversObject<{
     address?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-    categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['GqlPoolFilterCategory']>>>, ParentType, ContextType>;
     chain?: Resolver<ResolversTypes['GqlChain'], ParentType, ContextType>;
     createTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -2735,7 +2702,6 @@ export type GqlPoolQuantAmmWeightedResolvers<
     ParentType extends ResolversParentTypes['GqlPoolQuantAmmWeighted'] = ResolversParentTypes['GqlPoolQuantAmmWeighted'],
 > = ResolversObject<{
     address?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-    categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['GqlPoolFilterCategory']>>>, ParentType, ContextType>;
     chain?: Resolver<ResolversTypes['GqlChain'], ParentType, ContextType>;
     createTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -2768,7 +2734,6 @@ export type GqlPoolReClammResolvers<
     ParentType extends ResolversParentTypes['GqlPoolReClamm'] = ResolversParentTypes['GqlPoolReClamm'],
 > = ResolversObject<{
     address?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-    categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['GqlPoolFilterCategory']>>>, ParentType, ContextType>;
     centerednessMargin?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     chain?: Resolver<ResolversTypes['GqlChain'], ParentType, ContextType>;
     createTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -2828,7 +2793,6 @@ export type GqlPoolStableResolvers<
     address?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
     amp?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
     bptPriceRate?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
-    categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['GqlPoolFilterCategory']>>>, ParentType, ContextType>;
     chain?: Resolver<ResolversTypes['GqlChain'], ParentType, ContextType>;
     createTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -3042,7 +3006,6 @@ export type GqlPoolWeightedResolvers<
     ParentType extends ResolversParentTypes['GqlPoolWeighted'] = ResolversParentTypes['GqlPoolWeighted'],
 > = ResolversObject<{
     address?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
-    categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['GqlPoolFilterCategory']>>>, ParentType, ContextType>;
     chain?: Resolver<ResolversTypes['GqlChain'], ParentType, ContextType>;
     createTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;

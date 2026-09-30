@@ -315,8 +315,6 @@ export enum GqlPoolAprItemType {
 export type GqlPoolBase = {
     /** The contract address of the pool. */
     address: Scalars['Bytes'];
-    /** List of categories assigned by the team based on external factors */
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     /** The chain on which the pool is deployed */
     chain: GqlChain;
     /** The timestamp the pool was created. */
@@ -368,7 +366,6 @@ export type GqlPoolComposableStable = GqlPoolBase & {
     address: Scalars['Bytes'];
     amp: Scalars['BigInt'];
     bptPriceRate: Scalars['BigDecimal'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
@@ -513,23 +510,9 @@ export type GqlPoolFilter = {
     userAddress?: InputMaybe<Scalars['String']>;
 };
 
-export enum GqlPoolFilterCategory {
-    BLACK_LISTED = 'BLACK_LISTED',
-    INCENTIVIZED = 'INCENTIVIZED',
-    LRT = 'LRT',
-    POINTS = 'POINTS',
-    POINTS_EIGENLAYER = 'POINTS_EIGENLAYER',
-    POINTS_GYRO = 'POINTS_GYRO',
-    POINTS_KELP = 'POINTS_KELP',
-    POINTS_RENZO = 'POINTS_RENZO',
-    POINTS_SWELL = 'POINTS_SWELL',
-    SUPERFEST = 'SUPERFEST',
-}
-
 export type GqlPoolFixedPriceLbp = GqlPoolBase & {
     __typename?: 'GqlPoolFixedPriceLBP';
     address: Scalars['Bytes'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
@@ -581,7 +564,6 @@ export type GqlPoolGyro = GqlPoolBase & {
     alpha: Scalars['String'];
     beta: Scalars['String'];
     c: Scalars['String'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     dSq: Scalars['String'];
@@ -626,7 +608,6 @@ export type GqlPoolGyro = GqlPoolBase & {
 export type GqlPoolLiquidityBootstrapping = GqlPoolBase & {
     __typename?: 'GqlPoolLiquidityBootstrapping';
     address: Scalars['Bytes'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
@@ -657,7 +638,6 @@ export type GqlPoolLiquidityBootstrapping = GqlPoolBase & {
 export type GqlPoolLiquidityBootstrappingV3 = GqlPoolBase & {
     __typename?: 'GqlPoolLiquidityBootstrappingV3';
     address: Scalars['Bytes'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
@@ -713,8 +693,6 @@ export type GqlPoolMinimal = {
     __typename?: 'GqlPoolMinimal';
     /** The contract address of the pool. */
     address: Scalars['Bytes'];
-    /** List of categories assigned by the team based on external factors */
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     /** The chain on which the pool is deployed */
     chain: GqlChain;
     /** The timestamp the pool was created. */
@@ -795,7 +773,6 @@ export enum GqlPoolOrderDirection {
 export type GqlPoolQuantAmmWeighted = GqlPoolBase & {
     __typename?: 'GqlPoolQuantAmmWeighted';
     address: Scalars['Bytes'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
@@ -828,7 +805,6 @@ export type GqlPoolQuantAmmWeighted = GqlPoolBase & {
 export type GqlPoolReClamm = GqlPoolBase & {
     __typename?: 'GqlPoolReClamm';
     address: Scalars['Bytes'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     /** The centeredness margin of the pool */
     centerednessMargin: Scalars['BigDecimal'];
     chain: GqlChain;
@@ -902,7 +878,6 @@ export type GqlPoolStable = GqlPoolBase & {
     address: Scalars['Bytes'];
     amp: Scalars['BigInt'];
     bptPriceRate: Scalars['BigDecimal'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
@@ -1173,7 +1148,6 @@ export type GqlPoolUserBalance = {
 export type GqlPoolWeighted = GqlPoolBase & {
     __typename?: 'GqlPoolWeighted';
     address: Scalars['Bytes'];
-    categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];

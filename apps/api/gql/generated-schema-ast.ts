@@ -611,11 +611,6 @@ export const schema = gql`
         address: Bytes!
 
         """
-        List of categories assigned by the team based on external factors
-        """
-        categories: [GqlPoolFilterCategory]
-
-        """
         The chain on which the pool is deployed
         """
         chain: GqlChain!
@@ -730,7 +725,6 @@ export const schema = gql`
         address: Bytes!
         amp: BigInt!
         bptPriceRate: BigDecimal!
-        categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         decimals: Int!
@@ -934,22 +928,8 @@ export const schema = gql`
         userAddress: String
     }
 
-    enum GqlPoolFilterCategory {
-        BLACK_LISTED
-        INCENTIVIZED
-        LRT
-        POINTS
-        POINTS_EIGENLAYER
-        POINTS_GYRO
-        POINTS_KELP
-        POINTS_RENZO
-        POINTS_SWELL
-        SUPERFEST
-    }
-
     type GqlPoolFixedPriceLBP implements GqlPoolBase {
         address: Bytes!
-        categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         decimals: Int!
@@ -1012,7 +992,6 @@ export const schema = gql`
         alpha: String!
         beta: String!
         c: String!
-        categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         dSq: String!
@@ -1065,7 +1044,6 @@ export const schema = gql`
 
     type GqlPoolLiquidityBootstrapping implements GqlPoolBase {
         address: Bytes!
-        categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         decimals: Int!
@@ -1104,7 +1082,6 @@ export const schema = gql`
 
     type GqlPoolLiquidityBootstrappingV3 implements GqlPoolBase {
         address: Bytes!
-        categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         decimals: Int!
@@ -1175,11 +1152,6 @@ export const schema = gql`
         The contract address of the pool.
         """
         address: Bytes!
-
-        """
-        List of categories assigned by the team based on external factors
-        """
-        categories: [GqlPoolFilterCategory]
 
         """
         The chain on which the pool is deployed
@@ -1343,7 +1315,6 @@ export const schema = gql`
 
     type GqlPoolQuantAmmWeighted implements GqlPoolBase {
         address: Bytes!
-        categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         decimals: Int!
@@ -1384,7 +1355,6 @@ export const schema = gql`
 
     type GqlPoolReClamm implements GqlPoolBase {
         address: Bytes!
-        categories: [GqlPoolFilterCategory]
 
         """
         The centeredness margin of the pool
@@ -1492,7 +1462,6 @@ export const schema = gql`
         address: Bytes!
         amp: BigInt!
         bptPriceRate: BigDecimal!
-        categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         decimals: Int!
@@ -1947,7 +1916,6 @@ export const schema = gql`
 
     type GqlPoolWeighted implements GqlPoolBase {
         address: Bytes!
-        categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         decimals: Int!

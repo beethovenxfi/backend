@@ -14,7 +14,6 @@ import {
     GqlPoolUserBalance,
     QueryPoolGetPoolsArgs,
     GqlUserStakedBalance,
-    GqlPoolFilterCategory,
     LiquidityManagement,
     QuantAmmWeightSnapshot,
     LiquidityBootstrappingPoolV3Params,
@@ -207,7 +206,6 @@ export class PoolGqlLoaderService {
             poolTokens: pool.tokens.map((token) => mapPoolToken(token, pool.protocolVersion)),
             staking: this.getStakingData(pool),
             userBalance: this.getUserBalance(pool, userWalletbalances, userStakedBalances),
-            categories: pool.categories as GqlPoolFilterCategory[],
             tags: pool.categories,
             hasErc4626: pool.tokens.some((token) => token.token.types.some((type) => type.type === 'ERC4626')),
             hasAnyAllowedBuffer: pool.tokens.some(
@@ -425,7 +423,6 @@ export class PoolGqlLoaderService {
             dynamicData: this.getPoolDynamicData(pool),
             poolTokens: pool.tokens.map((token) => mapPoolToken(token, pool.protocolVersion)),
             userBalance: this.getUserBalance(pool, userWalletbalances, userStakedBalances),
-            categories: pool.categories as GqlPoolFilterCategory[],
             tags: pool.categories,
             hook: mapHookToGqlHook(pool.hook as HookData),
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,

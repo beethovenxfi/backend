@@ -78,7 +78,6 @@ import {
     GqlHookType,
     GqlPoolAprItemType,
     GqlPoolEventType,
-    GqlPoolFilterCategory,
     GqlPoolOrderBy,
     GqlPoolOrderDirection,
     GqlPoolSnapshotDataRange,
@@ -315,10 +314,6 @@ export const aGqlPoolAprItem = (overrides?: Partial<GqlPoolAprItem>): GqlPoolApr
 export const aGqlPoolBase = (overrides?: Partial<GqlPoolBase>): GqlPoolBase => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'terminatio',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
         chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 480,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 7138,
@@ -357,10 +352,6 @@ export const aGqlPoolComposableStable = (overrides?: Partial<GqlPoolComposableSt
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'demonstro',
         amp: overrides && overrides.hasOwnProperty('amp') ? overrides.amp! : 'vacuus',
         bptPriceRate: overrides && overrides.hasOwnProperty('bptPriceRate') ? overrides.bptPriceRate! : 'utrimque',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
         chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 2374,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 4357,
@@ -520,10 +511,6 @@ export const aGqlPoolFilter = (overrides?: Partial<GqlPoolFilter>): GqlPoolFilte
 export const aGqlPoolFixedPriceLbp = (overrides?: Partial<GqlPoolFixedPriceLbp>): GqlPoolFixedPriceLbp => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'audacia',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
         chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 9201,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 8695,
@@ -586,10 +573,6 @@ export const aGqlPoolGyro = (overrides?: Partial<GqlPoolGyro>): GqlPoolGyro => {
         alpha: overrides && overrides.hasOwnProperty('alpha') ? overrides.alpha! : 'sum',
         beta: overrides && overrides.hasOwnProperty('beta') ? overrides.beta! : 'templum',
         c: overrides && overrides.hasOwnProperty('c') ? overrides.c! : 'veritatis',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
         chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 2116,
         dSq: overrides && overrides.hasOwnProperty('dSq') ? overrides.dSq! : 'tolero',
@@ -641,10 +624,6 @@ export const aGqlPoolLiquidityBootstrapping = (
 ): GqlPoolLiquidityBootstrapping => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'vitium',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
         chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 2673,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 4836,
@@ -682,10 +661,6 @@ export const aGqlPoolLiquidityBootstrappingV3 = (
 ): GqlPoolLiquidityBootstrappingV3 => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'ago',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
         chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 4357,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 9639,
@@ -756,10 +731,6 @@ export const aGqlPoolLiquidityBootstrappingV3 = (
 export const aGqlPoolMinimal = (overrides?: Partial<GqlPoolMinimal>): GqlPoolMinimal => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'exercitationem',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
         chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 8328,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 7389,
@@ -809,10 +780,6 @@ export const aGqlPoolMutationResult = (overrides?: Partial<GqlPoolMutationResult
 export const aGqlPoolQuantAmmWeighted = (overrides?: Partial<GqlPoolQuantAmmWeighted>): GqlPoolQuantAmmWeighted => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'pauci',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
         chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 1409,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 5290,
@@ -856,10 +823,6 @@ export const aGqlPoolQuantAmmWeighted = (overrides?: Partial<GqlPoolQuantAmmWeig
 export const aGqlPoolReClamm = (overrides?: Partial<GqlPoolReClamm>): GqlPoolReClamm => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'tego',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
         centerednessMargin:
             overrides && overrides.hasOwnProperty('centerednessMargin') ? overrides.centerednessMargin! : 'brevis',
         chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
@@ -941,10 +904,6 @@ export const aGqlPoolStable = (overrides?: Partial<GqlPoolStable>): GqlPoolStabl
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'valde',
         amp: overrides && overrides.hasOwnProperty('amp') ? overrides.amp! : 'ascisco',
         bptPriceRate: overrides && overrides.hasOwnProperty('bptPriceRate') ? overrides.bptPriceRate! : 'tabgo',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
         chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 9737,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 6134,
@@ -1164,10 +1123,6 @@ export const aGqlPoolUserBalance = (overrides?: Partial<GqlPoolUserBalance>): Gq
 export const aGqlPoolWeighted = (overrides?: Partial<GqlPoolWeighted>): GqlPoolWeighted => {
     return {
         address: overrides && overrides.hasOwnProperty('address') ? overrides.address! : 'vox',
-        categories:
-            overrides && overrides.hasOwnProperty('categories')
-                ? overrides.categories!
-                : [GqlPoolFilterCategory.BLACK_LISTED],
         chain: overrides && overrides.hasOwnProperty('chain') ? overrides.chain! : GqlChain.SONIC,
         createTime: overrides && overrides.hasOwnProperty('createTime') ? overrides.createTime! : 9021,
         decimals: overrides && overrides.hasOwnProperty('decimals') ? overrides.decimals! : 1563,

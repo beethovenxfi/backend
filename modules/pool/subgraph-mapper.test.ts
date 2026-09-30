@@ -16,17 +16,6 @@ describe('subgraphToPrismaCreate', () => {
         amp: '0.1',
     });
 
-    const linearPool = poolFactory.build({
-        poolType: 'Linear',
-        wrappedIndex: 1,
-        upperTarget: '1',
-    });
-
-    const elementPool = poolFactory.build({
-        poolType: 'Element',
-        principalToken: '0x123',
-    });
-
     const gyroPool = poolFactory.build({
         poolType: 'GyroE',
         alpha: '0.5',
@@ -54,19 +43,6 @@ describe('subgraphToPrismaCreate', () => {
         expect(result.data.type).toBe('COMPOSABLE_STABLE');
         expect(result.data.version).toBe(0);
         expect(result.data.typeData['amp']).toBe(oldStablePool.amp);
-    });
-
-    it('should return correct object for linear pool', () => {
-        const result = subgraphToPrismaCreate(linearPool, 'MAINNET', 1);
-        expect(result.data.type).toBe('LINEAR');
-        expect(result.data.typeData['upperTarget']).toBe(linearPool.upperTarget);
-        expect(result.data.typeData['wrappedIndex']).toBe(linearPool.wrappedIndex);
-    });
-
-    it('should return correct object for element pool', () => {
-        const result = subgraphToPrismaCreate(elementPool, 'MAINNET', 1);
-        expect(result.data.type).toBe('ELEMENT');
-        expect(result.data.typeData['principalToken']).toBe(elementPool.principalToken);
     });
 
     it('should return correct object for gyro pool', () => {

@@ -2599,7 +2599,6 @@ export type AddRemoveFragment = {
     __typename?: 'AddRemove';
     id: string;
     type: InvestType;
-    sender: string;
     amounts: Array<string>;
     user: string;
     blockNumber: string;
@@ -2628,7 +2627,6 @@ export type AddRemoveQuery = {
         __typename?: 'AddRemove';
         id: string;
         type: InvestType;
-        sender: string;
         amounts: Array<string>;
         user: string;
         blockNumber: string;
@@ -2640,40 +2638,6 @@ export type AddRemoveQuery = {
             id: string;
             tokens: Array<{ __typename?: 'PoolToken'; index: number; address: string }>;
         };
-    }>;
-};
-
-export type PoolBalancesFragment = {
-    __typename?: 'Pool';
-    id: string;
-    address: string;
-    totalShares: string;
-    tokens: Array<{ __typename?: 'PoolToken'; address: string; decimals: number; balance: string; priceRate: string }>;
-};
-
-export type PoolBalancesQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<Pool_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<Pool_Filter>;
-    block?: InputMaybe<Block_Height>;
-}>;
-
-export type PoolBalancesQuery = {
-    __typename?: 'Query';
-    pools: Array<{
-        __typename?: 'Pool';
-        id: string;
-        address: string;
-        totalShares: string;
-        tokens: Array<{
-            __typename?: 'PoolToken';
-            address: string;
-            decimals: number;
-            balance: string;
-            priceRate: string;
-        }>;
     }>;
 };
 
@@ -2690,12 +2654,7 @@ export type MetadataQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MetadataQuery = {
     __typename?: 'Query';
-    meta?: {
-        __typename?: '_Meta_';
-        deployment: string;
-        hasIndexingErrors: boolean;
-        block: { __typename?: '_Block_'; number: number };
-    } | null;
+    meta?: { __typename?: '_Meta_'; block: { __typename?: '_Block_'; number: number } } | null;
 };
 
 export type PoolShareFragment = { __typename?: 'PoolShare'; id: string; balance: string };
@@ -2724,42 +2683,22 @@ export type VaultPoolFragment = {
     name: string;
     symbol: string;
     totalShares: string;
-    pauseWindowEndTime: string;
     pauseManager: string;
     swapFeeManager: string;
     poolCreator: string;
-    blockNumber: string;
     blockTimestamp: string;
-    holdersCount: string;
-    transactionHash: string;
     tokens: Array<{
         __typename?: 'PoolToken';
-        id: string;
         address: string;
         index: number;
         name: string;
         symbol: string;
         decimals: number;
         balance: string;
-        totalProtocolSwapFee: string;
-        totalProtocolYieldFee: string;
         paysYieldFees: boolean;
         scalingFactor: string;
-        nestedPool?: {
-            __typename?: 'Pool';
-            id: string;
-            tokens: Array<{
-                __typename?: 'PoolToken';
-                address: string;
-                nestedPool?: { __typename?: 'Pool'; id: string } | null;
-            }>;
-        } | null;
     }>;
-    rateProviders: Array<{
-        __typename?: 'RateProvider';
-        address: string;
-        token: { __typename?: 'PoolToken'; address: string };
-    }>;
+    rateProviders: Array<{ __typename?: 'RateProvider'; address: string }>;
     hookConfig: {
         __typename?: 'HookConfig';
         enableHookAdjustedAmounts: boolean;
@@ -2804,42 +2743,22 @@ export type PoolsQuery = {
         name: string;
         symbol: string;
         totalShares: string;
-        pauseWindowEndTime: string;
         pauseManager: string;
         swapFeeManager: string;
         poolCreator: string;
-        blockNumber: string;
         blockTimestamp: string;
-        holdersCount: string;
-        transactionHash: string;
         tokens: Array<{
             __typename?: 'PoolToken';
-            id: string;
             address: string;
             index: number;
             name: string;
             symbol: string;
             decimals: number;
             balance: string;
-            totalProtocolSwapFee: string;
-            totalProtocolYieldFee: string;
             paysYieldFees: boolean;
             scalingFactor: string;
-            nestedPool?: {
-                __typename?: 'Pool';
-                id: string;
-                tokens: Array<{
-                    __typename?: 'PoolToken';
-                    address: string;
-                    nestedPool?: { __typename?: 'Pool'; id: string } | null;
-                }>;
-            } | null;
         }>;
-        rateProviders: Array<{
-            __typename?: 'RateProvider';
-            address: string;
-            token: { __typename?: 'PoolToken'; address: string };
-        }>;
+        rateProviders: Array<{ __typename?: 'RateProvider'; address: string }>;
         hookConfig: {
             __typename?: 'HookConfig';
             enableHookAdjustedAmounts: boolean;
@@ -2869,9 +2788,7 @@ export type SwapFragment = {
     id: string;
     pool: string;
     tokenIn: string;
-    tokenInSymbol: string;
     tokenOut: string;
-    tokenOutSymbol: string;
     tokenAmountIn: string;
     tokenAmountOut: string;
     swapFeeAmount: string;
@@ -2900,9 +2817,7 @@ export type SwapsQuery = {
         id: string;
         pool: string;
         tokenIn: string;
-        tokenInSymbol: string;
         tokenOut: string;
-        tokenOutSymbol: string;
         tokenAmountIn: string;
         tokenAmountOut: string;
         swapFeeAmount: string;
@@ -2920,7 +2835,6 @@ export const AddRemoveFragmentDoc = gql`
     fragment AddRemove on AddRemove {
         id
         type
-        sender
         amounts
         pool {
             id
@@ -2934,19 +2848,6 @@ export const AddRemoveFragmentDoc = gql`
         logIndex
         blockTimestamp
         transactionHash
-    }
-`;
-export const PoolBalancesFragmentDoc = gql`
-    fragment PoolBalances on Pool {
-        id
-        address
-        totalShares
-        tokens {
-            address
-            decimals
-            balance
-            priceRate
-        }
     }
 `;
 export const PoolShareFragmentDoc = gql`
@@ -2965,41 +2866,22 @@ export const VaultPoolFragmentDoc = gql`
         name
         symbol
         totalShares
-        pauseWindowEndTime
         pauseManager
         swapFeeManager
         poolCreator
-        blockNumber
         blockTimestamp
-        holdersCount
-        transactionHash
         tokens {
-            id
             address
             index
             name
             symbol
             decimals
             balance
-            totalProtocolSwapFee
-            totalProtocolYieldFee
             paysYieldFees
-            nestedPool {
-                id
-                tokens {
-                    address
-                    nestedPool {
-                        id
-                    }
-                }
-            }
             scalingFactor
         }
         rateProviders {
             address
-            token {
-                address
-            }
         }
         hookConfig {
             hook {
@@ -3029,9 +2911,7 @@ export const SwapFragmentDoc = gql`
         id
         pool
         tokenIn
-        tokenInSymbol
         tokenOut
-        tokenOutSymbol
         tokenAmountIn
         tokenAmountOut
         swapFeeAmount
@@ -3066,28 +2946,6 @@ export const AddRemoveDocument = gql`
     }
     ${AddRemoveFragmentDoc}
 `;
-export const PoolBalancesDocument = gql`
-    query PoolBalances(
-        $skip: Int
-        $first: Int
-        $orderBy: Pool_orderBy
-        $orderDirection: OrderDirection
-        $where: Pool_filter
-        $block: Block_height
-    ) {
-        pools(
-            skip: $skip
-            first: $first
-            orderBy: $orderBy
-            orderDirection: $orderDirection
-            where: $where
-            block: $block
-        ) {
-            ...PoolBalances
-        }
-    }
-    ${PoolBalancesFragmentDoc}
-`;
 export const ChangedPoolsDocument = gql`
     query ChangedPools($first: Int, $orderBy: Pool_orderBy, $orderDirection: OrderDirection, $where: Pool_filter) {
         pools(first: $first, orderBy: $orderBy, orderDirection: $orderDirection, where: $where) {
@@ -3101,8 +2959,6 @@ export const MetadataDocument = gql`
             block {
                 number
             }
-            deployment
-            hasIndexingErrors
         }
     }
 `;
@@ -3194,20 +3050,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'AddRemove',
-                'query',
-            );
-        },
-        PoolBalances(
-            variables?: PoolBalancesQueryVariables,
-            requestHeaders?: Dom.RequestInit['headers'],
-        ): Promise<PoolBalancesQuery> {
-            return withWrapper(
-                (wrappedRequestHeaders) =>
-                    client.request<PoolBalancesQuery>(PoolBalancesDocument, variables, {
-                        ...requestHeaders,
-                        ...wrappedRequestHeaders,
-                    }),
-                'PoolBalances',
                 'query',
             );
         },

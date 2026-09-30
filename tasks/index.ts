@@ -53,7 +53,6 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         await ContentController().syncRateProviderReviews();
 
         console.log('Syncing token prices');
-        await EventController().syncLastSwaps(chain);
         await syncCurrentPricesFromApi(chain);
 
         await PoolController().updateLiquidityValuesForInactivePools(chain);
@@ -75,7 +74,6 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         await TokenController().syncErc4626OnChainData(chain);
 
         console.log('Syncing token prices');
-        await EventController().syncLastSwaps(chain);
         await syncCurrentPricesFromApi(chain);
 
         await PoolController().updateLiquidityValuesForInactivePools(chain);

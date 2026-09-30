@@ -1,7 +1,7 @@
 import { Chain, PrismaPoolType } from '@prisma/client';
 import { BalancerPoolFragment } from '../subgraphs/balancer-subgraph/generated/balancer-subgraph-types';
 import { zeroAddress as AddressZero } from 'viem';
-import { gyro, stable, quantAmmWeighted, reclamm, fixedLBP, lbPool } from './pool-data';
+import { gyro, stable, quantAmmWeighted, reclamm } from './pool-data';
 
 export const subgraphToPrismaCreate = (
     pool: BalancerPoolFragment,
@@ -174,5 +174,3 @@ export type QuantAmmWeightedData = ReturnType<typeof quantAmmWeighted> & {
     secondFourWeightsAndMultipliers?: string[];
 };
 export type ReclammData = ReturnType<typeof reclamm>;
-export type LIquidityBootstrappingData = ReturnType<typeof lbPool>;
-export type FixedLbpData = ReturnType<typeof fixedLBP>;

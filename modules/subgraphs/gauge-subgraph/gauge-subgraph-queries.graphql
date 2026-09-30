@@ -14,48 +14,12 @@ fragment Gauge on LiquidityGauge {
     id
     poolId
     poolAddress
-    totalSupply
     tokens {
         id
         decimals
-        symbol
-        rate
-        periodFinish
     }
-    streamer
     isPreferentialGauge
     isKilled
-    gauge {
-        addedTimestamp
-    }
-}
-
-query GaugeLiquidityGaugeAddresses {
-    liquidityGauges {
-        id
-    }
-}
-
-query GaugeUserGauges($userAddress: ID!) {
-    user(id: $userAddress) {
-        id
-        gaugeShares {
-            balance
-            gauge {
-                id
-                poolId
-                tokens {
-                    id
-                    decimals
-                    symbol
-                    rate
-                    periodFinish
-                }
-                isPreferentialGauge
-                isKilled
-            }
-        }
-    }
 }
 
 query GaugeShares(
@@ -83,10 +47,7 @@ fragment GaugeShare on GaugeShare {
     balance
     gauge {
         id
-        poolId
         poolAddress
-        isPreferentialGauge
-        isKilled
     }
     user {
         id
@@ -98,66 +59,5 @@ query GaugeGetMeta {
         block {
             number
         }
-        deployment
-        hasIndexingErrors
-    }
-}
-
-query VotingEscrowLocks(
-    $block: Block_height
-    $first: Int = 100
-    $orderBy: VotingEscrowLock_orderBy
-    $orderDirection: OrderDirection
-    $skip: Int = 0
-    $where: VotingEscrowLock_filter
-) {
-    votingEscrowLocks(
-        block: $block
-        first: $first
-        skip: $skip
-        orderBy: $orderBy
-        orderDirection: $orderDirection
-        where: $where
-    ) {
-        id
-        lockedBalance
-        user {
-            id
-        }
-    }
-}
-
-query RootGauges(
-    $block: Block_height
-    $first: Int = 100
-    $orderBy: RootGauge_orderBy
-    $orderDirection: OrderDirection
-    $skip: Int = 0
-    $where: RootGauge_filter
-) {
-    rootGauges(
-        block: $block
-        first: $first
-        skip: $skip
-        orderBy: $orderBy
-        orderDirection: $orderDirection
-        where: $where
-    ) {
-        ...RootGauge
-    }
-}
-
-fragment RootGauge on RootGauge {
-    id
-    chain
-    recipient
-    gauge {
-        addedTimestamp
-    }
-}
-
-query LiquidityGauges($ids: [ID!]) {
-    liquidityGauges(where: { id_in: $ids }, first: 1000) {
-        id
     }
 }

@@ -35,20 +35,10 @@ fragment BalancerPool on Pool {
     name
     swapFee
     totalShares
-    swapsCount
-    holdersCount
     createTime
     swapEnabled
     tokensList
-    lowerTarget
-    upperTarget
-    mainIndex
-    wrappedIndex
     factory
-    expiryTime
-    unitSeconds
-    principalToken
-    baseToken
     owner
     amp
     alpha
@@ -68,8 +58,6 @@ fragment BalancerPool on Pool {
     w
     z
     dSq
-    delta
-    epsilon
 
     priceRateProviders {
         address
@@ -94,9 +82,6 @@ fragment BalancerPoolToken on PoolToken {
     priceRate
     isExemptFromYieldProtocolFee
     index
-    token {
-        latestFXPrice
-    }
 }
 
 query BalancerPools(
@@ -115,12 +100,6 @@ query BalancerPools(
         where: $where
         block: $block
     ) {
-        ...BalancerPool
-    }
-}
-
-query BalancerPool($id: ID!, $block: Block_height) {
-    pool(id: $id, block: $block) {
         ...BalancerPool
     }
 }
@@ -181,23 +160,13 @@ query BalancerSwaps(
 
 fragment BalancerSwap on Swap {
     id
-    caller
     tokenIn
-    tokenInSym
     tokenOut
-    tokenOutSym
     tokenAmountIn
     tokenAmountOut
     poolId {
         id
         swapFee
-        poolType
-        tokens {
-            token {
-                address
-                latestFXPrice
-            }
-        }
     }
     userAddress
     timestamp
@@ -205,52 +174,10 @@ fragment BalancerSwap on Swap {
     block
 }
 
-query BalancerGetPoolsWithActiveUpdates($timestamp: BigInt!) {
-    ampUpdates(where: { endTimestamp_gte: $timestamp }) {
-        poolId {
-            id
-        }
-    }
-}
-
 query BalancerGetMeta {
     meta: _meta {
         block {
             number
         }
-        deployment
-        hasIndexingErrors
-    }
-}
-
-fragment PoolBalances on Pool {
-    id
-    address
-    totalShares
-    tokens {
-        address
-        decimals
-        balance
-        priceRate
-    }
-}
-
-query PoolBalances(
-    $skip: Int
-    $first: Int
-    $orderBy: Pool_orderBy
-    $orderDirection: OrderDirection
-    $where: Pool_filter
-    $block: Block_height
-) {
-    pools(
-        skip: $skip
-        first: $first
-        orderBy: $orderBy
-        orderDirection: $orderDirection
-        where: $where
-        block: $block
-    ) {
-        ...PoolBalances
     }
 }

@@ -9,7 +9,7 @@ import { PoolWithMappedJsonFields } from '../../prisma/prisma-types';
 import { LBPoolData, FixedLBPData } from '../pool/pool-data';
 import { priceChartData } from '../pool/lbp/price-chart-data';
 import { priceChartDataFixedLBP } from '../pool/lbp/fixed-lbp-price-chart-data';
-import { getPoolsSubgraphClient, getV3JoinedSubgraphClient, getVaultSubgraphClient } from '../sources/subgraphs';
+import { getPoolsSubgraphClient } from '../sources/subgraphs';
 
 export const LBPController = {
     async syncData(chain: Chain) {

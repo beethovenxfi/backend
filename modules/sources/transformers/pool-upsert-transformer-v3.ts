@@ -1,7 +1,7 @@
 import { Chain, PrismaPoolType } from '@prisma/client';
 import { PoolType } from '../subgraphs/balancer-v3-pools/generated/types';
 import { StableData, typeDataMapper } from '../../pool/subgraph-mapper';
-import { quantAmmWeighted, lbPool, reclamm, fixedLBP } from '../../pool/pool-data';
+import { quantAmmWeighted, reclamm } from '../../pool/pool-data';
 import { V3JoinedSubgraphPool } from '../subgraphs';
 import { parseEther } from 'viem';
 import { PoolUpsertData } from '../../../prisma/prisma-types';
@@ -49,14 +49,6 @@ export const poolUpsertTransformerV3 = (
         case PoolType.QuantAmmWeighted:
             type = PrismaPoolType.QUANT_AMM_WEIGHTED;
             typeData = quantAmmWeighted(poolData);
-            break;
-        case PoolType.Lbp:
-            type = PrismaPoolType.LIQUIDITY_BOOTSTRAPPING;
-            typeData = lbPool(poolData);
-            break;
-        case PoolType.FixedLbp:
-            type = PrismaPoolType.FIXED_LBP;
-            typeData = fixedLBP(poolData);
             break;
         case PoolType.ReClamm:
             type = PrismaPoolType.RECLAMM;

@@ -2114,19 +2114,9 @@ export type GaugeLiquidityGaugesQuery = {
         id: string;
         poolId?: string | null;
         poolAddress: string;
-        totalSupply: string;
-        streamer?: string | null;
         isPreferentialGauge: boolean;
         isKilled: boolean;
-        tokens?: Array<{
-            __typename?: 'RewardToken';
-            id: string;
-            decimals: number;
-            symbol: string;
-            rate?: string | null;
-            periodFinish?: string | null;
-        }> | null;
-        gauge?: { __typename?: 'Gauge'; addedTimestamp: number } | null;
+        tokens?: Array<{ __typename?: 'RewardToken'; id: string; decimals: number }> | null;
     }>;
 };
 
@@ -2135,57 +2125,9 @@ export type GaugeFragment = {
     id: string;
     poolId?: string | null;
     poolAddress: string;
-    totalSupply: string;
-    streamer?: string | null;
     isPreferentialGauge: boolean;
     isKilled: boolean;
-    tokens?: Array<{
-        __typename?: 'RewardToken';
-        id: string;
-        decimals: number;
-        symbol: string;
-        rate?: string | null;
-        periodFinish?: string | null;
-    }> | null;
-    gauge?: { __typename?: 'Gauge'; addedTimestamp: number } | null;
-};
-
-export type GaugeLiquidityGaugeAddressesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GaugeLiquidityGaugeAddressesQuery = {
-    __typename?: 'Query';
-    liquidityGauges: Array<{ __typename?: 'LiquidityGauge'; id: string }>;
-};
-
-export type GaugeUserGaugesQueryVariables = Exact<{
-    userAddress: Scalars['ID'];
-}>;
-
-export type GaugeUserGaugesQuery = {
-    __typename?: 'Query';
-    user?: {
-        __typename?: 'User';
-        id: string;
-        gaugeShares?: Array<{
-            __typename?: 'GaugeShare';
-            balance: string;
-            gauge: {
-                __typename?: 'LiquidityGauge';
-                id: string;
-                poolId?: string | null;
-                isPreferentialGauge: boolean;
-                isKilled: boolean;
-                tokens?: Array<{
-                    __typename?: 'RewardToken';
-                    id: string;
-                    decimals: number;
-                    symbol: string;
-                    rate?: string | null;
-                    periodFinish?: string | null;
-                }> | null;
-            };
-        }> | null;
-    } | null;
+    tokens?: Array<{ __typename?: 'RewardToken'; id: string; decimals: number }> | null;
 };
 
 export type GaugeSharesQueryVariables = Exact<{
@@ -2203,14 +2145,7 @@ export type GaugeSharesQuery = {
         __typename?: 'GaugeShare';
         id: string;
         balance: string;
-        gauge: {
-            __typename?: 'LiquidityGauge';
-            id: string;
-            poolId?: string | null;
-            poolAddress: string;
-            isPreferentialGauge: boolean;
-            isKilled: boolean;
-        };
+        gauge: { __typename?: 'LiquidityGauge'; id: string; poolAddress: string };
         user: { __typename?: 'User'; id: string };
     }>;
 };
@@ -2219,14 +2154,7 @@ export type GaugeShareFragment = {
     __typename?: 'GaugeShare';
     id: string;
     balance: string;
-    gauge: {
-        __typename?: 'LiquidityGauge';
-        id: string;
-        poolId?: string | null;
-        poolAddress: string;
-        isPreferentialGauge: boolean;
-        isKilled: boolean;
-    };
+    gauge: { __typename?: 'LiquidityGauge'; id: string; poolAddress: string };
     user: { __typename?: 'User'; id: string };
 };
 
@@ -2234,68 +2162,7 @@ export type GaugeGetMetaQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GaugeGetMetaQuery = {
     __typename?: 'Query';
-    meta?: {
-        __typename?: '_Meta_';
-        deployment: string;
-        hasIndexingErrors: boolean;
-        block: { __typename?: '_Block_'; number: number };
-    } | null;
-};
-
-export type VotingEscrowLocksQueryVariables = Exact<{
-    block?: InputMaybe<Block_Height>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<VotingEscrowLock_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    skip?: InputMaybe<Scalars['Int']>;
-    where?: InputMaybe<VotingEscrowLock_Filter>;
-}>;
-
-export type VotingEscrowLocksQuery = {
-    __typename?: 'Query';
-    votingEscrowLocks: Array<{
-        __typename?: 'VotingEscrowLock';
-        id: string;
-        lockedBalance: string;
-        user: { __typename?: 'User'; id: string };
-    }>;
-};
-
-export type RootGaugesQueryVariables = Exact<{
-    block?: InputMaybe<Block_Height>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<RootGauge_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    skip?: InputMaybe<Scalars['Int']>;
-    where?: InputMaybe<RootGauge_Filter>;
-}>;
-
-export type RootGaugesQuery = {
-    __typename?: 'Query';
-    rootGauges: Array<{
-        __typename?: 'RootGauge';
-        id: string;
-        chain: Chain;
-        recipient: string;
-        gauge?: { __typename?: 'Gauge'; addedTimestamp: number } | null;
-    }>;
-};
-
-export type RootGaugeFragment = {
-    __typename?: 'RootGauge';
-    id: string;
-    chain: Chain;
-    recipient: string;
-    gauge?: { __typename?: 'Gauge'; addedTimestamp: number } | null;
-};
-
-export type LiquidityGaugesQueryVariables = Exact<{
-    ids?: InputMaybe<Array<Scalars['ID']> | Scalars['ID']>;
-}>;
-
-export type LiquidityGaugesQuery = {
-    __typename?: 'Query';
-    liquidityGauges: Array<{ __typename?: 'LiquidityGauge'; id: string }>;
+    meta?: { __typename?: '_Meta_'; block: { __typename?: '_Block_'; number: number } } | null;
 };
 
 export const GaugeFragmentDoc = gql`
@@ -2303,20 +2170,12 @@ export const GaugeFragmentDoc = gql`
         id
         poolId
         poolAddress
-        totalSupply
         tokens {
             id
             decimals
-            symbol
-            rate
-            periodFinish
         }
-        streamer
         isPreferentialGauge
         isKilled
-        gauge {
-            addedTimestamp
-        }
     }
 `;
 export const GaugeShareFragmentDoc = gql`
@@ -2325,23 +2184,10 @@ export const GaugeShareFragmentDoc = gql`
         balance
         gauge {
             id
-            poolId
             poolAddress
-            isPreferentialGauge
-            isKilled
         }
         user {
             id
-        }
-    }
-`;
-export const RootGaugeFragmentDoc = gql`
-    fragment RootGauge on RootGauge {
-        id
-        chain
-        recipient
-        gauge {
-            addedTimestamp
         }
     }
 `;
@@ -2358,36 +2204,6 @@ export const GaugeLiquidityGaugesDocument = gql`
         }
     }
     ${GaugeFragmentDoc}
-`;
-export const GaugeLiquidityGaugeAddressesDocument = gql`
-    query GaugeLiquidityGaugeAddresses {
-        liquidityGauges {
-            id
-        }
-    }
-`;
-export const GaugeUserGaugesDocument = gql`
-    query GaugeUserGauges($userAddress: ID!) {
-        user(id: $userAddress) {
-            id
-            gaugeShares {
-                balance
-                gauge {
-                    id
-                    poolId
-                    tokens {
-                        id
-                        decimals
-                        symbol
-                        rate
-                        periodFinish
-                    }
-                    isPreferentialGauge
-                    isKilled
-                }
-            }
-        }
-    }
 `;
 export const GaugeSharesDocument = gql`
     query GaugeShares(
@@ -2417,62 +2233,6 @@ export const GaugeGetMetaDocument = gql`
             block {
                 number
             }
-            deployment
-            hasIndexingErrors
-        }
-    }
-`;
-export const VotingEscrowLocksDocument = gql`
-    query VotingEscrowLocks(
-        $block: Block_height
-        $first: Int = 100
-        $orderBy: VotingEscrowLock_orderBy
-        $orderDirection: OrderDirection
-        $skip: Int = 0
-        $where: VotingEscrowLock_filter
-    ) {
-        votingEscrowLocks(
-            block: $block
-            first: $first
-            skip: $skip
-            orderBy: $orderBy
-            orderDirection: $orderDirection
-            where: $where
-        ) {
-            id
-            lockedBalance
-            user {
-                id
-            }
-        }
-    }
-`;
-export const RootGaugesDocument = gql`
-    query RootGauges(
-        $block: Block_height
-        $first: Int = 100
-        $orderBy: RootGauge_orderBy
-        $orderDirection: OrderDirection
-        $skip: Int = 0
-        $where: RootGauge_filter
-    ) {
-        rootGauges(
-            block: $block
-            first: $first
-            skip: $skip
-            orderBy: $orderBy
-            orderDirection: $orderDirection
-            where: $where
-        ) {
-            ...RootGauge
-        }
-    }
-    ${RootGaugeFragmentDoc}
-`;
-export const LiquidityGaugesDocument = gql`
-    query LiquidityGauges($ids: [ID!]) {
-        liquidityGauges(where: { id_in: $ids }, first: 1000) {
-            id
         }
     }
 `;
@@ -2501,34 +2261,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                 'query',
             );
         },
-        GaugeLiquidityGaugeAddresses(
-            variables?: GaugeLiquidityGaugeAddressesQueryVariables,
-            requestHeaders?: Dom.RequestInit['headers'],
-        ): Promise<GaugeLiquidityGaugeAddressesQuery> {
-            return withWrapper(
-                (wrappedRequestHeaders) =>
-                    client.request<GaugeLiquidityGaugeAddressesQuery>(GaugeLiquidityGaugeAddressesDocument, variables, {
-                        ...requestHeaders,
-                        ...wrappedRequestHeaders,
-                    }),
-                'GaugeLiquidityGaugeAddresses',
-                'query',
-            );
-        },
-        GaugeUserGauges(
-            variables: GaugeUserGaugesQueryVariables,
-            requestHeaders?: Dom.RequestInit['headers'],
-        ): Promise<GaugeUserGaugesQuery> {
-            return withWrapper(
-                (wrappedRequestHeaders) =>
-                    client.request<GaugeUserGaugesQuery>(GaugeUserGaugesDocument, variables, {
-                        ...requestHeaders,
-                        ...wrappedRequestHeaders,
-                    }),
-                'GaugeUserGauges',
-                'query',
-            );
-        },
         GaugeShares(
             variables?: GaugeSharesQueryVariables,
             requestHeaders?: Dom.RequestInit['headers'],
@@ -2554,48 +2286,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'GaugeGetMeta',
-                'query',
-            );
-        },
-        VotingEscrowLocks(
-            variables?: VotingEscrowLocksQueryVariables,
-            requestHeaders?: Dom.RequestInit['headers'],
-        ): Promise<VotingEscrowLocksQuery> {
-            return withWrapper(
-                (wrappedRequestHeaders) =>
-                    client.request<VotingEscrowLocksQuery>(VotingEscrowLocksDocument, variables, {
-                        ...requestHeaders,
-                        ...wrappedRequestHeaders,
-                    }),
-                'VotingEscrowLocks',
-                'query',
-            );
-        },
-        RootGauges(
-            variables?: RootGaugesQueryVariables,
-            requestHeaders?: Dom.RequestInit['headers'],
-        ): Promise<RootGaugesQuery> {
-            return withWrapper(
-                (wrappedRequestHeaders) =>
-                    client.request<RootGaugesQuery>(RootGaugesDocument, variables, {
-                        ...requestHeaders,
-                        ...wrappedRequestHeaders,
-                    }),
-                'RootGauges',
-                'query',
-            );
-        },
-        LiquidityGauges(
-            variables?: LiquidityGaugesQueryVariables,
-            requestHeaders?: Dom.RequestInit['headers'],
-        ): Promise<LiquidityGaugesQuery> {
-            return withWrapper(
-                (wrappedRequestHeaders) =>
-                    client.request<LiquidityGaugesQuery>(LiquidityGaugesDocument, variables, {
-                        ...requestHeaders,
-                        ...wrappedRequestHeaders,
-                    }),
-                'LiquidityGauges',
                 'query',
             );
         },

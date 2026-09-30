@@ -1899,30 +1899,9 @@ export type ChangedPoolsQueryVariables = Exact<{
 
 export type ChangedPoolsQuery = { __typename?: 'Query'; pools: Array<{ __typename?: 'Pool'; id: string }> };
 
-export type MetadataQueryVariables = Exact<{ [key: string]: never }>;
-
-export type MetadataQuery = {
-    __typename?: 'Query';
-    meta?: {
-        __typename?: '_Meta_';
-        deployment: string;
-        hasIndexingErrors: boolean;
-        block: { __typename?: '_Block_'; number: number };
-    } | null;
-};
-
-export type FactoryFragment = {
-    __typename?: 'Factory';
-    id: string;
-    type: PoolType;
-    version: number;
-    pools?: Array<{ __typename?: 'Pool'; id: string; address: string }> | null;
-};
-
 export type TypePoolFragment = {
     __typename?: 'Pool';
     id: string;
-    address: string;
     factory: { __typename?: 'Factory'; id: string; type: PoolType; version: number };
     stableParams?: { __typename?: 'StableParams'; amp: string } | null;
     stableSurgeParams?: { __typename?: 'StableSurgeParams'; amp: string } | null;
@@ -1960,36 +1939,11 @@ export type TypePoolFragment = {
         lastInterpolationTimePossible: string;
         details: Array<{
             __typename?: 'QuantAMMWeightedDetail';
-            id: string;
             category: string;
             name: string;
             type: string;
             value: string;
         }>;
-    } | null;
-    lbpParams?: {
-        __typename?: 'LBPParams';
-        startTime: string;
-        endTime: string;
-        owner: string;
-        isProjectTokenSwapInBlocked: boolean;
-        reserveToken: string;
-        reserveTokenStartWeight: string;
-        reserveTokenEndWeight: string;
-        projectToken: string;
-        projectTokenStartWeight: string;
-        projectTokenEndWeight: string;
-        reserveTokenVirtualBalance: string;
-    } | null;
-    fixedLBPParams?: {
-        __typename?: 'FixedLBPParams';
-        startTime: string;
-        endTime: string;
-        owner: string;
-        isProjectTokenSwapInBlocked: boolean;
-        reserveToken: string;
-        projectToken: string;
-        projectTokenRate: string;
     } | null;
     reClammParams?: {
         __typename?: 'ReClammParams';
@@ -2019,7 +1973,6 @@ export type PoolsQuery = {
     pools: Array<{
         __typename?: 'Pool';
         id: string;
-        address: string;
         factory: { __typename?: 'Factory'; id: string; type: PoolType; version: number };
         stableParams?: { __typename?: 'StableParams'; amp: string } | null;
         stableSurgeParams?: { __typename?: 'StableSurgeParams'; amp: string } | null;
@@ -2057,36 +2010,11 @@ export type PoolsQuery = {
             lastInterpolationTimePossible: string;
             details: Array<{
                 __typename?: 'QuantAMMWeightedDetail';
-                id: string;
                 category: string;
                 name: string;
                 type: string;
                 value: string;
             }>;
-        } | null;
-        lbpParams?: {
-            __typename?: 'LBPParams';
-            startTime: string;
-            endTime: string;
-            owner: string;
-            isProjectTokenSwapInBlocked: boolean;
-            reserveToken: string;
-            reserveTokenStartWeight: string;
-            reserveTokenEndWeight: string;
-            projectToken: string;
-            projectTokenStartWeight: string;
-            projectTokenEndWeight: string;
-            reserveTokenVirtualBalance: string;
-        } | null;
-        fixedLBPParams?: {
-            __typename?: 'FixedLBPParams';
-            startTime: string;
-            endTime: string;
-            owner: string;
-            isProjectTokenSwapInBlocked: boolean;
-            reserveToken: string;
-            projectToken: string;
-            projectTokenRate: string;
         } | null;
         reClammParams?: {
             __typename?: 'ReClammParams';
@@ -2103,21 +2031,9 @@ export type PoolsQuery = {
     }>;
 };
 
-export const FactoryFragmentDoc = gql`
-    fragment Factory on Factory {
-        id
-        type
-        version
-        pools {
-            id
-            address
-        }
-    }
-`;
 export const TypePoolFragmentDoc = gql`
     fragment TypePool on Pool {
         id
-        address
         factory {
             id
             type
@@ -2165,34 +2081,11 @@ export const TypePoolFragmentDoc = gql`
             lastUpdateIntervalTime
             lastInterpolationTimePossible
             details {
-                id
                 category
                 name
                 type
                 value
             }
-        }
-        lbpParams {
-            startTime
-            endTime
-            owner
-            isProjectTokenSwapInBlocked
-            reserveToken
-            reserveTokenStartWeight
-            reserveTokenEndWeight
-            projectToken
-            projectTokenStartWeight
-            projectTokenEndWeight
-            reserveTokenVirtualBalance
-        }
-        fixedLBPParams {
-            startTime
-            endTime
-            owner
-            isProjectTokenSwapInBlocked
-            reserveToken
-            projectToken
-            projectTokenRate
         }
         reClammParams {
             lastTimestamp
@@ -2211,17 +2104,6 @@ export const ChangedPoolsDocument = gql`
     query ChangedPools($first: Int, $orderBy: Pool_orderBy, $orderDirection: OrderDirection, $where: Pool_filter) {
         pools(first: $first, orderBy: $orderBy, orderDirection: $orderDirection, where: $where) {
             id
-        }
-    }
-`;
-export const MetadataDocument = gql`
-    query Metadata {
-        meta: _meta {
-            block {
-                number
-            }
-            deployment
-            hasIndexingErrors
         }
     }
 `;
@@ -2269,20 +2151,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'ChangedPools',
-                'query',
-            );
-        },
-        Metadata(
-            variables?: MetadataQueryVariables,
-            requestHeaders?: Dom.RequestInit['headers'],
-        ): Promise<MetadataQuery> {
-            return withWrapper(
-                (wrappedRequestHeaders) =>
-                    client.request<MetadataQuery>(MetadataDocument, variables, {
-                        ...requestHeaders,
-                        ...wrappedRequestHeaders,
-                    }),
-                'Metadata',
                 'query',
             );
         },

@@ -1,16 +1,5 @@
-fragment Factory on Factory {
-    id
-    type
-    version
-    pools {
-        id
-        address
-    }
-}
-
 fragment TypePool on Pool {
     id
-    address
     factory {
         id
         type
@@ -58,34 +47,11 @@ fragment TypePool on Pool {
         lastUpdateIntervalTime
         lastInterpolationTimePossible
         details {
-            id
             category
             name
             type
             value
         }
-    }
-    lbpParams {
-        startTime
-        endTime
-        owner
-        isProjectTokenSwapInBlocked
-        reserveToken
-        reserveTokenStartWeight
-        reserveTokenEndWeight
-        projectToken
-        projectTokenStartWeight
-        projectTokenEndWeight
-        reserveTokenVirtualBalance
-    }
-    fixedLBPParams {
-        startTime
-        endTime
-        owner
-        isProjectTokenSwapInBlocked
-        reserveToken
-        projectToken
-        projectTokenRate
     }
     reClammParams {
         lastTimestamp

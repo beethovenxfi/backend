@@ -1,7 +1,6 @@
 fragment AddRemove on AddRemove {
     id
     type
-    sender
     amounts
     pool {
         id

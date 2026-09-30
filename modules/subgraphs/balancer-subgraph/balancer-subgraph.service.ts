@@ -1,18 +1,10 @@
 import {
     getSdk,
     BalancerPoolsQueryVariables,
-    BalancerSwapsQueryVariables,
-    BalancerSwapsQuery,
-    BalancerSwapFragment,
-    Swap_OrderBy,
     OrderDirection,
-    BalancerPoolQueryVariables,
-    BalancerPoolQuery,
     BalancerPoolShareFragment,
     PoolShare_OrderBy,
     BalancerPoolFragment,
-    BalancerJoinExitsQueryVariables,
-    BalancerJoinExitsQuery,
 } from './generated/balancer-subgraph-types';
 import { subgraphLoadAll } from '../subgraph-util';
 import { Chain, Prisma } from '@prisma/client';
@@ -33,46 +25,6 @@ export class BalancerSubgraphService {
         }
 
         return Number(meta.block.number);
-    }
-
-    public async getSwaps(args: BalancerSwapsQueryVariables): Promise<BalancerSwapsQuery> {
-        return this.sdk.BalancerSwaps(args);
-    }
-
-    public async getAllSwapsWithPaging({
-        where,
-        block,
-        startTimestamp,
-    }: Pick<BalancerSwapsQueryVariables, 'where' | 'block'> & { startTimestamp: number }): Promise<
-        BalancerSwapFragment[]
-    > {
-        const limit = 1000;
-        let timestamp = startTimestamp;
-        let hasMore = true;
-        let swaps: BalancerSwapFragment[] = [];
-
-        while (hasMore) {
-            const response = await this.sdk.BalancerSwaps({
-                where: { ...where, timestamp_gt: timestamp },
-                block,
-                orderBy: Swap_OrderBy.Timestamp,
-                orderDirection: OrderDirection.Asc,
-                first: limit,
-            });
-
-            swaps = [...swaps, ...response.swaps];
-            if (response.swaps.length < limit) {
-                hasMore = false;
-            } else {
-                timestamp = response.swaps[response.swaps.length - 1].timestamp;
-            }
-        }
-
-        return swaps;
-    }
-
-    public async getPool(args: BalancerPoolQueryVariables): Promise<BalancerPoolQuery> {
-        return this.sdk.BalancerPool(args);
     }
 
     public async getAllPoolSharesWithBalance(
@@ -137,17 +89,5 @@ export class BalancerSubgraphService {
                 ...args.where,
             },
         });
-    }
-
-    public async getPoolJoinExits(args: BalancerJoinExitsQueryVariables): Promise<BalancerJoinExitsQuery> {
-        return this.sdk.BalancerJoinExits(args);
-    }
-
-    public async getPoolsWithActiveUpdates(timestamp: number): Promise<string[]> {
-        const { ampUpdates } = await this.sdk.BalancerGetPoolsWithActiveUpdates({
-            timestamp: `${timestamp}`,
-        });
-
-        return ampUpdates.map((item) => item.poolId.id);
     }
 }

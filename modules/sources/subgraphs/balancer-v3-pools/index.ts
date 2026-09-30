@@ -14,16 +14,6 @@ export const getPoolsSubgraphClient = (subgraphUrl: string, chain: Chain) => {
 
     return {
         ...sdk,
-        async lastSyncedBlock() {
-            return sdk.Metadata().then((response) => {
-                if (response && response.meta) {
-                    return Number(response.meta.block.number);
-                } else {
-                    // Return a default value if meta is not present
-                    return Promise.reject('Error fetching metadata');
-                }
-            });
-        },
         async getAllPools(where: PoolsQueryVariables['where']): Promise<TypePoolFragment[]> {
             const limit = 1000;
             let hasMore = true;

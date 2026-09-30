@@ -2926,20 +2926,10 @@ export type BalancerPoolFragment = {
     name?: string | null;
     swapFee: string;
     totalShares: string;
-    swapsCount: string;
-    holdersCount: string;
     createTime: number;
     swapEnabled: boolean;
     tokensList: Array<string>;
-    lowerTarget?: string | null;
-    upperTarget?: string | null;
-    mainIndex?: number | null;
-    wrappedIndex?: number | null;
     factory?: string | null;
-    expiryTime?: string | null;
-    unitSeconds?: string | null;
-    principalToken?: string | null;
-    baseToken?: string | null;
     owner?: string | null;
     amp?: string | null;
     alpha?: string | null;
@@ -2959,8 +2949,6 @@ export type BalancerPoolFragment = {
     w?: string | null;
     z?: string | null;
     dSq?: string | null;
-    delta?: string | null;
-    epsilon?: string | null;
     priceRateProviders?: Array<{
         __typename?: 'PriceRateProvider';
         address: string;
@@ -2978,7 +2966,6 @@ export type BalancerPoolFragment = {
         priceRate: string;
         isExemptFromYieldProtocolFee?: boolean | null;
         index: number;
-        token: { __typename?: 'Token'; latestFXPrice?: string | null };
     }> | null;
 };
 
@@ -2994,7 +2981,6 @@ export type BalancerPoolTokenFragment = {
     priceRate: string;
     isExemptFromYieldProtocolFee?: boolean | null;
     index: number;
-    token: { __typename?: 'Token'; latestFXPrice?: string | null };
 };
 
 export type BalancerPoolsQueryVariables = Exact<{
@@ -3018,20 +3004,10 @@ export type BalancerPoolsQuery = {
         name?: string | null;
         swapFee: string;
         totalShares: string;
-        swapsCount: string;
-        holdersCount: string;
         createTime: number;
         swapEnabled: boolean;
         tokensList: Array<string>;
-        lowerTarget?: string | null;
-        upperTarget?: string | null;
-        mainIndex?: number | null;
-        wrappedIndex?: number | null;
         factory?: string | null;
-        expiryTime?: string | null;
-        unitSeconds?: string | null;
-        principalToken?: string | null;
-        baseToken?: string | null;
         owner?: string | null;
         amp?: string | null;
         alpha?: string | null;
@@ -3051,8 +3027,6 @@ export type BalancerPoolsQuery = {
         w?: string | null;
         z?: string | null;
         dSq?: string | null;
-        delta?: string | null;
-        epsilon?: string | null;
         priceRateProviders?: Array<{
             __typename?: 'PriceRateProvider';
             address: string;
@@ -3070,83 +3044,8 @@ export type BalancerPoolsQuery = {
             priceRate: string;
             isExemptFromYieldProtocolFee?: boolean | null;
             index: number;
-            token: { __typename?: 'Token'; latestFXPrice?: string | null };
         }> | null;
     }>;
-};
-
-export type BalancerPoolQueryVariables = Exact<{
-    id: Scalars['ID'];
-    block?: InputMaybe<Block_Height>;
-}>;
-
-export type BalancerPoolQuery = {
-    __typename?: 'Query';
-    pool?: {
-        __typename?: 'Pool';
-        id: string;
-        address: string;
-        poolType?: string | null;
-        poolTypeVersion?: number | null;
-        symbol?: string | null;
-        name?: string | null;
-        swapFee: string;
-        totalShares: string;
-        swapsCount: string;
-        holdersCount: string;
-        createTime: number;
-        swapEnabled: boolean;
-        tokensList: Array<string>;
-        lowerTarget?: string | null;
-        upperTarget?: string | null;
-        mainIndex?: number | null;
-        wrappedIndex?: number | null;
-        factory?: string | null;
-        expiryTime?: string | null;
-        unitSeconds?: string | null;
-        principalToken?: string | null;
-        baseToken?: string | null;
-        owner?: string | null;
-        amp?: string | null;
-        alpha?: string | null;
-        beta?: string | null;
-        sqrtAlpha?: string | null;
-        sqrtBeta?: string | null;
-        root3Alpha?: string | null;
-        c?: string | null;
-        s?: string | null;
-        lambda?: string | null;
-        tauAlphaX?: string | null;
-        tauAlphaY?: string | null;
-        tauBetaX?: string | null;
-        tauBetaY?: string | null;
-        u?: string | null;
-        v?: string | null;
-        w?: string | null;
-        z?: string | null;
-        dSq?: string | null;
-        delta?: string | null;
-        epsilon?: string | null;
-        priceRateProviders?: Array<{
-            __typename?: 'PriceRateProvider';
-            address: string;
-            token: { __typename?: 'PoolToken'; address: string };
-        }> | null;
-        tokens?: Array<{
-            __typename?: 'PoolToken';
-            id: string;
-            symbol: string;
-            name: string;
-            decimals: number;
-            address: string;
-            balance: string;
-            weight?: string | null;
-            priceRate: string;
-            isExemptFromYieldProtocolFee?: boolean | null;
-            index: number;
-            token: { __typename?: 'Token'; latestFXPrice?: string | null };
-        }> | null;
-    } | null;
 };
 
 export type BalancerJoinExitsQueryVariables = Exact<{
@@ -3199,115 +3098,37 @@ export type BalancerSwapsQuery = {
     swaps: Array<{
         __typename?: 'Swap';
         id: string;
-        caller: string;
         tokenIn: string;
-        tokenInSym: string;
         tokenOut: string;
-        tokenOutSym: string;
         tokenAmountIn: string;
         tokenAmountOut: string;
         userAddress: string;
         timestamp: number;
         tx: string;
         block?: string | null;
-        poolId: {
-            __typename?: 'Pool';
-            id: string;
-            swapFee: string;
-            poolType?: string | null;
-            tokens?: Array<{
-                __typename?: 'PoolToken';
-                token: { __typename?: 'Token'; address: string; latestFXPrice?: string | null };
-            }> | null;
-        };
+        poolId: { __typename?: 'Pool'; id: string; swapFee: string };
     }>;
 };
 
 export type BalancerSwapFragment = {
     __typename?: 'Swap';
     id: string;
-    caller: string;
     tokenIn: string;
-    tokenInSym: string;
     tokenOut: string;
-    tokenOutSym: string;
     tokenAmountIn: string;
     tokenAmountOut: string;
     userAddress: string;
     timestamp: number;
     tx: string;
     block?: string | null;
-    poolId: {
-        __typename?: 'Pool';
-        id: string;
-        swapFee: string;
-        poolType?: string | null;
-        tokens?: Array<{
-            __typename?: 'PoolToken';
-            token: { __typename?: 'Token'; address: string; latestFXPrice?: string | null };
-        }> | null;
-    };
-};
-
-export type BalancerGetPoolsWithActiveUpdatesQueryVariables = Exact<{
-    timestamp: Scalars['BigInt'];
-}>;
-
-export type BalancerGetPoolsWithActiveUpdatesQuery = {
-    __typename?: 'Query';
-    ampUpdates: Array<{ __typename?: 'AmpUpdate'; poolId: { __typename?: 'Pool'; id: string } }>;
+    poolId: { __typename?: 'Pool'; id: string; swapFee: string };
 };
 
 export type BalancerGetMetaQueryVariables = Exact<{ [key: string]: never }>;
 
 export type BalancerGetMetaQuery = {
     __typename?: 'Query';
-    meta?: {
-        __typename?: '_Meta_';
-        deployment: string;
-        hasIndexingErrors: boolean;
-        block: { __typename?: '_Block_'; number: number };
-    } | null;
-};
-
-export type PoolBalancesFragment = {
-    __typename?: 'Pool';
-    id: string;
-    address: string;
-    totalShares: string;
-    tokens?: Array<{
-        __typename?: 'PoolToken';
-        address: string;
-        decimals: number;
-        balance: string;
-        priceRate: string;
-    }> | null;
-};
-
-export type PoolBalancesQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<Pool_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<Pool_Filter>;
-    block?: InputMaybe<Block_Height>;
-}>;
-
-export type PoolBalancesQuery = {
-    __typename?: 'Query';
-    pools: Array<{
-        __typename?: 'Pool';
-        id: string;
-        address: string;
-        totalShares: string;
-        tokens?: Array<{
-            __typename?: 'PoolToken';
-            address: string;
-            decimals: number;
-            balance: string;
-            priceRate: string;
-        }> | null;
-    }>;
+    meta?: { __typename?: '_Meta_'; block: { __typename?: '_Block_'; number: number } } | null;
 };
 
 export const BalancerPoolShareFragmentDoc = gql`
@@ -3331,9 +3152,6 @@ export const BalancerPoolTokenFragmentDoc = gql`
         priceRate
         isExemptFromYieldProtocolFee
         index
-        token {
-            latestFXPrice
-        }
     }
 `;
 export const BalancerPoolFragmentDoc = gql`
@@ -3346,20 +3164,10 @@ export const BalancerPoolFragmentDoc = gql`
         name
         swapFee
         totalShares
-        swapsCount
-        holdersCount
         createTime
         swapEnabled
         tokensList
-        lowerTarget
-        upperTarget
-        mainIndex
-        wrappedIndex
         factory
-        expiryTime
-        unitSeconds
-        principalToken
-        baseToken
         owner
         amp
         alpha
@@ -3379,8 +3187,6 @@ export const BalancerPoolFragmentDoc = gql`
         w
         z
         dSq
-        delta
-        epsilon
         priceRateProviders {
             address
             token {
@@ -3411,41 +3217,18 @@ export const BalancerJoinExitFragmentDoc = gql`
 export const BalancerSwapFragmentDoc = gql`
     fragment BalancerSwap on Swap {
         id
-        caller
         tokenIn
-        tokenInSym
         tokenOut
-        tokenOutSym
         tokenAmountIn
         tokenAmountOut
         poolId {
             id
             swapFee
-            poolType
-            tokens {
-                token {
-                    address
-                    latestFXPrice
-                }
-            }
         }
         userAddress
         timestamp
         tx
         block
-    }
-`;
-export const PoolBalancesFragmentDoc = gql`
-    fragment PoolBalances on Pool {
-        id
-        address
-        totalShares
-        tokens {
-            address
-            decimals
-            balance
-            priceRate
-        }
     }
 `;
 export const BalancerPoolSharesDocument = gql`
@@ -3487,14 +3270,6 @@ export const BalancerPoolsDocument = gql`
             where: $where
             block: $block
         ) {
-            ...BalancerPool
-        }
-    }
-    ${BalancerPoolFragmentDoc}
-`;
-export const BalancerPoolDocument = gql`
-    query BalancerPool($id: ID!, $block: Block_height) {
-        pool(id: $id, block: $block) {
             ...BalancerPool
         }
     }
@@ -3544,47 +3319,14 @@ export const BalancerSwapsDocument = gql`
     }
     ${BalancerSwapFragmentDoc}
 `;
-export const BalancerGetPoolsWithActiveUpdatesDocument = gql`
-    query BalancerGetPoolsWithActiveUpdates($timestamp: BigInt!) {
-        ampUpdates(where: { endTimestamp_gte: $timestamp }) {
-            poolId {
-                id
-            }
-        }
-    }
-`;
 export const BalancerGetMetaDocument = gql`
     query BalancerGetMeta {
         meta: _meta {
             block {
                 number
             }
-            deployment
-            hasIndexingErrors
         }
     }
-`;
-export const PoolBalancesDocument = gql`
-    query PoolBalances(
-        $skip: Int
-        $first: Int
-        $orderBy: Pool_orderBy
-        $orderDirection: OrderDirection
-        $where: Pool_filter
-        $block: Block_height
-    ) {
-        pools(
-            skip: $skip
-            first: $first
-            orderBy: $orderBy
-            orderDirection: $orderDirection
-            where: $where
-            block: $block
-        ) {
-            ...PoolBalances
-        }
-    }
-    ${PoolBalancesFragmentDoc}
 `;
 
 export type SdkFunctionWrapper = <T>(
@@ -3625,20 +3367,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                 'query',
             );
         },
-        BalancerPool(
-            variables: BalancerPoolQueryVariables,
-            requestHeaders?: Dom.RequestInit['headers'],
-        ): Promise<BalancerPoolQuery> {
-            return withWrapper(
-                (wrappedRequestHeaders) =>
-                    client.request<BalancerPoolQuery>(BalancerPoolDocument, variables, {
-                        ...requestHeaders,
-                        ...wrappedRequestHeaders,
-                    }),
-                'BalancerPool',
-                'query',
-            );
-        },
         BalancerJoinExits(
             variables?: BalancerJoinExitsQueryVariables,
             requestHeaders?: Dom.RequestInit['headers'],
@@ -3667,21 +3395,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                 'query',
             );
         },
-        BalancerGetPoolsWithActiveUpdates(
-            variables: BalancerGetPoolsWithActiveUpdatesQueryVariables,
-            requestHeaders?: Dom.RequestInit['headers'],
-        ): Promise<BalancerGetPoolsWithActiveUpdatesQuery> {
-            return withWrapper(
-                (wrappedRequestHeaders) =>
-                    client.request<BalancerGetPoolsWithActiveUpdatesQuery>(
-                        BalancerGetPoolsWithActiveUpdatesDocument,
-                        variables,
-                        { ...requestHeaders, ...wrappedRequestHeaders },
-                    ),
-                'BalancerGetPoolsWithActiveUpdates',
-                'query',
-            );
-        },
         BalancerGetMeta(
             variables?: BalancerGetMetaQueryVariables,
             requestHeaders?: Dom.RequestInit['headers'],
@@ -3693,20 +3406,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'BalancerGetMeta',
-                'query',
-            );
-        },
-        PoolBalances(
-            variables?: PoolBalancesQueryVariables,
-            requestHeaders?: Dom.RequestInit['headers'],
-        ): Promise<PoolBalancesQuery> {
-            return withWrapper(
-                (wrappedRequestHeaders) =>
-                    client.request<PoolBalancesQuery>(PoolBalancesDocument, variables, {
-                        ...requestHeaders,
-                        ...wrappedRequestHeaders,
-                    }),
-                'PoolBalances',
                 'query',
             );
         },

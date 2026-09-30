@@ -3,7 +3,5 @@ query Metadata {
         block {
             number
         }
-        deployment
-        hasIndexingErrors
     }
 }

@@ -43,8 +43,10 @@ export const syncGaugeStakingForPools = async (
         include: { staking: { include: { gauge: { include: { rewards: true } } } } },
     });
 
-    const poolAddresses = dbPools.map((pool) => pool.address);
-    const { liquidityGauges: subgraphGauges } = await gaugeSubgraphService.getAllGaugesForPoolAddresses(poolAddresses);
+    const poolAddresses = new Set(dbPools.map((pool) => pool.address.toLowerCase()));
+    const subgraphGauges = (await gaugeSubgraphService.getAllGauges()).filter((gauge) =>
+        poolAddresses.has(gauge.poolAddress.toLowerCase()),
+    );
 
     /*
     TODO This can result in multiple preferential gauges for a pool 
@@ -61,7 +63,6 @@ export const syncGaugeStakingForPools = async (
             : ('PREFERRED' as LiquidityGaugeStatus),
         version: 2,
         tokens: gauge.tokens || [],
-        createTime: gauge.gauge?.addedTimestamp,
     }));
 
     for (const gauge of gaugesForDb) {

@@ -11,12 +11,17 @@ const handleSorCall = async (args: QuerySorGetSwapPathsArgs, abortController: Ab
         abortController.abort();
     }, TIMEOUT);
 
+    const start = Date.now();
+    const quote = `${args.chain} ${args.tokenIn} -> ${args.tokenOut} ${args.swapType} ${args.swapAmount}`;
+
     try {
         const response = await sorService.getSorSwapPaths(args, abortController.signal);
         clearTimeout(abortTimeout);
+        console.log(`SOR quote ok ${Date.now() - start}ms ${quote}`);
         return response;
     } catch (error: any) {
         clearTimeout(abortTimeout);
+        console.log(`SOR quote failed ${Date.now() - start}ms ${quote}: ${error.message}`);
         if (error.name === 'SorAbortError') {
             throw new Error(`SOR Request aborted: The operation timed out after ${TIMEOUT / 1000} seconds.`);
         } else {

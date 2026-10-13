@@ -10,6 +10,8 @@ import { corsMiddleware, lowerCaseMiddleware } from './middleware';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { ApolloServerPluginUsageReporting } from '@apollo/server/plugin/usageReporting';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
+import responseCachePlugin from '@apollo/server-plugin-response-cache';
 import { schema } from './gql/generated-schema-ast';
 import { resolvers } from './gql/resolvers';
 import { ResolverContext, resolverContext } from './gql/resolver-context';
@@ -36,7 +38,12 @@ const configureMiddlewares = (app: express.Express) => {
 };
 
 const configureApolloServer = async (httpServer: http.Server, app: express.Express) => {
-    const plugins = [ApolloServerPluginDrainHttpServer({ httpServer }), apolloSentryPlugin];
+    const plugins = [
+        ApolloServerPluginDrainHttpServer({ httpServer }),
+        apolloSentryPlugin,
+        ApolloServerPluginCacheControl({ defaultMaxAge: 10 }),
+        responseCachePlugin(),
+    ];
 
     plugins.push(ApolloServerPluginLandingPageLocalDefault({ embed: true }));
 

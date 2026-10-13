@@ -2,6 +2,7 @@ import express from 'express';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import helmet from 'helmet';
+import compression from 'compression';
 import * as http from 'http';
 import { env } from '../env';
 import { loadRestRoutes } from './rest-routes';
@@ -29,6 +30,7 @@ const configureHelmet = (app: express.Express) => {
 };
 
 const configureMiddlewares = (app: express.Express) => {
+    app.use(compression());
     app.use(corsMiddleware);
     app.use(lowerCaseMiddleware);
 };

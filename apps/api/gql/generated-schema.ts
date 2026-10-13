@@ -476,14 +476,6 @@ export interface GqlPoolEventsFilter {
     userAddress?: InputMaybe<Scalars['String']>;
 }
 
-export interface GqlPoolFeaturedPool {
-    __typename?: 'GqlPoolFeaturedPool';
-    description: Scalars['String'];
-    pool: GqlPoolBase;
-    poolId: Scalars['ID'];
-    primary: Scalars['Boolean'];
-}
-
 export interface GqlPoolFilter {
     chainIn?: InputMaybe<Array<GqlChain>>;
     chainNotIn?: InputMaybe<Array<GqlChain>>;
@@ -1683,8 +1675,6 @@ export interface Query {
     loopsGetData: GqlLoopsData;
     /** Getting swap, add and remove events with paging */
     poolEvents: Array<GqlPoolEvent>;
-    /** Returns the list of featured pools for chains */
-    poolGetFeaturedPools: Array<GqlPoolFeaturedPool>;
     /** Returns one pool. If a user address is provided, the user balances for the given pool will also be returned. */
     poolGetPool: GqlPoolBase;
     /** Returns all pools for a given filter */
@@ -1735,10 +1725,6 @@ export interface QueryPoolEventsArgs {
     first?: InputMaybe<Scalars['Int']>;
     skip?: InputMaybe<Scalars['Int']>;
     where?: InputMaybe<GqlPoolEventsFilter>;
-}
-
-export interface QueryPoolGetFeaturedPoolsArgs {
-    chains: Array<GqlChain>;
 }
 
 export interface QueryPoolGetPoolArgs {
@@ -1929,7 +1915,6 @@ export type ResolversTypes = ResolversObject<{
     GqlPoolEventAmount: ResolverTypeWrapper<GqlPoolEventAmount>;
     GqlPoolEventType: GqlPoolEventType;
     GqlPoolEventsFilter: GqlPoolEventsFilter;
-    GqlPoolFeaturedPool: ResolverTypeWrapper<GqlPoolFeaturedPool>;
     GqlPoolFilter: GqlPoolFilter;
     GqlPoolFixedPriceLBP: ResolverTypeWrapper<GqlPoolFixedPriceLbp>;
     GqlPoolGyro: ResolverTypeWrapper<GqlPoolGyro>;
@@ -2055,7 +2040,6 @@ export type ResolversParentTypes = ResolversObject<{
         | ResolversParentTypes['GqlPoolSwapEventV3'];
     GqlPoolEventAmount: GqlPoolEventAmount;
     GqlPoolEventsFilter: GqlPoolEventsFilter;
-    GqlPoolFeaturedPool: GqlPoolFeaturedPool;
     GqlPoolFilter: GqlPoolFilter;
     GqlPoolFixedPriceLBP: GqlPoolFixedPriceLbp;
     GqlPoolGyro: GqlPoolGyro;
@@ -2464,17 +2448,6 @@ export type GqlPoolEventAmountResolvers<
     address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     amount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     valueUSD?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type GqlPoolFeaturedPoolResolvers<
-    ContextType = ResolverContext,
-    ParentType extends ResolversParentTypes['GqlPoolFeaturedPool'] = ResolversParentTypes['GqlPoolFeaturedPool'],
-> = ResolversObject<{
-    description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    pool?: Resolver<ResolversTypes['GqlPoolBase'], ParentType, ContextType>;
-    poolId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-    primary?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3547,12 +3520,6 @@ export type QueryResolvers<
         ContextType,
         RequireFields<QueryPoolEventsArgs, never>
     >;
-    poolGetFeaturedPools?: Resolver<
-        Array<ResolversTypes['GqlPoolFeaturedPool']>,
-        ParentType,
-        ContextType,
-        RequireFields<QueryPoolGetFeaturedPoolsArgs, 'chains'>
-    >;
     poolGetPool?: Resolver<
         ResolversTypes['GqlPoolBase'],
         ParentType,
@@ -3650,7 +3617,6 @@ export type Resolvers<ContextType = ResolverContext> = ResolversObject<{
     GqlPoolDynamicData?: GqlPoolDynamicDataResolvers<ContextType>;
     GqlPoolEvent?: GqlPoolEventResolvers<ContextType>;
     GqlPoolEventAmount?: GqlPoolEventAmountResolvers<ContextType>;
-    GqlPoolFeaturedPool?: GqlPoolFeaturedPoolResolvers<ContextType>;
     GqlPoolFixedPriceLBP?: GqlPoolFixedPriceLbpResolvers<ContextType>;
     GqlPoolGyro?: GqlPoolGyroResolvers<ContextType>;
     GqlPoolLiquidityBootstrapping?: GqlPoolLiquidityBootstrappingResolvers<ContextType>;

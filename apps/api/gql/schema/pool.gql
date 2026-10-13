@@ -26,10 +26,6 @@ extend type Query {
         textSearch: String
     ): Int!
     """
-    Returns the list of featured pools for chains
-    """
-    poolGetFeaturedPools(chains: [GqlChain!]!): [GqlPoolFeaturedPool!]!
-    """
     Gets all the snapshots for a given pool on a chain for a certain range
     """
     poolGetSnapshots(id: String!, chain: GqlChain!, range: GqlPoolSnapshotDataRange!): [GqlPoolSnapshot!]!
@@ -1130,13 +1126,6 @@ enum GqlPoolAprItemType {
     APR calculated for QUANT-AMM pools based on performance measurements over a month
     """
     QUANT_AMM_UPLIFT
-}
-
-type GqlPoolFeaturedPool {
-    poolId: ID!
-    primary: Boolean!
-    pool: GqlPoolBase!
-    description: String!
 }
 
 enum GqlPoolSnapshotDataRange {

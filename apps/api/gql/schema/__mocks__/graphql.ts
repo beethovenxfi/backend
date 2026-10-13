@@ -17,7 +17,6 @@ import {
     GqlPoolEvent,
     GqlPoolEventAmount,
     GqlPoolEventsFilter,
-    GqlPoolFeaturedPool,
     GqlPoolFilter,
     GqlPoolFixedPriceLbp,
     GqlPoolGyro,
@@ -466,18 +465,6 @@ export const aGqlPoolEventsFilter = (overrides?: Partial<GqlPoolEventsFilter>): 
         poolId: overrides && overrides.hasOwnProperty('poolId') ? overrides.poolId! : 'censura',
         type: overrides && overrides.hasOwnProperty('type') ? overrides.type! : GqlPoolEventType.ADD,
         userAddress: overrides && overrides.hasOwnProperty('userAddress') ? overrides.userAddress! : 'cruciamentum',
-    };
-};
-
-export const aGqlPoolFeaturedPool = (overrides?: Partial<GqlPoolFeaturedPool>): GqlPoolFeaturedPool => {
-    return {
-        description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'cervus',
-        pool: overrides && overrides.hasOwnProperty('pool') ? overrides.pool! : aGqlPoolBase(),
-        poolId:
-            overrides && overrides.hasOwnProperty('poolId')
-                ? overrides.poolId!
-                : '63d328f4-4aa0-4235-b1b5-32ab0282fe49',
-        primary: overrides && overrides.hasOwnProperty('primary') ? overrides.primary! : false,
     };
 };
 
@@ -1679,10 +1666,6 @@ export const aQuery = (overrides?: Partial<Query>): Query => {
             overrides && overrides.hasOwnProperty('lbpPriceChart') ? overrides.lbpPriceChart! : [aLbpPriceChartData()],
         loopsGetData: overrides && overrides.hasOwnProperty('loopsGetData') ? overrides.loopsGetData! : aGqlLoopsData(),
         poolEvents: overrides && overrides.hasOwnProperty('poolEvents') ? overrides.poolEvents! : [aGqlPoolEvent()],
-        poolGetFeaturedPools:
-            overrides && overrides.hasOwnProperty('poolGetFeaturedPools')
-                ? overrides.poolGetFeaturedPools!
-                : [aGqlPoolFeaturedPool()],
         poolGetPool: overrides && overrides.hasOwnProperty('poolGetPool') ? overrides.poolGetPool! : aGqlPoolBase(),
         poolGetPools:
             overrides && overrides.hasOwnProperty('poolGetPools') ? overrides.poolGetPools! : [aGqlPoolMinimal()],

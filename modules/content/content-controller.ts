@@ -8,7 +8,6 @@ import { syncRateProviderReviews } from './lib/sync-rate-provider-reviews';
 import { syncTags } from './lib/sync-tags';
 import { syncTokenContentData } from './lib/sync-token-data';
 import { prisma } from '../../prisma/prisma-client';
-import { getFeaturedPools } from './lib/get-featured-pools';
 
 export function ContentController() {
     return {
@@ -42,9 +41,6 @@ export function ContentController() {
             });
 
             await syncTokenContentData([chain]);
-        },
-        async getFeaturedPools(chains: Chain[]) {
-            return getFeaturedPools(chains);
         },
     };
 }

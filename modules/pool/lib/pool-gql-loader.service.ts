@@ -7,7 +7,6 @@ import {
 } from '../../../prisma/prisma-types';
 import {
     GqlPoolDynamicData,
-    GqlPoolFeaturedPool,
     GqlPoolMinimal,
     GqlPoolStaking,
     GqlPoolUnion,
@@ -29,7 +28,6 @@ import { mapHookToGqlHook } from '../../sources/transformers';
 import { GraphQLError } from 'graphql';
 import { getWeightSnapshots } from '../../actions/quant-amm/get-weight-snapshots';
 import { mapPoolToken, enrichPoolTokens, mapAprItems } from './pool-gql-mapper-helper';
-import { ContentController } from '../../content/content-controller';
 
 const isToken = (text: string) => text.match(/^0x[0-9a-fA-F]{40}$/);
 const isPoolId = (text: string) => isToken(text) || text.match(/^0x[0-9a-fA-F]{64}$/);
@@ -233,24 +231,6 @@ export class PoolGqlLoaderService {
         } else {
             return prisma.prismaPool.count({ where: this.mapQueryArgsToPoolQuery(args).where });
         }
-    }
-
-    public async getFeaturedPools(chains: Chain[]): Promise<GqlPoolFeaturedPool[]> {
-        const featuredPoolsFromService = await ContentController().getFeaturedPools(chains);
-
-        const featuredPools: GqlPoolFeaturedPool[] = [];
-
-        for (const contentPool of featuredPoolsFromService) {
-            const pool = await this.getPool({}, contentPool.poolId.toLowerCase(), contentPool.chain);
-            featuredPools.push({
-                poolId: contentPool.poolId,
-                primary: contentPool.primary,
-                pool: pool,
-                description: contentPool.description,
-            });
-        }
-
-        return featuredPools;
     }
 
     private mapQueryArgsToPoolQuery(args: QueryPoolGetPoolsArgs): Prisma.PrismaPoolFindManyArgs {

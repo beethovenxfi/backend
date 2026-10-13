@@ -37,9 +37,6 @@ const balancerResolvers: Resolvers = {
                 where,
             });
         },
-        poolGetFeaturedPools: async (parent, { chains }, context) => {
-            return poolService.getFeaturedPools(chains);
-        },
         poolGetSnapshots: async (parent, { id, chain, range }, context) => {
             const snapshots = await poolService.getSnapshotsForPool(id, chain, range);
 

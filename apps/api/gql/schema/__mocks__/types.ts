@@ -475,14 +475,6 @@ export type GqlPoolEventsFilter = {
     userAddress?: InputMaybe<Scalars['String']>;
 };
 
-export type GqlPoolFeaturedPool = {
-    __typename?: 'GqlPoolFeaturedPool';
-    description: Scalars['String'];
-    pool: GqlPoolBase;
-    poolId: Scalars['ID'];
-    primary: Scalars['Boolean'];
-};
-
 export type GqlPoolFilter = {
     chainIn?: InputMaybe<Array<GqlChain>>;
     chainNotIn?: InputMaybe<Array<GqlChain>>;
@@ -1710,8 +1702,6 @@ export type Query = {
     loopsGetData: GqlLoopsData;
     /** Getting swap, add and remove events with paging */
     poolEvents: Array<GqlPoolEvent>;
-    /** Returns the list of featured pools for chains */
-    poolGetFeaturedPools: Array<GqlPoolFeaturedPool>;
     /** Returns one pool. If a user address is provided, the user balances for the given pool will also be returned. */
     poolGetPool: GqlPoolBase;
     /** Returns all pools for a given filter */
@@ -1762,10 +1752,6 @@ export type QueryPoolEventsArgs = {
     first?: InputMaybe<Scalars['Int']>;
     skip?: InputMaybe<Scalars['Int']>;
     where?: InputMaybe<GqlPoolEventsFilter>;
-};
-
-export type QueryPoolGetFeaturedPoolsArgs = {
-    chains: Array<GqlChain>;
 };
 
 export type QueryPoolGetPoolArgs = {

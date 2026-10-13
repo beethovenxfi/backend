@@ -2,7 +2,6 @@ import { Chain, PrismaPoolStakingType } from '@prisma/client';
 import _ from 'lodash';
 import {
     GqlChain,
-    GqlPoolFeaturedPool,
     GqlPoolMinimal,
     GqlPoolSnapshotDataRange,
     GqlPoolUnion,
@@ -36,10 +35,6 @@ export class PoolService {
 
     public async getPoolsCount(args: QueryPoolGetPoolsArgs): Promise<number> {
         return this.poolGqlLoaderService.getPoolsCount(args);
-    }
-
-    public async getFeaturedPools(chains: Chain[]): Promise<GqlPoolFeaturedPool[]> {
-        return this.poolGqlLoaderService.getFeaturedPools(chains);
     }
 
     public async getSnapshotsForPool(poolId: string, chain: Chain, range: GqlPoolSnapshotDataRange) {

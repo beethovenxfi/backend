@@ -889,13 +889,6 @@ export const schema = gql`
         userAddress: String
     }
 
-    type GqlPoolFeaturedPool {
-        description: String!
-        pool: GqlPoolBase!
-        poolId: ID!
-        primary: Boolean!
-    }
-
     input GqlPoolFilter {
         chainIn: [GqlChain!]
         chainNotIn: [GqlChain!]
@@ -2697,11 +2690,6 @@ export const schema = gql`
         Getting swap, add and remove events with paging
         """
         poolEvents(first: Int, skip: Int, where: GqlPoolEventsFilter): [GqlPoolEvent!]!
-
-        """
-        Returns the list of featured pools for chains
-        """
-        poolGetFeaturedPools(chains: [GqlChain!]!): [GqlPoolFeaturedPool!]!
 
         """
         Returns one pool. If a user address is provided, the user balances for the given pool will also be returned.

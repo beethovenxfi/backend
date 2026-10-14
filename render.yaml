@@ -81,6 +81,8 @@ services:
           # exported so beets-api can reference it; private services are reachable as http://<name>:<port>
           - key: SOR_SERVICE_URL_INTERNAL
             value: http://beets-sor:4000/graphql
+          - key: NODE_OPTIONS
+            value: --max-old-space-size=384
 
     - type: worker
       name: beets-worker

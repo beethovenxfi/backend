@@ -42,7 +42,7 @@ services:
       name: beets-api
       runtime: docker
       region: frankfurt
-      plan: standard
+      plan: starter
       dockerfilePath: ./Dockerfile
       healthCheckPath: /health
       preDeployCommand: npx prisma migrate deploy
@@ -60,6 +60,8 @@ services:
                 type: pserv
                 name: beets-sor
                 envVarKey: SOR_SERVICE_URL_INTERNAL
+          - key: NODE_OPTIONS
+            value: --max-old-space-size=384
 
     - type: pserv
       name: beets-sor

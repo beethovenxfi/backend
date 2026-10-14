@@ -15,7 +15,21 @@ const chain2ViemChain = {
     [Chain.SONIC]: sonic,
 };
 
-export const getViemClient = (chain: Chain, options?: { multicallBatch?: boolean; jsonRpcBatch?: boolean }) => {
+type ViemClientOptions = { multicallBatch?: boolean; jsonRpcBatch?: boolean };
+
+const clients = new Map<string, ReturnType<typeof createViemClient>>();
+
+export const getViemClient = (chain: Chain, options?: ViemClientOptions) => {
+    const key = `${chain}:${!!options?.multicallBatch}:${!!options?.jsonRpcBatch}`;
+    let client = clients.get(key);
+    if (!client) {
+        client = createViemClient(chain, options);
+        clients.set(key, client);
+    }
+    return client;
+};
+
+const createViemClient = (chain: Chain, options?: ViemClientOptions) => {
     return createPublicClient({
         chain: chain2ViemChain[chain],
         batch: options?.multicallBatch ? { multicall: true } : undefined,

@@ -90,4 +90,19 @@ export const startApiServer = async () => {
 
     await new Promise<void>((resolve) => httpServer.listen({ port: env.PORT }, resolve));
     console.log(`🚀 Server ready at http://localhost:${env.PORT}/graphql`);
+
+    startMemoryLogging();
+};
+
+// rss vs heapUsed tells V8 heap growth apart from native memory (zlib, Prisma engine, malloc fragmentation)
+const startMemoryLogging = () => {
+    const toMb = (bytes: number) => Math.round(bytes / 1024 / 1024);
+    setInterval(() => {
+        const { rss, heapTotal, heapUsed, external, arrayBuffers } = process.memoryUsage();
+        console.log(
+            `memory rss=${toMb(rss)}MB heapTotal=${toMb(heapTotal)}MB heapUsed=${toMb(heapUsed)}MB external=${toMb(
+                external,
+            )}MB arrayBuffers=${toMb(arrayBuffers)}MB`,
+        );
+    }, 5 * 60 * 1000).unref();
 };

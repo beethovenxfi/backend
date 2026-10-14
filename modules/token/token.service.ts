@@ -20,11 +20,11 @@ import {
 } from '../../apps/api/gql/generated-schema';
 import { Dictionary, uniq } from 'lodash';
 import config from '../../config';
-import murmurhash from 'murmurhash';
 
 const TOKEN_PRICES_CACHE_KEY = `token:prices:current`;
 const TOKEN_PRICES_24H_AGO_CACHE_KEY = `token:prices:24h-ago`;
 const ALL_TOKENS_CACHE_KEY = `tokens:all`;
+const ERC4626_REVIEW_DATA_CACHE_KEY = `erc4626:review-data`;
 
 export class TokenService {
     cache: CacheClass<string, any>;
@@ -86,7 +86,7 @@ export class TokenService {
 
         const [rateProviderData, erc4626Data] = await Promise.all([
             this.getPriceRateProviderData(tokens, uniq(tokens.map((token) => token.chain))),
-            this.getErc4626Data(tokens),
+            this.getErc4626Data(),
         ]);
 
         const definitions: Record<string, GqlToken> = {};
@@ -186,7 +186,7 @@ export class TokenService {
         console.timeEnd('getPriceRateProviderData');
 
         console.time('getErc4626Data');
-        const erc4626Data = await this.getErc4626Data(tokens);
+        const erc4626Data = await this.getErc4626Data();
         console.timeEnd('getErc4626Data');
 
         return tokens.map((token) => ({
@@ -258,17 +258,13 @@ export class TokenService {
         return priceRateProviderDataResult;
     }
 
-    async getErc4626Data(
-        tokens?: PrismaToken[],
-    ): Promise<
+    async getErc4626Data(): Promise<
         Record<string, (Erc4626ReviewData & { erc4626Address: string; assetAddress: string; chain: Chain }) | undefined>
     > {
-        const cacheKey = `ERC4626REVIEWDATA-${murmurhash.v3(`${tokens}`).toString(36)}`;
-
         let erc4626Data: Record<
             string,
             Erc4626ReviewData & { erc4626Address: string; assetAddress: string; chain: Chain }
-        > = this.cache.get(cacheKey);
+        > = this.cache.get(ERC4626_REVIEW_DATA_CACHE_KEY);
 
         if (!erc4626Data) {
             erc4626Data = await prisma.prismaErc4626ReviewData
@@ -298,7 +294,7 @@ export class TokenService {
                 .then((reviews) =>
                     Object.fromEntries(reviews.map((review) => [`${review.erc4626Address}-${review.chain}`, review])),
                 );
-            this.cache.put(cacheKey, erc4626Data, 10 * 60 * 1000); // cache for 10 min
+            this.cache.put(ERC4626_REVIEW_DATA_CACHE_KEY, erc4626Data, 10 * 60 * 1000); // cache for 10 min
         }
 
         return erc4626Data;

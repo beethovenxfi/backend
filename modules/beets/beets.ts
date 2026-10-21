@@ -4,19 +4,8 @@ import { Chain } from '@prisma/client';
 import { getViemClient } from '../sources/viem-client';
 import { formatEther, parseEther } from 'viem';
 
-const NON_CIRCULATING_ADDRESSES = [
-    '0xa2503804ec837d1e4699932d58a3bdb767dea505', //team linear vesting
-    '0x0edfcc1b8d082cd46d13db694b849d7d8151c6d5', //team multisig
-    '0x8d381ec09356c3f1805c54b2bb0867e8b417dc3a', //balancer dao linear vesting
-    '0xFe2022da08d17ac8388F5bEFE4F71456255105A4', //balancer dao multisig
-    '0xa1e849b1d6c2fd31c63eef7822e9e0632411ada7', //treasury multisig
-    '0x69739a7618469eed0685330d164d50ac19a9411a', //strategic partnership multisig
-    '0x766ddc12447973d86092e403f85c35578dd0433d', //advisor linear vesting
-];
-
 const NON_CIRCULATING_ADDRESSES_SONIC = [
     '0xc5E0250037195850E4D987CA25d6ABa68ef5fEe8', //treasury
-    '0x9D14fB062Cb47Da81a09c8B20437719D553e91fb', //team multisig
     '0x8a81173FC726eEDd1ad6036dB6197027C77865C2', //beets minting target
     '0x5f9a5CD0B77155AC1814EF6Cd9D82dA53d05E386', //beets migration contract
     '0x000000000000000000000000000000000000dEaD', //burn address

@@ -25,7 +25,7 @@ export default <NetworkData>{
         balancer: `https://api.subgraph.ormilabs.com/api/public/717cf785-de57-4761-94dd-9ac51b019902/subgraphs/v2-sonic-smol/latest/gn`,
         balancerV3: `https://api.subgraph.ormilabs.com/api/public/717cf785-de57-4761-94dd-9ac51b019902/subgraphs/v3-vault-sonic-smol/latest/gn`,
         balancerPoolsV3: `https://api.subgraph.ormilabs.com/api/public/717cf785-de57-4761-94dd-9ac51b019902/subgraphs/v3-pools-sonic-smol/latest/gn`,
-        gauge: `https://api.subgraph.ormilabs.com/api/public/717cf785-de57-4761-94dd-9ac51b019902/subgraphs/balancer-gauges-sonic/latest/gn`,
+        gauge: `https://api.subgraph.ormilabs.com/api/public/15f57ff4-2566-4e3f-93f2-7a10504120f0/subgraphs/balancer-gauges-sonic/latest/gn`,
     },
     eth: {
         address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

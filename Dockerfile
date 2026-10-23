@@ -12,7 +12,7 @@ RUN bunx prisma generate && bun run build
 # production node_modules only (keeps prisma CLI, needed by the pre-deploy migrate command)
 RUN rm -rf node_modules && bun install --frozen-lockfile --production && bunx prisma generate
 
-FROM node:22-bookworm-slim AS runtime
+FROM node:22.23.4-bookworm-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
